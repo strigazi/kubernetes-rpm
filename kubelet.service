@@ -1,0 +1,20 @@
+[Unit]
+Description=Kubernetes Kubelet
+After=docker.socket cadvisor.service
+Requires=docker.socket cadvisor.service
+
+[Service]
+EnvironmentFile=/etc/kubernetes/config
+EnvironmentFile=/etc/kubernetes/kubelet
+ExecStart=/usr/bin/kubelet \
+            --logtostderr=${KUBE_LOGTOSTDERR} \
+	    --v=${KUBE_LOG_LEVEL} \
+            --etcd_servers=${KUBE_ETCD_SERVERS} \
+            --address=${MINION_ADDRESS} \
+            --port=${MINION_PORT} \
+	    --hostname_override=${MINION_HOSTNAME} \
+	    --allow_privileged=${KUBE_ALLOW_PRIV}
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

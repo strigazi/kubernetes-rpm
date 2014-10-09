@@ -1,0 +1,21 @@
+[Unit]
+Description=Kubernetes API Server
+
+[Service]
+EnvironmentFile=/etc/kubernetes/config
+EnvironmentFile=/etc/kubernetes/apiserver
+User=kube
+ExecStart=/usr/bin/kube-apiserver \
+            --logtostderr=${KUBE_LOGTOSTDERR} \
+	    --v=${KUBE_LOG_LEVEL} \
+            --etcd_servers=${KUBE_ETCD_SERVERS} \
+            --address=${KUBE_API_ADDRESS} \
+            --port=${KUBE_API_PORT} \
+            --machines=${MINION_ADDRESSES} \
+	    --minion_port=${MINION_PORT} \
+	    --allow_privileged=${KUBE_ALLOW_PRIV}
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+ 

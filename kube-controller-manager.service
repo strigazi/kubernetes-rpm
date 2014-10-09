@@ -1,0 +1,16 @@
+[Unit]
+Description=Kubernetes Controller Manager
+
+[Service]
+EnvironmentFile=/etc/kubernetes/config
+EnvironmentFile=/etc/kubernetes/apiserver
+EnvironmentFile=/etc/kubernetes/controller-manager
+User=kube
+ExecStart=/usr/bin/kube-controller-manager \
+            --logtostderr=${KUBE_LOGTOSTDERR} \
+	    --v=${KUBE_LOG_LEVEL} \
+            --master=${KUBE_MASTER}
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

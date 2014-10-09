@@ -1,0 +1,17 @@
+[Unit]
+Description=Kubernetes Proxy
+# the proxy crashes if etcd isn't reachable.
+# https://github.com/GoogleCloudPlatform/kubernetes/issues/1206
+After=network.target
+
+[Service]
+EnvironmentFile=/etc/kubernetes/config
+EnvironmentFile=/etc/kubernetes/proxy
+ExecStart=/usr/bin/kube-proxy \
+            --logtostderr=${KUBE_LOGTOSTDERR} \
+	    --v=${KUBE_LOG_LEVEL} \
+            --etcd_servers=${KUBE_ETCD_SERVERS}
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

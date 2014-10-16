@@ -1,10 +1,10 @@
-From 93a7a41ed135f78087a2e1a3405f8ba9cb6ad94c Mon Sep 17 00:00:00 2001
+From 3387feda17f970d000de1ac704691e98d380f741 Mon Sep 17 00:00:00 2001
 From: Eric Paris <eparis@redhat.com>
 Date: Thu, 21 Aug 2014 13:55:27 -0400
 Subject: [PATCH] remove all third party software
 
 ---
- Godeps/Godeps.json                                 |   113 -
+ Godeps/Godeps.json                                 |   117 -
  Godeps/Readme                                      |     5 -
  Godeps/_workspace/.gitignore                       |     2 -
  .../_workspace/src/code.google.com/p/gcfg/LICENSE  |    57 -
@@ -254,6 +254,12 @@ Subject: [PATCH] remove all third party software
  .../mitchellh/goamz/ec2/responses_test.go          |   854 --
  .../src/github.com/mitchellh/goamz/ec2/sign.go     |    45 -
  .../github.com/mitchellh/goamz/ec2/sign_test.go    |    68 -
+ .../src/github.com/skratchdot/LICENSE-MIT          |    22 -
+ .../github.com/skratchdot/open-golang/open/exec.go |    15 -
+ .../skratchdot/open-golang/open/exec_darwin.go     |    15 -
+ .../skratchdot/open-golang/open/exec_windows.go    |    21 -
+ .../github.com/skratchdot/open-golang/open/open.go |    50 -
+ .../skratchdot/open-golang/open/open_test.go       |    70 -
  .../src/github.com/stretchr/objx/.gitignore        |    22 -
  .../src/github.com/stretchr/objx/README.md         |     3 -
  .../src/github.com/stretchr/objx/accessors.go      |   179 -
@@ -313,7 +319,7 @@ Subject: [PATCH] remove all third party software
  Godeps/_workspace/src/gopkg.in/v1/yaml/yaml.go     |   306 -
  Godeps/_workspace/src/gopkg.in/v1/yaml/yamlh.go    |   712 -
  .../src/gopkg.in/v1/yaml/yamlprivateh.go           |   173 -
- 309 files changed, 107132 deletions(-)
+ 315 files changed, 107329 deletions(-)
  delete mode 100644 Godeps/Godeps.json
  delete mode 100644 Godeps/Readme
  delete mode 100644 Godeps/_workspace/.gitignore
@@ -564,6 +570,12 @@ Subject: [PATCH] remove all third party software
  delete mode 100644 Godeps/_workspace/src/github.com/mitchellh/goamz/ec2/responses_test.go
  delete mode 100644 Godeps/_workspace/src/github.com/mitchellh/goamz/ec2/sign.go
  delete mode 100644 Godeps/_workspace/src/github.com/mitchellh/goamz/ec2/sign_test.go
+ delete mode 100644 Godeps/_workspace/src/github.com/skratchdot/LICENSE-MIT
+ delete mode 100644 Godeps/_workspace/src/github.com/skratchdot/open-golang/open/exec.go
+ delete mode 100644 Godeps/_workspace/src/github.com/skratchdot/open-golang/open/exec_darwin.go
+ delete mode 100644 Godeps/_workspace/src/github.com/skratchdot/open-golang/open/exec_windows.go
+ delete mode 100644 Godeps/_workspace/src/github.com/skratchdot/open-golang/open/open.go
+ delete mode 100644 Godeps/_workspace/src/github.com/skratchdot/open-golang/open/open_test.go
  delete mode 100644 Godeps/_workspace/src/github.com/stretchr/objx/.gitignore
  delete mode 100644 Godeps/_workspace/src/github.com/stretchr/objx/README.md
  delete mode 100644 Godeps/_workspace/src/github.com/stretchr/objx/accessors.go
@@ -626,10 +638,10 @@ Subject: [PATCH] remove all third party software
 
 diff --git a/Godeps/Godeps.json b/Godeps/Godeps.json
 deleted file mode 100644
-index 8229322..0000000
+index 71926f6..0000000
 --- a/Godeps/Godeps.json
 +++ /dev/null
-@@ -1,113 +0,0 @@
+@@ -1,117 +0,0 @@
 -{
 -	"ImportPath": "github.com/GoogleCloudPlatform/kubernetes",
 -	"GoVersion": "go1.3",
@@ -720,6 +732,10 @@ index 8229322..0000000
 -		{
 -			"ImportPath": "github.com/mitchellh/goamz/ec2",
 -			"Rev": "9cad7da945e699385c1a3e115aa255211921c9bb"
+-		},
+-		{
+-			"ImportPath": "github.com/skratchdot/open-golang/open",
+-			"Rev": "ba570a111973b539baf23c918213059543b5bb6e"
 -		},
 -		{
 -			"ImportPath": "github.com/stretchr/objx",
@@ -88956,6 +88972,235 @@ index 86d203e..0000000
 -	ec2.Sign(aws.Auth{"access", "secret", ""}, "GET", "/", params, "sdb.amazonaws.com")
 -	expected := "okj96/5ucWBSc1uR2zXVfm6mDHtgfNv657rRtt/aunQ="
 -	c.Assert(params["Signature"], Equals, expected)
+-}
+diff --git a/Godeps/_workspace/src/github.com/skratchdot/LICENSE-MIT b/Godeps/_workspace/src/github.com/skratchdot/LICENSE-MIT
+deleted file mode 100644
+index afd04c8..0000000
+--- a/Godeps/_workspace/src/github.com/skratchdot/LICENSE-MIT
++++ /dev/null
+@@ -1,22 +0,0 @@
+-Copyright (c) 2013 skratchdot
+-
+-Permission is hereby granted, free of charge, to any person
+-obtaining a copy of this software and associated documentation
+-files (the "Software"), to deal in the Software without
+-restriction, including without limitation the rights to use,
+-copy, modify, merge, publish, distribute, sublicense, and/or sell
+-copies of the Software, and to permit persons to whom the
+-Software is furnished to do so, subject to the following
+-conditions:
+-
+-The above copyright notice and this permission notice shall be
+-included in all copies or substantial portions of the Software.
+-
+-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+-OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+-HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+-WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+-OTHER DEALINGS IN THE SOFTWARE.
+diff --git a/Godeps/_workspace/src/github.com/skratchdot/open-golang/open/exec.go b/Godeps/_workspace/src/github.com/skratchdot/open-golang/open/exec.go
+deleted file mode 100644
+index cc37339..0000000
+--- a/Godeps/_workspace/src/github.com/skratchdot/open-golang/open/exec.go
++++ /dev/null
+@@ -1,15 +0,0 @@
+-// +build !windows,!darwin
+-
+-package open
+-
+-import (
+-	"os/exec"
+-)
+-
+-func open(input string) *exec.Cmd {
+-	return exec.Command("xdg-open", input)
+-}
+-
+-func openWith(input string, appName string) *exec.Cmd {
+-	return exec.Command(appName, input)
+-}
+diff --git a/Godeps/_workspace/src/github.com/skratchdot/open-golang/open/exec_darwin.go b/Godeps/_workspace/src/github.com/skratchdot/open-golang/open/exec_darwin.go
+deleted file mode 100644
+index 16160e6..0000000
+--- a/Godeps/_workspace/src/github.com/skratchdot/open-golang/open/exec_darwin.go
++++ /dev/null
+@@ -1,15 +0,0 @@
+-// +build darwin
+-
+-package open
+-
+-import (
+-	"os/exec"
+-)
+-
+-func open(input string) *exec.Cmd {
+-	return exec.Command("open", input)
+-}
+-
+-func openWith(input string, appName string) *exec.Cmd {
+-	return exec.Command("open", "-a", appName, input)
+-}
+diff --git a/Godeps/_workspace/src/github.com/skratchdot/open-golang/open/exec_windows.go b/Godeps/_workspace/src/github.com/skratchdot/open-golang/open/exec_windows.go
+deleted file mode 100644
+index ac44cfa..0000000
+--- a/Godeps/_workspace/src/github.com/skratchdot/open-golang/open/exec_windows.go
++++ /dev/null
+@@ -1,21 +0,0 @@
+-// +build windows
+-
+-package open
+-
+-import (
+-	"os/exec"
+-	"strings"
+-)
+-
+-func cleaninput(input string) string {
+-	r := strings.NewReplacer("&", "^&")
+-	return r.Replace(input)
+-}
+-
+-func open(input string) *exec.Cmd {
+-	return exec.Command("cmd", "/C", "start", "", cleaninput(input))
+-}
+-
+-func openWith(input string, appName string) *exec.Cmd {
+-	return exec.Command("cmd", "/C", "start", "", appName, cleaninput(input))
+-}
+diff --git a/Godeps/_workspace/src/github.com/skratchdot/open-golang/open/open.go b/Godeps/_workspace/src/github.com/skratchdot/open-golang/open/open.go
+deleted file mode 100644
+index b1f648f..0000000
+--- a/Godeps/_workspace/src/github.com/skratchdot/open-golang/open/open.go
++++ /dev/null
+@@ -1,50 +0,0 @@
+-/*
+-
+-	Open a file, directory, or URI using the OS's default
+-	application for that object type.  Optionally, you can
+-	specify an application to use.
+-
+-	This is a proxy for the following commands:
+-
+-	         OSX: "open"
+-	     Windows: "start"
+-	 Linux/Other: "xdg-open"
+-
+-	This is a golang port of the node.js module: https://github.com/pwnall/node-open
+-
+-*/
+-package open
+-
+-/*
+-	Open a file, directory, or URI using the OS's default
+-	application for that object type. Wait for the open
+-	command to complete.
+-*/
+-func Run(input string) error {
+-	return open(input).Run()
+-}
+-
+-/*
+-	Open a file, directory, or URI using the OS's default
+-	application for that object type. Don't wait for the
+-	open command to complete.
+-*/
+-func Start(input string) error {
+-	return open(input).Start()
+-}
+-
+-/*
+-	Open a file, directory, or URI using the specified application.
+-	Wait for the open command to complete.
+-*/
+-func RunWith(input string, appName string) error {
+-	return openWith(input, appName).Run()
+-}
+-
+-/*
+-	Open a file, directory, or URI using the specified application.
+-	Don't wait for the open command to complete.
+-*/
+-func StartWith(input string, appName string) error {
+-	return openWith(input, appName).Start()
+-}
+diff --git a/Godeps/_workspace/src/github.com/skratchdot/open-golang/open/open_test.go b/Godeps/_workspace/src/github.com/skratchdot/open-golang/open/open_test.go
+deleted file mode 100644
+index 5db2da2..0000000
+--- a/Godeps/_workspace/src/github.com/skratchdot/open-golang/open/open_test.go
++++ /dev/null
+@@ -1,70 +0,0 @@
+-package open
+-
+-import "testing"
+-
+-func TestRun(t *testing.T) {
+-	// shouldn't error
+-	input := "https://google.com/"
+-	err := Run(input)
+-	if err != nil {
+-		t.Errorf("open.Run(\"%s\") threw an error: %s", input, err)
+-	}
+-
+-	// should error
+-	input = "xxxxxxxxxxxxxxx"
+-	err = Run(input)
+-	if err == nil {
+-		t.Errorf("Run(\"%s\") did not throw an error as expected", input)
+-	}
+-}
+-
+-func TestStart(t *testing.T) {
+-	// shouldn't error
+-	input := "https://google.com/"
+-	err := Start(input)
+-	if err != nil {
+-		t.Errorf("open.Start(\"%s\") threw an error: %s", input, err)
+-	}
+-
+-	// shouldn't error
+-	input = "xxxxxxxxxxxxxxx"
+-	err = Start(input)
+-	if err != nil {
+-		t.Errorf("open.Start(\"%s\") shouldn't even fail on invalid input: %s", input, err)
+-	}
+-}
+-
+-func TestRunWith(t *testing.T) {
+-	// shouldn't error
+-	input := "https://google.com/"
+-	app := "firefox"
+-	err := RunWith(input, app)
+-	if err != nil {
+-		t.Errorf("open.RunWith(\"%s\", \"%s\") threw an error: %s", input, app, err)
+-	}
+-
+-	// should error
+-	app = "xxxxxxxxxxxxxxx"
+-	err = RunWith(input, app)
+-	if err == nil {
+-		t.Errorf("RunWith(\"%s\", \"%s\") did not throw an error as expected", input, app)
+-	}
+-}
+-
+-func TestStartWith(t *testing.T) {
+-	// shouldn't error
+-	input := "https://google.com/"
+-	app := "firefox"
+-	err := StartWith(input, app)
+-	if err != nil {
+-		t.Errorf("open.StartWith(\"%s\", \"%s\") threw an error: %s", input, app, err)
+-	}
+-
+-	// shouldn't error
+-	input = "[<Invalid URL>]"
+-	err = StartWith(input, app)
+-	if err != nil {
+-		t.Errorf("StartWith(\"%s\", \"%s\") shouldn't even fail on invalid input: %s", input, app, err)
+-	}
+-
 -}
 diff --git a/Godeps/_workspace/src/github.com/stretchr/objx/.gitignore b/Godeps/_workspace/src/github.com/stretchr/objx/.gitignore
 deleted file mode 100644

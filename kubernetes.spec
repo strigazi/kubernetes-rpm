@@ -1,7 +1,7 @@
 #debuginfo not supported with Go
 %global debug_package	%{nil}
 %global import_path	github.com/GoogleCloudPlatform/kubernetes
-%global commit		98ac8e178fcf1627399d659889bcb5fe25abdca4
+%global commit		4452163ffde9dc58382f313b724ddf3bad8ea13f
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #binaries which should be called kube-*
@@ -17,8 +17,8 @@
 %global _checkshell	/bin/bash
 
 Name:		kubernetes
-Version:	0.3
-Release:	0.3.git%{shortcommit}%{?dist}
+Version:	0.4
+Release:	0.0.git%{shortcommit}%{?dist}
 Summary:	Container cluster management
 License:	ASL 2.0
 URL:		https://github.com/GoogleCloudPlatform/kubernetes
@@ -79,6 +79,7 @@ BuildRequires:	golang(github.com/mitchellh/goamz/aws)
 BuildRequires:	golang(github.com/mitchellh/goamz/ec2)
 BuildRequires:	golang(github.com/vaughan0/go-ini)
 BuildRequires:	golang(github.com/elazarl/go-bindata-assetfs)
+BuildRequires:	golang(github.com/skratchdot/open-golang/open)
 
 %description
 %{summary}
@@ -153,11 +154,16 @@ install -m 644 -t %{buildroot}%{_sysconfdir}/%{name} %{SOURCE10} %{SOURCE11} %{S
 install -d -m 0755 %{buildroot}%{_unitdir}
 install -m 0644 -t %{buildroot}%{_unitdir} %{SOURCE20} %{SOURCE21} %{SOURCE22} %{SOURCE23} %{SOURCE24}
 
+# install manpages
+install -d %{buildroot}%{_mandir}/man1
+install -p -m 644 docs/man/man1/* %{buildroot}%{_mandir}/man1
+
 # install the place the kubelet defaults to put volumes
 install -d %{buildroot}/var/lib/kubelet
 
 %files
 %doc README.md LICENSE CONTRIB.md CONTRIBUTING.md DESIGN.md
+%{_mandir}/man1/*
 %{_bindir}/kube-apiserver
 %{_bindir}/kubecfg
 %{_bindir}/kube-controller-manager
@@ -193,6 +199,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Thu Oct 16 2014 Eric Paris <eparis@redhat.com> - 0.4-0.0.git4452163
+- rebase to v0.4
+- include man pages
+
 * Tue Oct 14 2014 jchaloup <jchaloup@redhat.com> - 0.3-0.3.git98ac8e1
 - create /var/lib/kubelet
 - Use bash completions from upstream

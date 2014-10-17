@@ -1,19 +1,21 @@
 [Unit]
-Description=Kubernetes Kubelet
+Description=Kubernetes Kubelet Server
+Documentation=https://github.com/GoogleCloudPlatform/kubernetes
 After=docker.socket cadvisor.service
-Requires=docker.socket cadvisor.service
+Requires=docker.socket
 
 [Service]
-EnvironmentFile=/etc/kubernetes/config
-EnvironmentFile=/etc/kubernetes/kubelet
+EnvironmentFile=-/etc/kubernetes/config
+EnvironmentFile=-/etc/kubernetes/kubelet
 ExecStart=/usr/bin/kubelet \
-            --logtostderr=${KUBE_LOGTOSTDERR} \
-	    --v=${KUBE_LOG_LEVEL} \
-            --etcd_servers=${KUBE_ETCD_SERVERS} \
-            --address=${MINION_ADDRESS} \
-            --port=${MINION_PORT} \
-	    --hostname_override=${MINION_HOSTNAME} \
-	    --allow_privileged=${KUBE_ALLOW_PRIV}
+	    ${KUBE_LOGTOSTDERR} \
+	    ${KUBE_LOG_LEVEL} \
+	    ${KUBE_ETCD_SERVERS} \
+	    ${MINION_ADDRESS} \
+	    ${MINION_PORT} \
+	    ${MINION_HOSTNAME} \
+	    ${KUBE_ALLOW_PRIV} \
+	    ${MINION_ARGS}
 Restart=on-failure
 
 [Install]

@@ -1,21 +1,23 @@
 [Unit]
 Description=Kubernetes API Server
+Documentation=https://github.com/GoogleCloudPlatform/kubernetes
 
 [Service]
-EnvironmentFile=/etc/kubernetes/config
-EnvironmentFile=/etc/kubernetes/apiserver
+EnvironmentFile=-/etc/kubernetes/config
+EnvironmentFile=-/etc/kubernetes/apiserver
 User=kube
 ExecStart=/usr/bin/kube-apiserver \
-            --logtostderr=${KUBE_LOGTOSTDERR} \
-	    --v=${KUBE_LOG_LEVEL} \
-            --etcd_servers=${KUBE_ETCD_SERVERS} \
-            --address=${KUBE_API_ADDRESS} \
-            --port=${KUBE_API_PORT} \
-            --machines=${MINION_ADDRESSES} \
-	    --minion_port=${MINION_PORT} \
-	    --allow_privileged=${KUBE_ALLOW_PRIV}
+	    ${KUBE_LOGTOSTDERR} \
+	    ${KUBE_LOG_LEVEL} \
+	    ${KUBE_ETCD_SERVERS} \
+	    ${KUBE_API_ADDRESS} \
+	    ${KUBE_API_PORT} \
+	    ${MINION_ADDRESSES} \
+	    ${MINION_PORT} \
+	    ${KUBE_ALLOW_PRIV} \
+	    ${KUBE_SERVICE_ADDRESSES} \
+	    ${KUBE_API_ARGS}
 Restart=on-failure
 
 [Install]
 WantedBy=multi-user.target
- 

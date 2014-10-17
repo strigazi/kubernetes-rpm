@@ -1,13 +1,13 @@
 #debuginfo not supported with Go
 %global debug_package	%{nil}
 %global import_path	github.com/GoogleCloudPlatform/kubernetes
-%global commit		4452163ffde9dc58382f313b724ddf3bad8ea13f
+%global commit		b01126322b826a15db06f6eeefeeb56dc06db7af
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #binaries which should be called kube-*
 %global prefixed_binaries proxy apiserver controller-manager scheduler
 #binaries which should not be renamed at all
-%global nonprefixed_binaries kubelet kubecfg
+%global nonprefixed_binaries kubelet kubectl
 #all of the above
 %global binaries	%{prefixed_binaries} %{nonprefixed_binaries}
 
@@ -18,7 +18,7 @@
 
 Name:		kubernetes
 Version:	0.4
-Release:	0.0.git%{shortcommit}%{?dist}
+Release:	0.1.git%{shortcommit}%{?dist}
 Summary:	Container cluster management
 License:	ASL 2.0
 URL:		https://github.com/GoogleCloudPlatform/kubernetes
@@ -58,28 +58,36 @@ BuildRequires:	systemd
 BuildRequires:	golang-cover
 BuildRequires:	etcd
 BuildRequires:	golang(bitbucket.org/kardianos/osext)
+BuildRequires:	golang(code.google.com/p/gcfg)
+BuildRequires:	golang(code.google.com/p/goauth2)
+BuildRequires:	golang(code.google.com/p/go.net/context)
+BuildRequires:	golang(code.google.com/p/go.net/html)
+BuildRequires:	golang(code.google.com/p/go.net/websocket)
+BuildRequires:	golang(code.google.com/p/google-api-go-client)
+BuildRequires:	golang(code.google.com/p/go-uuid)
+BuildRequires:	golang(github.com/coreos/go-etcd/etcd)
 BuildRequires:	golang(github.com/coreos/go-log/log)
 BuildRequires:	golang(github.com/coreos/go-systemd)
-BuildRequires:	golang(github.com/coreos/go-etcd/etcd)
-BuildRequires:	golang(github.com/google/gofuzz)
-BuildRequires:  golang(code.google.com/p/go.net/context)
-BuildRequires:  golang(code.google.com/p/go.net/html)
-BuildRequires:  golang(code.google.com/p/go.net/websocket)
-BuildRequires:	golang(code.google.com/p/goauth2)
-BuildRequires:	golang(code.google.com/p/go-uuid)
-BuildRequires:	golang(code.google.com/p/google-api-go-client)
+BuildRequires:	golang(github.com/elazarl/go-bindata-assetfs)
 BuildRequires:	golang(github.com/fsouza/go-dockerclient) > 0-0.6
 BuildRequires:	golang(github.com/golang/glog)
-BuildRequires:	golang(github.com/stretchr/objx)
-BuildRequires:	golang(github.com/stretchr/testify)
-BuildRequires:	golang(gopkg.in/v1/yaml)
 BuildRequires:	golang(github.com/google/cadvisor)
-BuildRequires:	golang(code.google.com/p/gcfg)
+BuildRequires:	golang(github.com/google/gofuzz)
+BuildRequires:	golang(github.com/kr/text)
 BuildRequires:	golang(github.com/mitchellh/goamz/aws)
 BuildRequires:	golang(github.com/mitchellh/goamz/ec2)
-BuildRequires:	golang(github.com/vaughan0/go-ini)
-BuildRequires:	golang(github.com/elazarl/go-bindata-assetfs)
+BuildRequires:	golang(github.com/mitchellh/mapstructure)
+BuildRequires:	golang(github.com/racker/perigee)
+BuildRequires:	golang(github.com/rackspace/gophercloud)
 BuildRequires:	golang(github.com/skratchdot/open-golang/open)
+BuildRequires:	golang(github.com/spf13/cobra)
+BuildRequires:	golang(github.com/spf13/pflag)
+BuildRequires:	golang(github.com/stretchr/objx)
+BuildRequires:	golang(github.com/stretchr/testify)
+BuildRequires:	golang(github.com/tonnerre/golang-pretty)
+BuildRequires:	golang(github.com/vaughan0/go-ini)
+BuildRequires:	golang(gopkg.in/v1/yaml)
+
 
 %description
 %{summary}
@@ -165,7 +173,7 @@ install -d %{buildroot}/var/lib/kubelet
 %doc README.md LICENSE CONTRIB.md CONTRIBUTING.md DESIGN.md
 %{_mandir}/man1/*
 %{_bindir}/kube-apiserver
-%{_bindir}/kubecfg
+%{_bindir}/kubectl
 %{_bindir}/kube-controller-manager
 %{_bindir}/kubelet
 %{_bindir}/kube-proxy
@@ -199,6 +207,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Fri Oct 17 2014 Eric Paris <eparis@redhat.com - 0.4-0.1.gitb011263
+- Bump to upstream b01126322b826a15db06f6eeefeeb56dc06db7af
+- This is a major non backward compatible change.
+
 * Thu Oct 16 2014 Eric Paris <eparis@redhat.com> - 0.4-0.0.git4452163
 - rebase to v0.4
 - include man pages

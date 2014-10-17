@@ -1,7 +1,7 @@
 #debuginfo not supported with Go
 %global debug_package	%{nil}
 %global import_path	github.com/GoogleCloudPlatform/kubernetes
-%global commit		88fdb659bc44cf2d1895c03f8838d36f4d890796
+%global commit		4452163ffde9dc58382f313b724ddf3bad8ea13f
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #binaries which should be called kube-*
@@ -17,14 +17,13 @@
 %global _checkshell	/bin/bash
 
 Name:		kubernetes
-Version:	0.3
-Release:	0.2.git%{shortcommit}%{?dist}
+Version:	0.4
+Release:	0.0.git%{shortcommit}%{?dist}
 Summary:	Container cluster management
 License:	ASL 2.0
 URL:		https://github.com/GoogleCloudPlatform/kubernetes
 ExclusiveArch:	x86_64
 Source0:	https://github.com/GoogleCloudPlatform/kubernetes/archive/%{commit}/kubernetes-%{shortcommit}.tar.gz
-Source1:	kubecfg.bash
 
 #config files
 Source10:	config
@@ -63,8 +62,8 @@ BuildRequires:	golang(github.com/coreos/go-log/log)
 BuildRequires:	golang(github.com/coreos/go-systemd)
 BuildRequires:	golang(github.com/coreos/go-etcd/etcd)
 BuildRequires:	golang(github.com/google/gofuzz)
+BuildRequires:  golang(code.google.com/p/go.net/context)
 BuildRequires:  golang(code.google.com/p/go.net/html)
-BuildRequires:  golang(code.google.com/p/go.net/html/atom)
 BuildRequires:  golang(code.google.com/p/go.net/websocket)
 BuildRequires:	golang(code.google.com/p/goauth2)
 BuildRequires:	golang(code.google.com/p/go-uuid)
@@ -79,6 +78,8 @@ BuildRequires:	golang(code.google.com/p/gcfg)
 BuildRequires:	golang(github.com/mitchellh/goamz/aws)
 BuildRequires:	golang(github.com/mitchellh/goamz/ec2)
 BuildRequires:	golang(github.com/vaughan0/go-ini)
+BuildRequires:	golang(github.com/elazarl/go-bindata-assetfs)
+BuildRequires:	golang(github.com/skratchdot/open-golang/open)
 
 %description
 %{summary}
@@ -143,7 +144,7 @@ done
 
 # install the bash completion
 install -d -m 0755 %{buildroot}%{_datadir}/bash-completion/completions/
-install -T %{SOURCE1} %{buildroot}%{_datadir}/bash-completion/completions/kubecfg
+install -t %{buildroot}%{_datadir}/bash-completion/completions/ contrib/completions/bash/kubecfg
 
 # install config files
 install -d -m 0755 %{buildroot}%{_sysconfdir}/%{name}
@@ -153,8 +154,16 @@ install -m 644 -t %{buildroot}%{_sysconfdir}/%{name} %{SOURCE10} %{SOURCE11} %{S
 install -d -m 0755 %{buildroot}%{_unitdir}
 install -m 0644 -t %{buildroot}%{_unitdir} %{SOURCE20} %{SOURCE21} %{SOURCE22} %{SOURCE23} %{SOURCE24}
 
+# install manpages
+install -d %{buildroot}%{_mandir}/man1
+install -p -m 644 docs/man/man1/* %{buildroot}%{_mandir}/man1
+
+# install the place the kubelet defaults to put volumes
+install -d %{buildroot}/var/lib/kubelet
+
 %files
 %doc README.md LICENSE CONTRIB.md CONTRIBUTING.md DESIGN.md
+%{_mandir}/man1/*
 %{_bindir}/kube-apiserver
 %{_bindir}/kubecfg
 %{_bindir}/kube-controller-manager
@@ -168,6 +177,7 @@ install -m 0644 -t %{buildroot}%{_unitdir} %{SOURCE20} %{SOURCE21} %{SOURCE22} %
 %{_unitdir}/kube-proxy.service
 %dir %{_sysconfdir}/%{name}
 %{_datadir}/bash-completion/completions/kubecfg
+%dir /var/lib/kubelet
 %config(noreplace) %{_sysconfdir}/%{name}/config
 %config(noreplace) %{_sysconfdir}/%{name}/apiserver
 %config(noreplace) %{_sysconfdir}/%{name}/controller-manager
@@ -189,6 +199,16 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Thu Oct 16 2014 Eric Paris <eparis@redhat.com> - 0.4-0.0.git4452163
+- rebase to v0.4
+- include man pages
+
+* Tue Oct 14 2014 jchaloup <jchaloup@redhat.com> - 0.3-0.3.git98ac8e1
+- create /var/lib/kubelet
+- Use bash completions from upstream
+- Bump to upstream 98ac8e178fcf1627399d659889bcb5fe25abdca4
+- all by Eric Paris
+
 * Mon Sep 29 2014 Jan Chaloupka <jchaloup@redhat.com> - 0.3-0.2.git88fdb65
 - replace * with coresponding files
 - remove dependency on gcc

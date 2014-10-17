@@ -1,10 +1,10 @@
-From 125ed116ea43230e3d26b9dffb352e18a06a712c Mon Sep 17 00:00:00 2001
+From 3387feda17f970d000de1ac704691e98d380f741 Mon Sep 17 00:00:00 2001
 From: Eric Paris <eparis@redhat.com>
 Date: Thu, 21 Aug 2014 13:55:27 -0400
 Subject: [PATCH] remove all third party software
 
 ---
- Godeps/Godeps.json                                 |   104 -
+ Godeps/Godeps.json                                 |   117 -
  Godeps/Readme                                      |     5 -
  Godeps/_workspace/.gitignore                       |     2 -
  .../_workspace/src/code.google.com/p/gcfg/LICENSE  |    57 -
@@ -47,6 +47,9 @@ Subject: [PATCH] remove all third party software
  .../code.google.com/p/go-uuid/uuid/uuid_test.go    |   390 -
  .../src/code.google.com/p/go-uuid/uuid/version1.go |    41 -
  .../src/code.google.com/p/go-uuid/uuid/version4.go |    25 -
+ .../code.google.com/p/go.net/context/context.go    |   431 -
+ .../p/go.net/context/context_test.go               |   553 -
+ .../p/go.net/context/withtimeout_test.go           |    26 -
  .../src/code.google.com/p/go.net/html/atom/atom.go |    78 -
  .../p/go.net/html/atom/atom_test.go                |   109 -
  .../src/code.google.com/p/go.net/html/atom/gen.go  |   636 -
@@ -181,6 +184,10 @@ Subject: [PATCH] remove all third party software
  .../src/github.com/coreos/go-etcd/etcd/version.go  |     3 -
  .../src/github.com/coreos/go-etcd/etcd/watch.go    |   103 -
  .../github.com/coreos/go-etcd/etcd/watch_test.go   |   119 -
+ .../github.com/elazarl/go-bindata-assetfs/LICENSE  |    23 -
+ .../elazarl/go-bindata-assetfs/README.md           |    18 -
+ .../elazarl/go-bindata-assetfs/assetfs.go          |   141 -
+ .../github.com/elazarl/go-bindata-assetfs/doc.go   |    13 -
  .../github.com/fsouza/go-dockerclient/.travis.yml  |    13 -
  .../src/github.com/fsouza/go-dockerclient/AUTHORS  |    41 -
  .../fsouza/go-dockerclient/DOCKER-LICENSE          |     6 -
@@ -247,6 +254,12 @@ Subject: [PATCH] remove all third party software
  .../mitchellh/goamz/ec2/responses_test.go          |   854 --
  .../src/github.com/mitchellh/goamz/ec2/sign.go     |    45 -
  .../github.com/mitchellh/goamz/ec2/sign_test.go    |    68 -
+ .../src/github.com/skratchdot/LICENSE-MIT          |    22 -
+ .../github.com/skratchdot/open-golang/open/exec.go |    15 -
+ .../skratchdot/open-golang/open/exec_darwin.go     |    15 -
+ .../skratchdot/open-golang/open/exec_windows.go    |    21 -
+ .../github.com/skratchdot/open-golang/open/open.go |    50 -
+ .../skratchdot/open-golang/open/open_test.go       |    70 -
  .../src/github.com/stretchr/objx/.gitignore        |    22 -
  .../src/github.com/stretchr/objx/README.md         |     3 -
  .../src/github.com/stretchr/objx/accessors.go      |   179 -
@@ -306,7 +319,7 @@ Subject: [PATCH] remove all third party software
  Godeps/_workspace/src/gopkg.in/v1/yaml/yaml.go     |   306 -
  Godeps/_workspace/src/gopkg.in/v1/yaml/yamlh.go    |   712 -
  .../src/gopkg.in/v1/yaml/yamlprivateh.go           |   173 -
- 302 files changed, 105918 deletions(-)
+ 315 files changed, 107329 deletions(-)
  delete mode 100644 Godeps/Godeps.json
  delete mode 100644 Godeps/Readme
  delete mode 100644 Godeps/_workspace/.gitignore
@@ -350,6 +363,9 @@ Subject: [PATCH] remove all third party software
  delete mode 100644 Godeps/_workspace/src/code.google.com/p/go-uuid/uuid/uuid_test.go
  delete mode 100644 Godeps/_workspace/src/code.google.com/p/go-uuid/uuid/version1.go
  delete mode 100644 Godeps/_workspace/src/code.google.com/p/go-uuid/uuid/version4.go
+ delete mode 100644 Godeps/_workspace/src/code.google.com/p/go.net/context/context.go
+ delete mode 100644 Godeps/_workspace/src/code.google.com/p/go.net/context/context_test.go
+ delete mode 100644 Godeps/_workspace/src/code.google.com/p/go.net/context/withtimeout_test.go
  delete mode 100644 Godeps/_workspace/src/code.google.com/p/go.net/html/atom/atom.go
  delete mode 100644 Godeps/_workspace/src/code.google.com/p/go.net/html/atom/atom_test.go
  delete mode 100644 Godeps/_workspace/src/code.google.com/p/go.net/html/atom/gen.go
@@ -484,6 +500,10 @@ Subject: [PATCH] remove all third party software
  delete mode 100644 Godeps/_workspace/src/github.com/coreos/go-etcd/etcd/version.go
  delete mode 100644 Godeps/_workspace/src/github.com/coreos/go-etcd/etcd/watch.go
  delete mode 100644 Godeps/_workspace/src/github.com/coreos/go-etcd/etcd/watch_test.go
+ delete mode 100644 Godeps/_workspace/src/github.com/elazarl/go-bindata-assetfs/LICENSE
+ delete mode 100644 Godeps/_workspace/src/github.com/elazarl/go-bindata-assetfs/README.md
+ delete mode 100644 Godeps/_workspace/src/github.com/elazarl/go-bindata-assetfs/assetfs.go
+ delete mode 100644 Godeps/_workspace/src/github.com/elazarl/go-bindata-assetfs/doc.go
  delete mode 100644 Godeps/_workspace/src/github.com/fsouza/go-dockerclient/.travis.yml
  delete mode 100644 Godeps/_workspace/src/github.com/fsouza/go-dockerclient/AUTHORS
  delete mode 100644 Godeps/_workspace/src/github.com/fsouza/go-dockerclient/DOCKER-LICENSE
@@ -550,6 +570,12 @@ Subject: [PATCH] remove all third party software
  delete mode 100644 Godeps/_workspace/src/github.com/mitchellh/goamz/ec2/responses_test.go
  delete mode 100644 Godeps/_workspace/src/github.com/mitchellh/goamz/ec2/sign.go
  delete mode 100644 Godeps/_workspace/src/github.com/mitchellh/goamz/ec2/sign_test.go
+ delete mode 100644 Godeps/_workspace/src/github.com/skratchdot/LICENSE-MIT
+ delete mode 100644 Godeps/_workspace/src/github.com/skratchdot/open-golang/open/exec.go
+ delete mode 100644 Godeps/_workspace/src/github.com/skratchdot/open-golang/open/exec_darwin.go
+ delete mode 100644 Godeps/_workspace/src/github.com/skratchdot/open-golang/open/exec_windows.go
+ delete mode 100644 Godeps/_workspace/src/github.com/skratchdot/open-golang/open/open.go
+ delete mode 100644 Godeps/_workspace/src/github.com/skratchdot/open-golang/open/open_test.go
  delete mode 100644 Godeps/_workspace/src/github.com/stretchr/objx/.gitignore
  delete mode 100644 Godeps/_workspace/src/github.com/stretchr/objx/README.md
  delete mode 100644 Godeps/_workspace/src/github.com/stretchr/objx/accessors.go
@@ -612,10 +638,10 @@ Subject: [PATCH] remove all third party software
 
 diff --git a/Godeps/Godeps.json b/Godeps/Godeps.json
 deleted file mode 100644
-index b680328..0000000
+index 71926f6..0000000
 --- a/Godeps/Godeps.json
 +++ /dev/null
-@@ -1,104 +0,0 @@
+@@ -1,117 +0,0 @@
 -{
 -	"ImportPath": "github.com/GoogleCloudPlatform/kubernetes",
 -	"GoVersion": "go1.3",
@@ -631,6 +657,11 @@ index b680328..0000000
 -			"ImportPath": "code.google.com/p/go-uuid/uuid",
 -			"Comment": "null-12",
 -			"Rev": "7dda39b2e7d5e265014674c5af696ba4186679e9"
+-		},
+-		{
+-			"ImportPath": "code.google.com/p/go.net/context",
+-			"Comment": "null-144",
+-			"Rev": "ad01a6fcc8a19d3a4478c836895ffe883bd2ceab"
 -		},
 -		{
 -			"ImportPath": "code.google.com/p/go.net/html",
@@ -668,6 +699,10 @@ index b680328..0000000
 -			"Rev": "23142f6773a676cc2cae8dd0cb90b2ea761c853f"
 -		},
 -		{
+-			"ImportPath": "github.com/elazarl/go-bindata-assetfs",
+-			"Rev": "ae4665cf2d188c65764c73fe4af5378acc549510"
+-		},
+-		{
 -			"ImportPath": "github.com/fsouza/go-dockerclient",
 -			"Comment": "0.2.1-241-g0dbb508",
 -			"Rev": "0dbb508e94dd899a6743d035d8f249c7634d26da"
@@ -697,6 +732,10 @@ index b680328..0000000
 -		{
 -			"ImportPath": "github.com/mitchellh/goamz/ec2",
 -			"Rev": "9cad7da945e699385c1a3e115aa255211921c9bb"
+-		},
+-		{
+-			"ImportPath": "github.com/skratchdot/open-golang/open",
+-			"Rev": "ba570a111973b539baf23c918213059543b5bb6e"
 -		},
 -		{
 -			"ImportPath": "github.com/stretchr/objx",
@@ -5343,6 +5382,1034 @@ index b3d4a36..0000000
 -	uuid[6] = (uuid[6] & 0x0f) | 0x40 // Version 4
 -	uuid[8] = (uuid[8] & 0x3f) | 0x80 // Variant is 10
 -	return uuid
+-}
+diff --git a/Godeps/_workspace/src/code.google.com/p/go.net/context/context.go b/Godeps/_workspace/src/code.google.com/p/go.net/context/context.go
+deleted file mode 100644
+index e3c5345..0000000
+--- a/Godeps/_workspace/src/code.google.com/p/go.net/context/context.go
++++ /dev/null
+@@ -1,431 +0,0 @@
+-// Copyright 2014 The Go Authors. All rights reserved.
+-// Use of this source code is governed by a BSD-style
+-// license that can be found in the LICENSE file.
+-
+-// Package context defines the Context type, which carries deadlines,
+-// cancelation signals, and other request-scoped values across API boundaries
+-// and between processes.
+-//
+-// Incoming requests to a server should create a Context, and outgoing calls to
+-// servers should accept a Context.  The chain of function calls between must
+-// propagate the Context, optionally replacing it with a modified copy created
+-// using WithDeadline, WithTimeout, WithCancel, or WithValue.
+-//
+-// Programs that use Contexts should follow these rules to keep interfaces
+-// consistent across packages and enable static analysis tools to check context
+-// propagation:
+-//
+-// Do not store Contexts inside a struct type; instead, pass a Context
+-// explicitly to each function that needs it.  The Context should be the first
+-// parameter, typically named ctx:
+-//
+-// 	func DoSomething(ctx context.Context, arg Arg) error {
+-// 		// ... use ctx ...
+-// 	}
+-//
+-// Do not pass a nil Context, even if a function permits it.  Pass context.TODO
+-// if you are unsure about which Context to use.
+-//
+-// Use context Values only for request-scoped data that transits processes and
+-// APIs, not for passing optional parameters to functions.
+-//
+-// The same Context may be passed to functions running in different goroutines;
+-// Contexts are safe for simultaneous use by multiple goroutines.
+-//
+-// See http://blog.golang.org/context for example code for a server that uses
+-// Contexts.
+-package context
+-
+-import (
+-	"errors"
+-	"fmt"
+-	"sync"
+-	"time"
+-)
+-
+-// A Context carries a deadline, a cancelation signal, and other values across
+-// API boundaries.
+-//
+-// Context's methods may be called by multiple goroutines simultaneously.
+-type Context interface {
+-	// Deadline returns the time when work done on behalf of this context
+-	// should be canceled.  Deadline returns ok==false when no deadline is
+-	// set.  Successive calls to Deadline return the same results.
+-	Deadline() (deadline time.Time, ok bool)
+-
+-	// Done returns a channel that's closed when work done on behalf of this
+-	// context should be canceled.  Done may return nil if this context can
+-	// never be canceled.  Successive calls to Done return the same value.
+-	//
+-	// WithCancel arranges for Done to be closed when cancel is called;
+-	// WithDeadline arranges for Done to be closed when the deadline
+-	// expires; WithTimeout arranges for Done to be closed when the timeout
+-	// elapses.
+-	//
+-	// Done is provided for use in select statements:
+-	//
+-	// 	// DoSomething calls DoSomethingSlow and returns as soon as
+-	// 	// it returns or ctx.Done is closed.
+-	// 	func DoSomething(ctx context.Context) (Result, error) {
+-	// 		c := make(chan Result, 1)
+-	// 		go func() { c <- DoSomethingSlow(ctx) }()
+-	// 		select {
+-	// 		case res := <-c:
+-	// 			return res, nil
+-	// 		case <-ctx.Done():
+-	// 			return nil, ctx.Err()
+-	// 		}
+-	// 	}
+-	//
+-	// See http://blog.golang.org/pipelines for more examples of how to use
+-	// a Done channel for cancelation.
+-	Done() <-chan struct{}
+-
+-	// Err returns a non-nil error value after Done is closed.  Err returns
+-	// Canceled if the context was canceled or DeadlineExceeded if the
+-	// context's deadline passed.  No other values for Err are defined.
+-	// After Done is closed, successive calls to Err return the same value.
+-	Err() error
+-
+-	// Value returns the value associated with this context for key, or nil
+-	// if no value is associated with key.  Successive calls to Value with
+-	// the same key returns the same result.
+-	//
+-	// Use context values only for request-scoped data that transits
+-	// processes and API boundaries, not for passing optional parameters to
+-	// functions.
+-	//
+-	// A key identifies a specific value in a Context.  Functions that wish
+-	// to store values in Context typically allocate a key in a global
+-	// variable then use that key as the argument to context.WithValue and
+-	// Context.Value.  A key can be any type that supports equality;
+-	// packages should define keys as an unexported type to avoid
+-	// collisions.
+-	//
+-	// Packages that define a Context key should provide type-safe accessors
+-	// for the values stores using that key:
+-	//
+-	// 	// Package user defines a User type that's stored in Contexts.
+-	// 	package user
+-	//
+-	// 	import "code.google.com/p/go.net/context"
+-	//
+-	// 	// User is the type of value stored in the Contexts.
+-	// 	type User struct {...}
+-	//
+-	// 	// key is an unexported type for keys defined in this package.
+-	// 	// This prevents collisions with keys defined in other packages.
+-	// 	type key int
+-	//
+-	// 	// userKey is the key for user.User values in Contexts.  It is
+-	// 	// unexported; clients use user.NewContext and user.FromContext
+-	// 	// instead of using this key directly.
+-	// 	var userKey key = 0
+-	//
+-	// 	// NewContext returns a new Context that carries value u.
+-	// 	func NewContext(ctx context.Context, u *User) context.Context {
+-	// 		return context.WithValue(userKey, u)
+-	// 	}
+-	//
+-	// 	// FromContext returns the User value stored in ctx, if any.
+-	// 	func FromContext(ctx context.Context) (*User, bool) {
+-	// 		u, ok := ctx.Value(userKey).(*User)
+-	// 		return u, ok
+-	// 	}
+-	Value(key interface{}) interface{}
+-}
+-
+-// Canceled is the error returned by Context.Err when the context is canceled.
+-var Canceled = errors.New("context canceled")
+-
+-// DeadlineExceeded is the error returned by Context.Err when the context's
+-// deadline passes.
+-var DeadlineExceeded = errors.New("context deadline exceeded")
+-
+-// An emptyCtx is never canceled, has no values, and has no deadline.
+-type emptyCtx int
+-
+-func (emptyCtx) Deadline() (deadline time.Time, ok bool) {
+-	return
+-}
+-
+-func (emptyCtx) Done() <-chan struct{} {
+-	return nil
+-}
+-
+-func (emptyCtx) Err() error {
+-	return nil
+-}
+-
+-func (emptyCtx) Value(key interface{}) interface{} {
+-	return nil
+-}
+-
+-func (n emptyCtx) String() string {
+-	switch n {
+-	case background:
+-		return "context.Background"
+-	case todo:
+-		return "context.TODO"
+-	}
+-	return "unknown empty Context"
+-}
+-
+-const (
+-	background emptyCtx = 1
+-	todo       emptyCtx = 2
+-)
+-
+-// Background returns a non-nil, empty Context. It is never canceled, has no
+-// values, and has no deadline.  It is typically used by the main function,
+-// initialization, and tests, and as the top-level Context for incoming
+-// requests.
+-func Background() Context {
+-	return background
+-}
+-
+-// TODO returns a non-nil, empty Context.  Code should use context.TODO when
+-// it's unclear which Context to use or it's is not yet available (because the
+-// surrounding function has not yet been extended to accept a Context
+-// parameter).  TODO is recognized by static analysis tools that determine
+-// whether Contexts are propagated correctly in a program.
+-func TODO() Context {
+-	return todo
+-}
+-
+-// A CancelFunc tells an operation to abandon its work.
+-// A CancelFunc does not wait for the work to stop.
+-// After the first call, subsequent calls to a CancelFunc do nothing.
+-type CancelFunc func()
+-
+-// WithCancel returns a copy of parent with a new Done channel. The returned
+-// context's Done channel is closed when the returned cancel function is called
+-// or when the parent context's Done channel is closed, whichever happens first.
+-func WithCancel(parent Context) (ctx Context, cancel CancelFunc) {
+-	c := newCancelCtx(parent)
+-	propagateCancel(parent, &c)
+-	return &c, func() { c.cancel(true, Canceled) }
+-}
+-
+-// newCancelCtx returns an initialized cancelCtx.
+-func newCancelCtx(parent Context) cancelCtx {
+-	return cancelCtx{
+-		Context: parent,
+-		done:    make(chan struct{}),
+-	}
+-}
+-
+-// propagateCancel arranges for child to be canceled when parent is.
+-func propagateCancel(parent Context, child canceler) {
+-	if parent.Done() == nil {
+-		return // parent is never canceled
+-	}
+-	if p, ok := parentCancelCtx(parent); ok {
+-		p.mu.Lock()
+-		if p.err != nil {
+-			// parent has already been canceled
+-			child.cancel(false, p.err)
+-		} else {
+-			if p.children == nil {
+-				p.children = make(map[canceler]bool)
+-			}
+-			p.children[child] = true
+-		}
+-		p.mu.Unlock()
+-	} else {
+-		go func() {
+-			select {
+-			case <-parent.Done():
+-				child.cancel(false, parent.Err())
+-			case <-child.Done():
+-			}
+-		}()
+-	}
+-}
+-
+-// parentCancelCtx follows a chain of parent references until it finds a
+-// *cancelCtx.  This function understands how each of the concrete types in this
+-// package represents its parent.
+-func parentCancelCtx(parent Context) (*cancelCtx, bool) {
+-	for {
+-		switch c := parent.(type) {
+-		case *cancelCtx:
+-			return c, true
+-		case *timerCtx:
+-			return &c.cancelCtx, true
+-		case *valueCtx:
+-			parent = c.Context
+-		default:
+-			return nil, false
+-		}
+-	}
+-}
+-
+-// A canceler is a context type that can be canceled directly.  The
+-// implementations are *cancelCtx and *timerCtx.
+-type canceler interface {
+-	cancel(removeFromParent bool, err error)
+-	Done() <-chan struct{}
+-}
+-
+-// A cancelCtx can be canceled.  When canceled, it also cancels any children
+-// that implement canceler.
+-type cancelCtx struct {
+-	Context
+-
+-	done chan struct{} // closed by the first cancel call.
+-
+-	mu       sync.Mutex
+-	children map[canceler]bool // set to nil by the first cancel call
+-	err      error             // set to non-nil by the first cancel call
+-}
+-
+-func (c *cancelCtx) Done() <-chan struct{} {
+-	return c.done
+-}
+-
+-func (c *cancelCtx) Err() error {
+-	c.mu.Lock()
+-	defer c.mu.Unlock()
+-	return c.err
+-}
+-
+-func (c *cancelCtx) String() string {
+-	return fmt.Sprintf("%v.WithCancel", c.Context)
+-}
+-
+-// cancel closes c.done, cancels each of c's children, and, if
+-// removeFromParent is true, removes c from its parent's children.
+-func (c *cancelCtx) cancel(removeFromParent bool, err error) {
+-	if err == nil {
+-		panic("context: internal error: missing cancel error")
+-	}
+-	c.mu.Lock()
+-	if c.err != nil {
+-		c.mu.Unlock()
+-		return // already canceled
+-	}
+-	c.err = err
+-	close(c.done)
+-	for child := range c.children {
+-		// NOTE: acquiring the child's lock while holding parent's lock.
+-		child.cancel(false, err)
+-	}
+-	c.children = nil
+-	c.mu.Unlock()
+-
+-	if removeFromParent {
+-		if p, ok := parentCancelCtx(c.Context); ok {
+-			p.mu.Lock()
+-			if p.children != nil {
+-				delete(p.children, c)
+-			}
+-			p.mu.Unlock()
+-		}
+-	}
+-}
+-
+-// WithDeadline returns a copy of the parent context with the deadline adjusted
+-// to be no later than d.  If the parent's deadline is already earlier than d,
+-// WithDeadline(parent, d) is semantically equivalent to parent.  The returned
+-// context's Done channel is closed when the deadline expires, when the returned
+-// cancel function is called, or when the parent context's Done channel is
+-// closed, whichever happens first.
+-//
+-// Canceling this context releases resources associated with the deadline
+-// timer, so code should call cancel as soon as the operations running in this
+-// Context complete.
+-func WithDeadline(parent Context, deadline time.Time) (Context, CancelFunc) {
+-	if cur, ok := parent.Deadline(); ok && cur.Before(deadline) {
+-		// The current deadline is already sooner than the new one.
+-		return WithCancel(parent)
+-	}
+-	c := &timerCtx{
+-		cancelCtx: newCancelCtx(parent),
+-		deadline:  deadline,
+-	}
+-	propagateCancel(parent, c)
+-	d := deadline.Sub(time.Now())
+-	if d <= 0 {
+-		c.cancel(true, DeadlineExceeded) // deadline has already passed
+-		return c, func() { c.cancel(true, Canceled) }
+-	}
+-	c.mu.Lock()
+-	defer c.mu.Unlock()
+-	if c.err == nil {
+-		c.timer = time.AfterFunc(d, func() {
+-			c.cancel(true, DeadlineExceeded)
+-		})
+-	}
+-	return c, func() { c.cancel(true, Canceled) }
+-}
+-
+-// A timerCtx carries a timer and a deadline.  It embeds a cancelCtx to
+-// implement Done and Err.  It implements cancel by stopping its timer then
+-// delegating to cancelCtx.cancel.
+-type timerCtx struct {
+-	cancelCtx
+-	timer *time.Timer // Under cancelCtx.mu.
+-
+-	deadline time.Time
+-}
+-
+-func (c *timerCtx) Deadline() (deadline time.Time, ok bool) {
+-	return c.deadline, true
+-}
+-
+-func (c *timerCtx) String() string {
+-	return fmt.Sprintf("%v.WithDeadline(%s [%s])", c.cancelCtx.Context, c.deadline, c.deadline.Sub(time.Now()))
+-}
+-
+-func (c *timerCtx) cancel(removeFromParent bool, err error) {
+-	c.cancelCtx.cancel(removeFromParent, err)
+-	c.mu.Lock()
+-	if c.timer != nil {
+-		c.timer.Stop()
+-		c.timer = nil
+-	}
+-	c.mu.Unlock()
+-}
+-
+-// WithTimeout returns WithDeadline(parent, time.Now().Add(timeout)).
+-//
+-// Canceling this context releases resources associated with the deadline
+-// timer, so code should call cancel as soon as the operations running in this
+-// Context complete:
+-//
+-// 	func slowOperationWithTimeout(ctx context.Context) (Result, error) {
+-// 		ctx, cancel := context.WithTimeout(ctx, 100*time.Millisecond)
+-// 		defer cancel()  // releases resources if slowOperation completes before timeout elapses
+-// 		return slowOperation(ctx)
+-// 	}
+-func WithTimeout(parent Context, timeout time.Duration) (Context, CancelFunc) {
+-	return WithDeadline(parent, time.Now().Add(timeout))
+-}
+-
+-// WithValue returns a copy of parent in which the value associated with key is
+-// val.
+-//
+-// Use context Values only for request-scoped data that transits processes and
+-// APIs, not for passing optional parameters to functions.
+-func WithValue(parent Context, key interface{}, val interface{}) Context {
+-	return &valueCtx{parent, key, val}
+-}
+-
+-// A valueCtx carries a key-value pair.  It implements Value for that key and
+-// delegates all other calls to the embedded Context.
+-type valueCtx struct {
+-	Context
+-	key, val interface{}
+-}
+-
+-func (c *valueCtx) String() string {
+-	return fmt.Sprintf("%v.WithValue(%#v, %#v)", c.Context, c.key, c.val)
+-}
+-
+-func (c *valueCtx) Value(key interface{}) interface{} {
+-	if c.key == key {
+-		return c.val
+-	}
+-	return c.Context.Value(key)
+-}
+diff --git a/Godeps/_workspace/src/code.google.com/p/go.net/context/context_test.go b/Godeps/_workspace/src/code.google.com/p/go.net/context/context_test.go
+deleted file mode 100644
+index c1a4de5..0000000
+--- a/Godeps/_workspace/src/code.google.com/p/go.net/context/context_test.go
++++ /dev/null
+@@ -1,553 +0,0 @@
+-// Copyright 2014 The Go Authors. All rights reserved.
+-// Use of this source code is governed by a BSD-style
+-// license that can be found in the LICENSE file.
+-
+-package context
+-
+-import (
+-	"fmt"
+-	"math/rand"
+-	"runtime"
+-	"strings"
+-	"sync"
+-	"testing"
+-	"time"
+-)
+-
+-// otherContext is a Context that's not one of the types defined in context.go.
+-// This lets us test code paths that differ based on the underlying type of the
+-// Context.
+-type otherContext struct {
+-	Context
+-}
+-
+-func TestBackground(t *testing.T) {
+-	c := Background()
+-	if c == nil {
+-		t.Fatalf("Background returned nil")
+-	}
+-	select {
+-	case x := <-c.Done():
+-		t.Errorf("<-c.Done() == %v want nothing (it should block)", x)
+-	default:
+-	}
+-	if got, want := fmt.Sprint(c), "context.Background"; got != want {
+-		t.Errorf("Background().String() = %q want %q", got, want)
+-	}
+-}
+-
+-func TestTODO(t *testing.T) {
+-	c := TODO()
+-	if c == nil {
+-		t.Fatalf("TODO returned nil")
+-	}
+-	select {
+-	case x := <-c.Done():
+-		t.Errorf("<-c.Done() == %v want nothing (it should block)", x)
+-	default:
+-	}
+-	if got, want := fmt.Sprint(c), "context.TODO"; got != want {
+-		t.Errorf("TODO().String() = %q want %q", got, want)
+-	}
+-}
+-
+-func TestWithCancel(t *testing.T) {
+-	c1, cancel := WithCancel(Background())
+-
+-	if got, want := fmt.Sprint(c1), "context.Background.WithCancel"; got != want {
+-		t.Errorf("c1.String() = %q want %q", got, want)
+-	}
+-
+-	o := otherContext{c1}
+-	c2, _ := WithCancel(o)
+-	contexts := []Context{c1, o, c2}
+-
+-	for i, c := range contexts {
+-		if d := c.Done(); d == nil {
+-			t.Errorf("c[%d].Done() == %v want non-nil", i, d)
+-		}
+-		if e := c.Err(); e != nil {
+-			t.Errorf("c[%d].Err() == %v want nil", i, e)
+-		}
+-
+-		select {
+-		case x := <-c.Done():
+-			t.Errorf("<-c.Done() == %v want nothing (it should block)", x)
+-		default:
+-		}
+-	}
+-
+-	cancel()
+-	time.Sleep(100 * time.Millisecond) // let cancelation propagate
+-
+-	for i, c := range contexts {
+-		select {
+-		case <-c.Done():
+-		default:
+-			t.Errorf("<-c[%d].Done() blocked, but shouldn't have", i)
+-		}
+-		if e := c.Err(); e != Canceled {
+-			t.Errorf("c[%d].Err() == %v want %v", i, e, Canceled)
+-		}
+-	}
+-}
+-
+-func TestParentFinishesChild(t *testing.T) {
+-	// Context tree:
+-	// parent -> cancelChild
+-	// parent -> valueChild -> timerChild
+-	parent, cancel := WithCancel(Background())
+-	cancelChild, stop := WithCancel(parent)
+-	defer stop()
+-	valueChild := WithValue(parent, "key", "value")
+-	timerChild, stop := WithTimeout(valueChild, 10000*time.Hour)
+-	defer stop()
+-
+-	select {
+-	case x := <-parent.Done():
+-		t.Errorf("<-parent.Done() == %v want nothing (it should block)", x)
+-	case x := <-cancelChild.Done():
+-		t.Errorf("<-cancelChild.Done() == %v want nothing (it should block)", x)
+-	case x := <-timerChild.Done():
+-		t.Errorf("<-timerChild.Done() == %v want nothing (it should block)", x)
+-	case x := <-valueChild.Done():
+-		t.Errorf("<-valueChild.Done() == %v want nothing (it should block)", x)
+-	default:
+-	}
+-
+-	// The parent's children should contain the two cancelable children.
+-	pc := parent.(*cancelCtx)
+-	cc := cancelChild.(*cancelCtx)
+-	tc := timerChild.(*timerCtx)
+-	pc.mu.Lock()
+-	if len(pc.children) != 2 || !pc.children[cc] || !pc.children[tc] {
+-		t.Errorf("bad linkage: pc.children = %v, want %v and %v",
+-			pc.children, cc, tc)
+-	}
+-	pc.mu.Unlock()
+-
+-	if p, ok := parentCancelCtx(cc.Context); !ok || p != pc {
+-		t.Errorf("bad linkage: parentCancelCtx(cancelChild.Context) = %v, %v want %v, true", p, ok, pc)
+-	}
+-	if p, ok := parentCancelCtx(tc.Context); !ok || p != pc {
+-		t.Errorf("bad linkage: parentCancelCtx(timerChild.Context) = %v, %v want %v, true", p, ok, pc)
+-	}
+-
+-	cancel()
+-
+-	pc.mu.Lock()
+-	if len(pc.children) != 0 {
+-		t.Errorf("pc.cancel didn't clear pc.children = %v", pc.children)
+-	}
+-	pc.mu.Unlock()
+-
+-	// parent and children should all be finished.
+-	check := func(ctx Context, name string) {
+-		select {
+-		case <-ctx.Done():
+-		default:
+-			t.Errorf("<-%s.Done() blocked, but shouldn't have", name)
+-		}
+-		if e := ctx.Err(); e != Canceled {
+-			t.Errorf("%s.Err() == %v want %v", name, e, Canceled)
+-		}
+-	}
+-	check(parent, "parent")
+-	check(cancelChild, "cancelChild")
+-	check(valueChild, "valueChild")
+-	check(timerChild, "timerChild")
+-
+-	// WithCancel should return a canceled context on a canceled parent.
+-	precanceledChild := WithValue(parent, "key", "value")
+-	select {
+-	case <-precanceledChild.Done():
+-	default:
+-		t.Errorf("<-precanceledChild.Done() blocked, but shouldn't have")
+-	}
+-	if e := precanceledChild.Err(); e != Canceled {
+-		t.Errorf("precanceledChild.Err() == %v want %v", e, Canceled)
+-	}
+-}
+-
+-func TestChildFinishesFirst(t *testing.T) {
+-	cancelable, stop := WithCancel(Background())
+-	defer stop()
+-	for _, parent := range []Context{Background(), cancelable} {
+-		child, cancel := WithCancel(parent)
+-
+-		select {
+-		case x := <-parent.Done():
+-			t.Errorf("<-parent.Done() == %v want nothing (it should block)", x)
+-		case x := <-child.Done():
+-			t.Errorf("<-child.Done() == %v want nothing (it should block)", x)
+-		default:
+-		}
+-
+-		cc := child.(*cancelCtx)
+-		pc, pcok := parent.(*cancelCtx) // pcok == false when parent == Background()
+-		if p, ok := parentCancelCtx(cc.Context); ok != pcok || (ok && pc != p) {
+-			t.Errorf("bad linkage: parentCancelCtx(cc.Context) = %v, %v want %v, %v", p, ok, pc, pcok)
+-		}
+-
+-		if pcok {
+-			pc.mu.Lock()
+-			if len(pc.children) != 1 || !pc.children[cc] {
+-				t.Errorf("bad linkage: pc.children = %v, cc = %v", pc.children, cc)
+-			}
+-			pc.mu.Unlock()
+-		}
+-
+-		cancel()
+-
+-		if pcok {
+-			pc.mu.Lock()
+-			if len(pc.children) != 0 {
+-				t.Errorf("child's cancel didn't remove self from pc.children = %v", pc.children)
+-			}
+-			pc.mu.Unlock()
+-		}
+-
+-		// child should be finished.
+-		select {
+-		case <-child.Done():
+-		default:
+-			t.Errorf("<-child.Done() blocked, but shouldn't have")
+-		}
+-		if e := child.Err(); e != Canceled {
+-			t.Errorf("child.Err() == %v want %v", e, Canceled)
+-		}
+-
+-		// parent should not be finished.
+-		select {
+-		case x := <-parent.Done():
+-			t.Errorf("<-parent.Done() == %v want nothing (it should block)", x)
+-		default:
+-		}
+-		if e := parent.Err(); e != nil {
+-			t.Errorf("parent.Err() == %v want nil", e)
+-		}
+-	}
+-}
+-
+-func testDeadline(c Context, wait time.Duration, t *testing.T) {
+-	select {
+-	case <-time.After(wait):
+-		t.Fatalf("context should have timed out")
+-	case <-c.Done():
+-	}
+-	if e := c.Err(); e != DeadlineExceeded {
+-		t.Errorf("c.Err() == %v want %v", e, DeadlineExceeded)
+-	}
+-}
+-
+-func TestDeadline(t *testing.T) {
+-	c, _ := WithDeadline(Background(), time.Now().Add(100*time.Millisecond))
+-	if got, prefix := fmt.Sprint(c), "context.Background.WithDeadline("; !strings.HasPrefix(got, prefix) {
+-		t.Errorf("c.String() = %q want prefix %q", got, prefix)
+-	}
+-	testDeadline(c, 200*time.Millisecond, t)
+-
+-	c, _ = WithDeadline(Background(), time.Now().Add(100*time.Millisecond))
+-	o := otherContext{c}
+-	testDeadline(o, 200*time.Millisecond, t)
+-
+-	c, _ = WithDeadline(Background(), time.Now().Add(100*time.Millisecond))
+-	o = otherContext{c}
+-	c, _ = WithDeadline(o, time.Now().Add(300*time.Millisecond))
+-	testDeadline(c, 200*time.Millisecond, t)
+-}
+-
+-func TestTimeout(t *testing.T) {
+-	c, _ := WithTimeout(Background(), 100*time.Millisecond)
+-	if got, prefix := fmt.Sprint(c), "context.Background.WithDeadline("; !strings.HasPrefix(got, prefix) {
+-		t.Errorf("c.String() = %q want prefix %q", got, prefix)
+-	}
+-	testDeadline(c, 200*time.Millisecond, t)
+-
+-	c, _ = WithTimeout(Background(), 100*time.Millisecond)
+-	o := otherContext{c}
+-	testDeadline(o, 200*time.Millisecond, t)
+-
+-	c, _ = WithTimeout(Background(), 100*time.Millisecond)
+-	o = otherContext{c}
+-	c, _ = WithTimeout(o, 300*time.Millisecond)
+-	testDeadline(c, 200*time.Millisecond, t)
+-}
+-
+-func TestCanceledTimeout(t *testing.T) {
+-	c, _ := WithTimeout(Background(), 200*time.Millisecond)
+-	o := otherContext{c}
+-	c, cancel := WithTimeout(o, 400*time.Millisecond)
+-	cancel()
+-	time.Sleep(100 * time.Millisecond) // let cancelation propagate
+-	select {
+-	case <-c.Done():
+-	default:
+-		t.Errorf("<-c.Done() blocked, but shouldn't have")
+-	}
+-	if e := c.Err(); e != Canceled {
+-		t.Errorf("c.Err() == %v want %v", e, Canceled)
+-	}
+-}
+-
+-type key1 int
+-type key2 int
+-
+-var k1 = key1(1)
+-var k2 = key2(1) // same int as k1, different type
+-var k3 = key2(3) // same type as k2, different int
+-
+-func TestValues(t *testing.T) {
+-	check := func(c Context, nm, v1, v2, v3 string) {
+-		if v, ok := c.Value(k1).(string); ok == (len(v1) == 0) || v != v1 {
+-			t.Errorf(`%s.Value(k1).(string) = %q, %t want %q, %t`, nm, v, ok, v1, len(v1) != 0)
+-		}
+-		if v, ok := c.Value(k2).(string); ok == (len(v2) == 0) || v != v2 {
+-			t.Errorf(`%s.Value(k2).(string) = %q, %t want %q, %t`, nm, v, ok, v2, len(v2) != 0)
+-		}
+-		if v, ok := c.Value(k3).(string); ok == (len(v3) == 0) || v != v3 {
+-			t.Errorf(`%s.Value(k3).(string) = %q, %t want %q, %t`, nm, v, ok, v3, len(v3) != 0)
+-		}
+-	}
+-
+-	c0 := Background()
+-	check(c0, "c0", "", "", "")
+-
+-	c1 := WithValue(Background(), k1, "c1k1")
+-	check(c1, "c1", "c1k1", "", "")
+-
+-	if got, want := fmt.Sprint(c1), `context.Background.WithValue(1, "c1k1")`; got != want {
+-		t.Errorf("c.String() = %q want %q", got, want)
+-	}
+-
+-	c2 := WithValue(c1, k2, "c2k2")
+-	check(c2, "c2", "c1k1", "c2k2", "")
+-
+-	c3 := WithValue(c2, k3, "c3k3")
+-	check(c3, "c2", "c1k1", "c2k2", "c3k3")
+-
+-	c4 := WithValue(c3, k1, nil)
+-	check(c4, "c4", "", "c2k2", "c3k3")
+-
+-	o0 := otherContext{Background()}
+-	check(o0, "o0", "", "", "")
+-
+-	o1 := otherContext{WithValue(Background(), k1, "c1k1")}
+-	check(o1, "o1", "c1k1", "", "")
+-
+-	o2 := WithValue(o1, k2, "o2k2")
+-	check(o2, "o2", "c1k1", "o2k2", "")
+-
+-	o3 := otherContext{c4}
+-	check(o3, "o3", "", "c2k2", "c3k3")
+-
+-	o4 := WithValue(o3, k3, nil)
+-	check(o4, "o4", "", "c2k2", "")
+-}
+-
+-func TestAllocs(t *testing.T) {
+-	bg := Background()
+-	for _, test := range []struct {
+-		desc       string
+-		f          func()
+-		limit      float64
+-		gccgoLimit float64
+-	}{
+-		{
+-			desc:       "Background()",
+-			f:          func() { Background() },
+-			limit:      0,
+-			gccgoLimit: 0,
+-		},
+-		{
+-			desc: fmt.Sprintf("WithValue(bg, %v, nil)", k1),
+-			f: func() {
+-				c := WithValue(bg, k1, nil)
+-				c.Value(k1)
+-			},
+-			limit:      1,
+-			gccgoLimit: 3,
+-		},
+-		{
+-			desc: "WithTimeout(bg, 15*time.Millisecond)",
+-			f: func() {
+-				c, _ := WithTimeout(bg, 15*time.Millisecond)
+-				<-c.Done()
+-			},
+-			limit:      8,
+-			gccgoLimit: 13,
+-		},
+-		{
+-			desc: "WithCancel(bg)",
+-			f: func() {
+-				c, cancel := WithCancel(bg)
+-				cancel()
+-				<-c.Done()
+-			},
+-			limit:      5,
+-			gccgoLimit: 8,
+-		},
+-		{
+-			desc: "WithTimeout(bg, 100*time.Millisecond)",
+-			f: func() {
+-				c, cancel := WithTimeout(bg, 100*time.Millisecond)
+-				cancel()
+-				<-c.Done()
+-			},
+-			limit:      8,
+-			gccgoLimit: 25,
+-		},
+-	} {
+-		limit := test.limit
+-		if runtime.Compiler == "gccgo" {
+-			// gccgo does not yet do escape analysis.
+-			// TOOD(iant): Remove this when gccgo does do escape analysis.
+-			limit = test.gccgoLimit
+-		}
+-		if n := testing.AllocsPerRun(100, test.f); n > limit {
+-			t.Errorf("%s allocs = %f want %d", test.desc, n, int(limit))
+-		}
+-	}
+-}
+-
+-func TestSimultaneousCancels(t *testing.T) {
+-	root, cancel := WithCancel(Background())
+-	m := map[Context]CancelFunc{root: cancel}
+-	q := []Context{root}
+-	// Create a tree of contexts.
+-	for len(q) != 0 && len(m) < 100 {
+-		parent := q[0]
+-		q = q[1:]
+-		for i := 0; i < 4; i++ {
+-			ctx, cancel := WithCancel(parent)
+-			m[ctx] = cancel
+-			q = append(q, ctx)
+-		}
+-	}
+-	// Start all the cancels in a random order.
+-	var wg sync.WaitGroup
+-	wg.Add(len(m))
+-	for _, cancel := range m {
+-		go func(cancel CancelFunc) {
+-			cancel()
+-			wg.Done()
+-		}(cancel)
+-	}
+-	// Wait on all the contexts in a random order.
+-	for ctx := range m {
+-		select {
+-		case <-ctx.Done():
+-		case <-time.After(1 * time.Second):
+-			buf := make([]byte, 10<<10)
+-			n := runtime.Stack(buf, true)
+-			t.Fatalf("timed out waiting for <-ctx.Done(); stacks:\n%s", buf[:n])
+-		}
+-	}
+-	// Wait for all the cancel functions to return.
+-	done := make(chan struct{})
+-	go func() {
+-		wg.Wait()
+-		close(done)
+-	}()
+-	select {
+-	case <-done:
+-	case <-time.After(1 * time.Second):
+-		buf := make([]byte, 10<<10)
+-		n := runtime.Stack(buf, true)
+-		t.Fatalf("timed out waiting for cancel functions; stacks:\n%s", buf[:n])
+-	}
+-}
+-
+-func TestInterlockedCancels(t *testing.T) {
+-	parent, cancelParent := WithCancel(Background())
+-	child, cancelChild := WithCancel(parent)
+-	go func() {
+-		parent.Done()
+-		cancelChild()
+-	}()
+-	cancelParent()
+-	select {
+-	case <-child.Done():
+-	case <-time.After(1 * time.Second):
+-		buf := make([]byte, 10<<10)
+-		n := runtime.Stack(buf, true)
+-		t.Fatalf("timed out waiting for child.Done(); stacks:\n%s", buf[:n])
+-	}
+-}
+-
+-func TestLayersCancel(t *testing.T) {
+-	testLayers(t, time.Now().UnixNano(), false)
+-}
+-
+-func TestLayersTimeout(t *testing.T) {
+-	testLayers(t, time.Now().UnixNano(), true)
+-}
+-
+-func testLayers(t *testing.T, seed int64, testTimeout bool) {
+-	rand.Seed(seed)
+-	errorf := func(format string, a ...interface{}) {
+-		t.Errorf(fmt.Sprintf("seed=%d: %s", seed, format), a...)
+-	}
+-	const (
+-		timeout   = 200 * time.Millisecond
+-		minLayers = 30
+-	)
+-	type value int
+-	var (
+-		vals      []*value
+-		cancels   []CancelFunc
+-		numTimers int
+-		ctx       = Background()
+-	)
+-	for i := 0; i < minLayers || numTimers == 0 || len(cancels) == 0 || len(vals) == 0; i++ {
+-		switch rand.Intn(3) {
+-		case 0:
+-			v := new(value)
+-			ctx = WithValue(ctx, v, v)
+-			vals = append(vals, v)
+-		case 1:
+-			var cancel CancelFunc
+-			ctx, cancel = WithCancel(ctx)
+-			cancels = append(cancels, cancel)
+-		case 2:
+-			var cancel CancelFunc
+-			ctx, cancel = WithTimeout(ctx, timeout)
+-			cancels = append(cancels, cancel)
+-			numTimers++
+-		}
+-	}
+-	checkValues := func(when string) {
+-		for _, key := range vals {
+-			if val := ctx.Value(key).(*value); key != val {
+-				errorf("%s: ctx.Value(%p) = %p want %p", when, key, val, key)
+-			}
+-		}
+-	}
+-	select {
+-	case <-ctx.Done():
+-		errorf("ctx should not be canceled yet")
+-	default:
+-	}
+-	if s, prefix := fmt.Sprint(ctx), "context.Background."; !strings.HasPrefix(s, prefix) {
+-		t.Errorf("ctx.String() = %q want prefix %q", s, prefix)
+-	}
+-	t.Log(ctx)
+-	checkValues("before cancel")
+-	if testTimeout {
+-		select {
+-		case <-ctx.Done():
+-		case <-time.After(timeout + timeout/10):
+-			errorf("ctx should have timed out")
+-		}
+-		checkValues("after timeout")
+-	} else {
+-		cancel := cancels[rand.Intn(len(cancels))]
+-		cancel()
+-		select {
+-		case <-ctx.Done():
+-		default:
+-			errorf("ctx should be canceled")
+-		}
+-		checkValues("after cancel")
+-	}
+-}
+diff --git a/Godeps/_workspace/src/code.google.com/p/go.net/context/withtimeout_test.go b/Godeps/_workspace/src/code.google.com/p/go.net/context/withtimeout_test.go
+deleted file mode 100644
+index 0d00b3d..0000000
+--- a/Godeps/_workspace/src/code.google.com/p/go.net/context/withtimeout_test.go
++++ /dev/null
+@@ -1,26 +0,0 @@
+-// Copyright 2014 The Go Authors. All rights reserved.
+-// Use of this source code is governed by a BSD-style
+-// license that can be found in the LICENSE file.
+-
+-package context_test
+-
+-import (
+-	"fmt"
+-	"time"
+-
+-	"code.google.com/p/go.net/context"
+-)
+-
+-func ExampleWithTimeout() {
+-	// Pass a context with a timeout to tell a blocking function that it
+-	// should abandon its work after the timeout elapses.
+-	ctx, _ := context.WithTimeout(context.Background(), 100*time.Millisecond)
+-	select {
+-	case <-time.After(200 * time.Millisecond):
+-		fmt.Println("overslept")
+-	case <-ctx.Done():
+-		fmt.Println(ctx.Err()) // prints "context deadline exceeded"
+-	}
+-	// Output:
+-	// context deadline exceeded
 -}
 diff --git a/Godeps/_workspace/src/code.google.com/p/go.net/html/atom/atom.go b/Godeps/_workspace/src/code.google.com/p/go.net/html/atom/atom.go
 deleted file mode 100644
@@ -68285,6 +69352,225 @@ index 43e1dfe..0000000
 -	}
 -	stop <- true
 -}
+diff --git a/Godeps/_workspace/src/github.com/elazarl/go-bindata-assetfs/LICENSE b/Godeps/_workspace/src/github.com/elazarl/go-bindata-assetfs/LICENSE
+deleted file mode 100644
+index 5782c72..0000000
+--- a/Godeps/_workspace/src/github.com/elazarl/go-bindata-assetfs/LICENSE
++++ /dev/null
+@@ -1,23 +0,0 @@
+-Copyright (c) 2014, Elazar Leibovich
+-All rights reserved.
+-
+-Redistribution and use in source and binary forms, with or without
+-modification, are permitted provided that the following conditions are met:
+-
+-* Redistributions of source code must retain the above copyright notice, this
+-  list of conditions and the following disclaimer.
+-
+-* Redistributions in binary form must reproduce the above copyright notice,
+-  this list of conditions and the following disclaimer in the documentation
+-  and/or other materials provided with the distribution.
+-
+-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+-FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+-SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+-OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+diff --git a/Godeps/_workspace/src/github.com/elazarl/go-bindata-assetfs/README.md b/Godeps/_workspace/src/github.com/elazarl/go-bindata-assetfs/README.md
+deleted file mode 100644
+index a3929a8..0000000
+--- a/Godeps/_workspace/src/github.com/elazarl/go-bindata-assetfs/README.md
++++ /dev/null
+@@ -1,18 +0,0 @@
+-go-bindata-http
+-===============
+-
+-Serve embedded files from [jteeuwen/go-bindata](https://github.com/jteeuwen/go-bindata) with `net/http`.
+-
+-[GoDoc](http://godoc.org/github.com/elazarl/go-bindata-assetfs)
+-
+-After running
+-
+-    $ go-bindata data/...
+-
+-Use
+-
+-     http.Handle("/",
+-        http.FileServer(
+-        &assetfs.AssetFS{Asset: Asset, AssetDir: AssetDir, Prefix: "data"}))
+-
+-to serve files embedded from the `data` directory.
+diff --git a/Godeps/_workspace/src/github.com/elazarl/go-bindata-assetfs/assetfs.go b/Godeps/_workspace/src/github.com/elazarl/go-bindata-assetfs/assetfs.go
+deleted file mode 100644
+index 83cd94d..0000000
+--- a/Godeps/_workspace/src/github.com/elazarl/go-bindata-assetfs/assetfs.go
++++ /dev/null
+@@ -1,141 +0,0 @@
+-package assetfs
+-
+-import (
+-	"bytes"
+-	"errors"
+-	"fmt"
+-	"io"
+-	"io/ioutil"
+-	"net/http"
+-	"os"
+-	"path"
+-	"path/filepath"
+-	"time"
+-)
+-
+-// FakeFile implements os.FileInfo interface for a given path and size
+-type FakeFile struct {
+-	// Path is the path of this file
+-	Path string
+-	// Dir marks of the path is a directory
+-	Dir bool
+-	// Len is the length of the fake file, zero if it is a directory
+-	Len int64
+-}
+-
+-func (f *FakeFile) Name() string {
+-	_, name := filepath.Split(f.Path)
+-	return name
+-}
+-
+-func (f *FakeFile) Mode() os.FileMode {
+-	mode := os.FileMode(0644)
+-	if f.Dir {
+-		return mode | os.ModeDir
+-	}
+-	return mode
+-}
+-
+-func (f *FakeFile) ModTime() time.Time {
+-	return time.Unix(0, 0)
+-}
+-
+-func (f *FakeFile) Size() int64 {
+-	return f.Len
+-}
+-
+-func (f *FakeFile) IsDir() bool {
+-	return f.Mode().IsDir()
+-}
+-
+-func (f *FakeFile) Sys() interface{} {
+-	return nil
+-}
+-
+-// AssetFile implements http.File interface for a no-directory file with content
+-type AssetFile struct {
+-	*bytes.Reader
+-	io.Closer
+-	FakeFile
+-}
+-
+-func NewAssetFile(name string, content []byte) *AssetFile {
+-	return &AssetFile{
+-		bytes.NewReader(content),
+-		ioutil.NopCloser(nil),
+-		FakeFile{name, false, int64(len(content))}}
+-}
+-
+-func (f *AssetFile) Readdir(count int) ([]os.FileInfo, error) {
+-	return nil, errors.New("not a directory")
+-}
+-
+-func (f *AssetFile) Stat() (os.FileInfo, error) {
+-	return f, nil
+-}
+-
+-// AssetDirectory implements http.File interface for a directory
+-type AssetDirectory struct {
+-	AssetFile
+-	ChildrenRead int
+-	Children     []os.FileInfo
+-}
+-
+-func NewAssetDirectory(name string, children []string, fs *AssetFS) *AssetDirectory {
+-	fileinfos := make([]os.FileInfo, 0, len(children))
+-	for _, child := range children {
+-		_, err := fs.AssetDir(filepath.Join(name, child))
+-		fileinfos = append(fileinfos, &FakeFile{child, err == nil, 0})
+-	}
+-	return &AssetDirectory{
+-		AssetFile{
+-			bytes.NewReader(nil),
+-			ioutil.NopCloser(nil),
+-			FakeFile{name, true, 0},
+-		},
+-		0,
+-		fileinfos}
+-}
+-
+-func (f *AssetDirectory) Readdir(count int) ([]os.FileInfo, error) {
+-	fmt.Println(f, count)
+-	if count <= 0 {
+-		return f.Children, nil
+-	}
+-	if f.ChildrenRead+count > len(f.Children) {
+-		count = len(f.Children) - f.ChildrenRead
+-	}
+-	rv := f.Children[f.ChildrenRead : f.ChildrenRead+count]
+-	f.ChildrenRead += count
+-	return rv, nil
+-}
+-
+-func (f *AssetDirectory) Stat() (os.FileInfo, error) {
+-	return f, nil
+-}
+-
+-// AssetFS implements http.FileSystem, allowing
+-// embedded files to be served from net/http package.
+-type AssetFS struct {
+-	// Asset should return content of file in path if exists
+-	Asset func(path string) ([]byte, error)
+-	// AssetDir should return list of files in the path
+-	AssetDir func(path string) ([]string, error)
+-	// Prefix would be prepended to http requests
+-	Prefix string
+-}
+-
+-func (fs *AssetFS) Open(name string) (http.File, error) {
+-	name = path.Join(fs.Prefix, name)
+-	if len(name) > 0 && name[0] == '/' {
+-		name = name[1:]
+-	}
+-	if children, err := fs.AssetDir(name); err == nil {
+-		return NewAssetDirectory(name, children, fs), nil
+-	}
+-	b, err := fs.Asset(name)
+-	if err != nil {
+-		return nil, err
+-	}
+-	return NewAssetFile(name, b), nil
+-}
+diff --git a/Godeps/_workspace/src/github.com/elazarl/go-bindata-assetfs/doc.go b/Godeps/_workspace/src/github.com/elazarl/go-bindata-assetfs/doc.go
+deleted file mode 100644
+index a664249..0000000
+--- a/Godeps/_workspace/src/github.com/elazarl/go-bindata-assetfs/doc.go
++++ /dev/null
+@@ -1,13 +0,0 @@
+-// assetfs allows packages to serve static content embedded
+-// with the go-bindata tool with the standard net/http package.
+-//
+-// See https://github.com/jteeuwen/go-bindata for more information
+-// about embedding binary data with go-bindata.
+-//
+-// Usage example, after running
+-//    $ go-bindata data/...
+-// use:
+-//     http.Handle("/",
+-//        http.FileServer(
+-//        &assetfs.AssetFS{Asset: Asset, AssetDir: AssetDir, Prefix: "data"}))
+-package assetfs
 diff --git a/Godeps/_workspace/src/github.com/fsouza/go-dockerclient/.travis.yml b/Godeps/_workspace/src/github.com/fsouza/go-dockerclient/.travis.yml
 deleted file mode 100644
 index 24bbadb..0000000
@@ -87686,6 +88972,235 @@ index 86d203e..0000000
 -	ec2.Sign(aws.Auth{"access", "secret", ""}, "GET", "/", params, "sdb.amazonaws.com")
 -	expected := "okj96/5ucWBSc1uR2zXVfm6mDHtgfNv657rRtt/aunQ="
 -	c.Assert(params["Signature"], Equals, expected)
+-}
+diff --git a/Godeps/_workspace/src/github.com/skratchdot/LICENSE-MIT b/Godeps/_workspace/src/github.com/skratchdot/LICENSE-MIT
+deleted file mode 100644
+index afd04c8..0000000
+--- a/Godeps/_workspace/src/github.com/skratchdot/LICENSE-MIT
++++ /dev/null
+@@ -1,22 +0,0 @@
+-Copyright (c) 2013 skratchdot
+-
+-Permission is hereby granted, free of charge, to any person
+-obtaining a copy of this software and associated documentation
+-files (the "Software"), to deal in the Software without
+-restriction, including without limitation the rights to use,
+-copy, modify, merge, publish, distribute, sublicense, and/or sell
+-copies of the Software, and to permit persons to whom the
+-Software is furnished to do so, subject to the following
+-conditions:
+-
+-The above copyright notice and this permission notice shall be
+-included in all copies or substantial portions of the Software.
+-
+-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+-OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+-HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+-WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+-OTHER DEALINGS IN THE SOFTWARE.
+diff --git a/Godeps/_workspace/src/github.com/skratchdot/open-golang/open/exec.go b/Godeps/_workspace/src/github.com/skratchdot/open-golang/open/exec.go
+deleted file mode 100644
+index cc37339..0000000
+--- a/Godeps/_workspace/src/github.com/skratchdot/open-golang/open/exec.go
++++ /dev/null
+@@ -1,15 +0,0 @@
+-// +build !windows,!darwin
+-
+-package open
+-
+-import (
+-	"os/exec"
+-)
+-
+-func open(input string) *exec.Cmd {
+-	return exec.Command("xdg-open", input)
+-}
+-
+-func openWith(input string, appName string) *exec.Cmd {
+-	return exec.Command(appName, input)
+-}
+diff --git a/Godeps/_workspace/src/github.com/skratchdot/open-golang/open/exec_darwin.go b/Godeps/_workspace/src/github.com/skratchdot/open-golang/open/exec_darwin.go
+deleted file mode 100644
+index 16160e6..0000000
+--- a/Godeps/_workspace/src/github.com/skratchdot/open-golang/open/exec_darwin.go
++++ /dev/null
+@@ -1,15 +0,0 @@
+-// +build darwin
+-
+-package open
+-
+-import (
+-	"os/exec"
+-)
+-
+-func open(input string) *exec.Cmd {
+-	return exec.Command("open", input)
+-}
+-
+-func openWith(input string, appName string) *exec.Cmd {
+-	return exec.Command("open", "-a", appName, input)
+-}
+diff --git a/Godeps/_workspace/src/github.com/skratchdot/open-golang/open/exec_windows.go b/Godeps/_workspace/src/github.com/skratchdot/open-golang/open/exec_windows.go
+deleted file mode 100644
+index ac44cfa..0000000
+--- a/Godeps/_workspace/src/github.com/skratchdot/open-golang/open/exec_windows.go
++++ /dev/null
+@@ -1,21 +0,0 @@
+-// +build windows
+-
+-package open
+-
+-import (
+-	"os/exec"
+-	"strings"
+-)
+-
+-func cleaninput(input string) string {
+-	r := strings.NewReplacer("&", "^&")
+-	return r.Replace(input)
+-}
+-
+-func open(input string) *exec.Cmd {
+-	return exec.Command("cmd", "/C", "start", "", cleaninput(input))
+-}
+-
+-func openWith(input string, appName string) *exec.Cmd {
+-	return exec.Command("cmd", "/C", "start", "", appName, cleaninput(input))
+-}
+diff --git a/Godeps/_workspace/src/github.com/skratchdot/open-golang/open/open.go b/Godeps/_workspace/src/github.com/skratchdot/open-golang/open/open.go
+deleted file mode 100644
+index b1f648f..0000000
+--- a/Godeps/_workspace/src/github.com/skratchdot/open-golang/open/open.go
++++ /dev/null
+@@ -1,50 +0,0 @@
+-/*
+-
+-	Open a file, directory, or URI using the OS's default
+-	application for that object type.  Optionally, you can
+-	specify an application to use.
+-
+-	This is a proxy for the following commands:
+-
+-	         OSX: "open"
+-	     Windows: "start"
+-	 Linux/Other: "xdg-open"
+-
+-	This is a golang port of the node.js module: https://github.com/pwnall/node-open
+-
+-*/
+-package open
+-
+-/*
+-	Open a file, directory, or URI using the OS's default
+-	application for that object type. Wait for the open
+-	command to complete.
+-*/
+-func Run(input string) error {
+-	return open(input).Run()
+-}
+-
+-/*
+-	Open a file, directory, or URI using the OS's default
+-	application for that object type. Don't wait for the
+-	open command to complete.
+-*/
+-func Start(input string) error {
+-	return open(input).Start()
+-}
+-
+-/*
+-	Open a file, directory, or URI using the specified application.
+-	Wait for the open command to complete.
+-*/
+-func RunWith(input string, appName string) error {
+-	return openWith(input, appName).Run()
+-}
+-
+-/*
+-	Open a file, directory, or URI using the specified application.
+-	Don't wait for the open command to complete.
+-*/
+-func StartWith(input string, appName string) error {
+-	return openWith(input, appName).Start()
+-}
+diff --git a/Godeps/_workspace/src/github.com/skratchdot/open-golang/open/open_test.go b/Godeps/_workspace/src/github.com/skratchdot/open-golang/open/open_test.go
+deleted file mode 100644
+index 5db2da2..0000000
+--- a/Godeps/_workspace/src/github.com/skratchdot/open-golang/open/open_test.go
++++ /dev/null
+@@ -1,70 +0,0 @@
+-package open
+-
+-import "testing"
+-
+-func TestRun(t *testing.T) {
+-	// shouldn't error
+-	input := "https://google.com/"
+-	err := Run(input)
+-	if err != nil {
+-		t.Errorf("open.Run(\"%s\") threw an error: %s", input, err)
+-	}
+-
+-	// should error
+-	input = "xxxxxxxxxxxxxxx"
+-	err = Run(input)
+-	if err == nil {
+-		t.Errorf("Run(\"%s\") did not throw an error as expected", input)
+-	}
+-}
+-
+-func TestStart(t *testing.T) {
+-	// shouldn't error
+-	input := "https://google.com/"
+-	err := Start(input)
+-	if err != nil {
+-		t.Errorf("open.Start(\"%s\") threw an error: %s", input, err)
+-	}
+-
+-	// shouldn't error
+-	input = "xxxxxxxxxxxxxxx"
+-	err = Start(input)
+-	if err != nil {
+-		t.Errorf("open.Start(\"%s\") shouldn't even fail on invalid input: %s", input, err)
+-	}
+-}
+-
+-func TestRunWith(t *testing.T) {
+-	// shouldn't error
+-	input := "https://google.com/"
+-	app := "firefox"
+-	err := RunWith(input, app)
+-	if err != nil {
+-		t.Errorf("open.RunWith(\"%s\", \"%s\") threw an error: %s", input, app, err)
+-	}
+-
+-	// should error
+-	app = "xxxxxxxxxxxxxxx"
+-	err = RunWith(input, app)
+-	if err == nil {
+-		t.Errorf("RunWith(\"%s\", \"%s\") did not throw an error as expected", input, app)
+-	}
+-}
+-
+-func TestStartWith(t *testing.T) {
+-	// shouldn't error
+-	input := "https://google.com/"
+-	app := "firefox"
+-	err := StartWith(input, app)
+-	if err != nil {
+-		t.Errorf("open.StartWith(\"%s\", \"%s\") threw an error: %s", input, app, err)
+-	}
+-
+-	// shouldn't error
+-	input = "[<Invalid URL>]"
+-	err = StartWith(input, app)
+-	if err != nil {
+-		t.Errorf("StartWith(\"%s\", \"%s\") shouldn't even fail on invalid input: %s", input, app, err)
+-	}
+-
 -}
 diff --git a/Godeps/_workspace/src/github.com/stretchr/objx/.gitignore b/Godeps/_workspace/src/github.com/stretchr/objx/.gitignore
 deleted file mode 100644
@@ -108426,5 +109941,5 @@ index 8110ce3..0000000
 -
 -}
 -- 
-2.1.0
+1.9.3
 

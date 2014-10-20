@@ -1,7 +1,7 @@
 #debuginfo not supported with Go
 %global debug_package	%{nil}
 %global import_path	github.com/GoogleCloudPlatform/kubernetes
-%global commit		b01126322b826a15db06f6eeefeeb56dc06db7af
+%global commit		d5377e4a394b4fc6e3088634729b538eac124b1b
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #binaries which should be called kube-*
@@ -18,26 +18,14 @@
 
 Name:		kubernetes
 Version:	0.4
-Release:	0.1.git%{shortcommit}%{?dist}
+Release:	0.2.git%{shortcommit}%{?dist}
 Summary:	Container cluster management
 License:	ASL 2.0
 URL:		https://github.com/GoogleCloudPlatform/kubernetes
 ExclusiveArch:	x86_64
 Source0:	https://github.com/GoogleCloudPlatform/kubernetes/archive/%{commit}/kubernetes-%{shortcommit}.tar.gz
 
-#config files
-Source10:	config
-Source11:	apiserver
-Source12:	controller-manager
-Source13:	proxy
-Source14:	kubelet
-Source15:	scheduler
-#service files
-Source20:	kube-apiserver.service
-Source21:	kube-controller-manager.service
-Source22:	kube-proxy.service
-Source23:	kubelet.service
-Source24:	kube-scheduler.service
+Source10:	kubectl
 
 Patch1:		0001-remove-all-third-party-software.patch
 
@@ -152,15 +140,16 @@ done
 
 # install the bash completion
 install -d -m 0755 %{buildroot}%{_datadir}/bash-completion/completions/
+install -t %{buildroot}%{_datadir}/bash-completion/completions/ %{SOURCE10}
 install -t %{buildroot}%{_datadir}/bash-completion/completions/ contrib/completions/bash/kubecfg
 
 # install config files
 install -d -m 0755 %{buildroot}%{_sysconfdir}/%{name}
-install -m 644 -t %{buildroot}%{_sysconfdir}/%{name} %{SOURCE10} %{SOURCE11} %{SOURCE12} %{SOURCE13} %{SOURCE14} %{SOURCE15}
+install -m 644 -t %{buildroot}%{_sysconfdir}/%{name} contrib/init/systemd/environ/*
 
 # install service files
 install -d -m 0755 %{buildroot}%{_unitdir}
-install -m 0644 -t %{buildroot}%{_unitdir} %{SOURCE20} %{SOURCE21} %{SOURCE22} %{SOURCE23} %{SOURCE24}
+install -m 0644 -t %{buildroot}%{_unitdir} contrib/init/systemd/*.service
 
 # install manpages
 install -d %{buildroot}%{_mandir}/man1
@@ -185,6 +174,7 @@ install -d %{buildroot}/var/lib/kubelet
 %{_unitdir}/kube-proxy.service
 %dir %{_sysconfdir}/%{name}
 %{_datadir}/bash-completion/completions/kubecfg
+%{_datadir}/bash-completion/completions/kubectl
 %dir /var/lib/kubelet
 %config(noreplace) %{_sysconfdir}/%{name}/config
 %config(noreplace) %{_sysconfdir}/%{name}/apiserver
@@ -207,6 +197,11 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Mon Oct 20 2014 Eric Paris <eparis@redhat.com - 0.4-0.2.gitd5377e4
+- Bump to upstream d5377e4a394b4fc6e3088634729b538eac124b1b
+- Use in tree systemd unit and Environment files
+- Include kubectl bash completion from outside tree
+
 * Fri Oct 17 2014 Eric Paris <eparis@redhat.com - 0.4-0.1.gitb011263
 - Bump to upstream b01126322b826a15db06f6eeefeeb56dc06db7af
 - This is a major non backward compatible change.

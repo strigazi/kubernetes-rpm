@@ -1,7 +1,7 @@
 #debuginfo not supported with Go
 %global debug_package	%{nil}
 %global import_path	github.com/GoogleCloudPlatform/kubernetes
-%global commit		d5377e4a394b4fc6e3088634729b538eac124b1b
+%global commit		e8686429c4aa63fc73401259c8818da168a7b85e
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #binaries which should be called kube-*
@@ -18,7 +18,7 @@
 
 Name:		kubernetes
 Version:	0.4
-Release:	0.2.git%{shortcommit}%{?dist}
+Release:	0.3.git%{shortcommit}%{?dist}
 Summary:	Container cluster management
 License:	ASL 2.0
 URL:		https://github.com/GoogleCloudPlatform/kubernetes
@@ -197,6 +197,9 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Tue Oct 21 2014 Eric Paris <eparis@redhat.com - 0.4-0.3.gite868642
+- Bump to upstream e8686429c4aa63fc73401259c8818da168a7b85e
+
 * Mon Oct 20 2014 Eric Paris <eparis@redhat.com - 0.4-0.2.gitd5377e4
 - Bump to upstream d5377e4a394b4fc6e3088634729b538eac124b1b
 - Use in tree systemd unit and Environment files

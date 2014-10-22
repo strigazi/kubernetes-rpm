@@ -1,7 +1,7 @@
 #debuginfo not supported with Go
 %global debug_package	%{nil}
 %global import_path	github.com/GoogleCloudPlatform/kubernetes
-%global commit		e8686429c4aa63fc73401259c8818da168a7b85e
+%global commit		97dd7302ac2c2b9458a9348462a614ebf394b1ed
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #binaries which should be called kube-*
@@ -18,14 +18,12 @@
 
 Name:		kubernetes
 Version:	0.4
-Release:	0.3.git%{shortcommit}%{?dist}
+Release:	0.4.git%{shortcommit}%{?dist}
 Summary:	Container cluster management
 License:	ASL 2.0
 URL:		https://github.com/GoogleCloudPlatform/kubernetes
 ExclusiveArch:	x86_64
 Source0:	https://github.com/GoogleCloudPlatform/kubernetes/archive/%{commit}/kubernetes-%{shortcommit}.tar.gz
-
-Source10:	kubectl
 
 Patch1:		0001-remove-all-third-party-software.patch
 
@@ -140,8 +138,7 @@ done
 
 # install the bash completion
 install -d -m 0755 %{buildroot}%{_datadir}/bash-completion/completions/
-install -t %{buildroot}%{_datadir}/bash-completion/completions/ %{SOURCE10}
-install -t %{buildroot}%{_datadir}/bash-completion/completions/ contrib/completions/bash/kubecfg
+install -t %{buildroot}%{_datadir}/bash-completion/completions/ contrib/completions/bash/kubectl
 
 # install config files
 install -d -m 0755 %{buildroot}%{_sysconfdir}/%{name}
@@ -173,7 +170,6 @@ install -d %{buildroot}/var/lib/kubelet
 %{_unitdir}/kube-controller-manager.service
 %{_unitdir}/kube-proxy.service
 %dir %{_sysconfdir}/%{name}
-%{_datadir}/bash-completion/completions/kubecfg
 %{_datadir}/bash-completion/completions/kubectl
 %dir /var/lib/kubelet
 %config(noreplace) %{_sysconfdir}/%{name}/config
@@ -188,15 +184,20 @@ getent group kube >/dev/null || groupadd -r kube
 getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
         -c "Kubernetes user" kube
 %post
-%systemd_post %{basename:%{SOURCE20}} %{basename:%{SOURCE21}} %{basename:%{SOURCE22}} %{basename:%{SOURCE22}} %{basename:%{SOURCE24}}
+%systemd_post kube-apiserver kube-scheduler kube-controller-manager kubelet kube-proxy
 
 %preun
-%systemd_preun %{basename:%{SOURCE20}} %{basename:%{SOURCE21}} %{basename:%{SOURCE22}} %{basename:%{SOURCE23}} %{basename:%{SOURCE24}}
+%systemd_preun kube-apiserver kube-scheduler kube-controller-manager kubelet kube-proxy
 
 %postun
 %systemd_postun
 
 %changelog
+* Wed Oct 22 2014 Eric Paris <eparis@redhat.com - 0.4-0.4.git97dd730
+- Bump to upstream 97dd7302ac2c2b9458a9348462a614ebf394b1ed
+- Use upstream kubectl bash completion instead of in-repo
+- Fix systemd_post and systemd_preun since we are using upstream service files
+
 * Tue Oct 21 2014 Eric Paris <eparis@redhat.com - 0.4-0.3.gite868642
 - Bump to upstream e8686429c4aa63fc73401259c8818da168a7b85e
 

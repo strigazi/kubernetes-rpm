@@ -1,7 +1,7 @@
 #debuginfo not supported with Go
 %global debug_package	%{nil}
 %global import_path	github.com/GoogleCloudPlatform/kubernetes
-%global commit		b01126322b826a15db06f6eeefeeb56dc06db7af
+%global commit		e46af6e37f6e6965a63edb8eb8f115ae8ef41482
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #binaries which should be called kube-*
@@ -18,26 +18,12 @@
 
 Name:		kubernetes
 Version:	0.4
-Release:	0.1.git%{shortcommit}%{?dist}
+Release:	0.6.git%{shortcommit}%{?dist}
 Summary:	Container cluster management
 License:	ASL 2.0
 URL:		https://github.com/GoogleCloudPlatform/kubernetes
 ExclusiveArch:	x86_64
 Source0:	https://github.com/GoogleCloudPlatform/kubernetes/archive/%{commit}/kubernetes-%{shortcommit}.tar.gz
-
-#config files
-Source10:	config
-Source11:	apiserver
-Source12:	controller-manager
-Source13:	proxy
-Source14:	kubelet
-Source15:	scheduler
-#service files
-Source20:	kube-apiserver.service
-Source21:	kube-controller-manager.service
-Source22:	kube-proxy.service
-Source23:	kubelet.service
-Source24:	kube-scheduler.service
 
 Patch1:		0001-remove-all-third-party-software.patch
 
@@ -152,15 +138,15 @@ done
 
 # install the bash completion
 install -d -m 0755 %{buildroot}%{_datadir}/bash-completion/completions/
-install -t %{buildroot}%{_datadir}/bash-completion/completions/ contrib/completions/bash/kubecfg
+install -t %{buildroot}%{_datadir}/bash-completion/completions/ contrib/completions/bash/kubectl
 
 # install config files
 install -d -m 0755 %{buildroot}%{_sysconfdir}/%{name}
-install -m 644 -t %{buildroot}%{_sysconfdir}/%{name} %{SOURCE10} %{SOURCE11} %{SOURCE12} %{SOURCE13} %{SOURCE14} %{SOURCE15}
+install -m 644 -t %{buildroot}%{_sysconfdir}/%{name} contrib/init/systemd/environ/*
 
 # install service files
 install -d -m 0755 %{buildroot}%{_unitdir}
-install -m 0644 -t %{buildroot}%{_unitdir} %{SOURCE20} %{SOURCE21} %{SOURCE22} %{SOURCE23} %{SOURCE24}
+install -m 0644 -t %{buildroot}%{_unitdir} contrib/init/systemd/*.service
 
 # install manpages
 install -d %{buildroot}%{_mandir}/man1
@@ -184,7 +170,7 @@ install -d %{buildroot}/var/lib/kubelet
 %{_unitdir}/kube-controller-manager.service
 %{_unitdir}/kube-proxy.service
 %dir %{_sysconfdir}/%{name}
-%{_datadir}/bash-completion/completions/kubecfg
+%{_datadir}/bash-completion/completions/kubectl
 %dir /var/lib/kubelet
 %config(noreplace) %{_sysconfdir}/%{name}/config
 %config(noreplace) %{_sysconfdir}/%{name}/apiserver
@@ -198,15 +184,34 @@ getent group kube >/dev/null || groupadd -r kube
 getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
         -c "Kubernetes user" kube
 %post
-%systemd_post %{basename:%{SOURCE20}} %{basename:%{SOURCE21}} %{basename:%{SOURCE22}} %{basename:%{SOURCE22}} %{basename:%{SOURCE24}}
+%systemd_post kube-apiserver kube-scheduler kube-controller-manager kubelet kube-proxy
 
 %preun
-%systemd_preun %{basename:%{SOURCE20}} %{basename:%{SOURCE21}} %{basename:%{SOURCE22}} %{basename:%{SOURCE23}} %{basename:%{SOURCE24}}
+%systemd_preun kube-apiserver kube-scheduler kube-controller-manager kubelet kube-proxy
 
 %postun
 %systemd_postun
 
 %changelog
+* Fri Oct 24 2014 Eric Paris <eparis@redhat.com - 0.4-0.6.gite46af6e
+- Bump to upstream e46af6e37f6e6965a63edb8eb8f115ae8ef41482
+
+* Thu Oct 23 2014 Eric Paris <eparis@redhat.com - 0.4-0.5.git77d2815
+- Bump to upstream 77d2815b86e9581393d7de4379759c536df89edc
+
+* Wed Oct 22 2014 Eric Paris <eparis@redhat.com - 0.4-0.4.git97dd730
+- Bump to upstream 97dd7302ac2c2b9458a9348462a614ebf394b1ed
+- Use upstream kubectl bash completion instead of in-repo
+- Fix systemd_post and systemd_preun since we are using upstream service files
+
+* Tue Oct 21 2014 Eric Paris <eparis@redhat.com - 0.4-0.3.gite868642
+- Bump to upstream e8686429c4aa63fc73401259c8818da168a7b85e
+
+* Mon Oct 20 2014 Eric Paris <eparis@redhat.com - 0.4-0.2.gitd5377e4
+- Bump to upstream d5377e4a394b4fc6e3088634729b538eac124b1b
+- Use in tree systemd unit and Environment files
+- Include kubectl bash completion from outside tree
+
 * Fri Oct 17 2014 Eric Paris <eparis@redhat.com - 0.4-0.1.gitb011263
 - Bump to upstream b01126322b826a15db06f6eeefeeb56dc06db7af
 - This is a major non backward compatible change.

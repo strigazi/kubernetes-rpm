@@ -1,7 +1,7 @@
 #debuginfo not supported with Go
 %global debug_package	%{nil}
 %global import_path	github.com/GoogleCloudPlatform/kubernetes
-%global commit		78df01172af5cc132b7276afb668d31e91e61c11
+%global commit		a18cdac616962a2c486feb22afa3538fc3cf3a3a
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #binaries which should be called kube-*
@@ -18,7 +18,7 @@
 
 Name:		kubernetes
 Version:	0.4+
-Release:	397.0.git%{shortcommit}%{?dist}
+Release:	426.0.git%{shortcommit}%{?dist}
 Summary:	Container cluster management
 License:	ASL 2.0
 URL:		https://github.com/GoogleCloudPlatform/kubernetes
@@ -84,7 +84,7 @@ BuildRequires:	golang(gopkg.in/v1/yaml)
 %build
 export KUBE_GIT_COMMIT=%{commit}
 export KUBE_GIT_TREE_STATE="dirty"
-export KUBE_GIT_VERSION=v0.4-397-g78df01172af5cc
+export KUBE_GIT_VERSION=v0.4-426-ga18cdac616962a
 
 export KUBE_EXTRA_GOPATH=%{gopath}
 export KUBE_NO_GODEPS="true"
@@ -193,6 +193,9 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Fri Oct 31 2014 Eric Paris <eparis@redhat.com - 0.4+-426.0.gita18cdac
+- Bump to upstream a18cdac616962a2c486feb22afa3538fc3cf3a3a
+
 * Thu Oct 30 2014 Eric Paris <eparis@redhat.com - 0.4+-397.0.git78df011
 - Bump to upstream 78df01172af5cc132b7276afb668d31e91e61c11
 

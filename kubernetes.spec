@@ -112,7 +112,6 @@ done
 export KUBE_EXTRA_GOPATH=%{gopath}
 export KUBE_NO_GODEPS="true"
 export KUBE_NO_BUILD_INTEGRATION="true"
-exit
 echo "******Testing the commands*****"
 hack/test-cmd.sh
 # In Fedora 20 and RHEL7 the go cover tools isn't available correctly
@@ -193,6 +192,8 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+- Start running %check tests again
+
 * Fri Oct 31 2014 Eric Paris <eparis@redhat.com - 0.4+-426.0.gita18cdac
 - Bump to upstream a18cdac616962a2c486feb22afa3538fc3cf3a3a
 

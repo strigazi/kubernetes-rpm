@@ -1,7 +1,7 @@
 #debuginfo not supported with Go
 %global debug_package	%{nil}
 %global import_path	github.com/GoogleCloudPlatform/kubernetes
-%global commit		808be2d13b7bf14a3cf6985bc7c9d02f48a3d1e0
+%global commit		a4abafea02babc529c9b5b9c825ba0bb3eec74c6
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #binaries which should be called kube-*
@@ -18,7 +18,7 @@
 
 Name:		kubernetes
 Version:	0.4
-Release:	453.0.git%{shortcommit}%{?dist}
+Release:	477.0.git%{shortcommit}%{?dist}
 Summary:	Container cluster management
 License:	ASL 2.0
 URL:		https://github.com/GoogleCloudPlatform/kubernetes
@@ -84,7 +84,7 @@ BuildRequires:	golang(gopkg.in/v1/yaml)
 %build
 export KUBE_GIT_COMMIT=%{commit}
 export KUBE_GIT_TREE_STATE="dirty"
-export KUBE_GIT_VERSION=v0.4-453-g808be2d13b7bf1
+export KUBE_GIT_VERSION=v0.4-477-ga4abafea02babc
 
 export KUBE_EXTRA_GOPATH=%{gopath}
 export KUBE_NO_GODEPS="true"
@@ -201,6 +201,9 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Mon Nov 03 2014 Eric Paris <eparis@redhat.com - 0.4-477.0.gita4abafe
+- Bump to upstream a4abafea02babc529c9b5b9c825ba0bb3eec74c6
+
 * Mon Nov 03 2014 Eric Paris <eparis@redhat.com - 0.4-453.0.git808be2d
 - Bump to upstream 808be2d13b7bf14a3cf6985bc7c9d02f48a3d1e0
 - Includes upstream change to remove --machines from the APIServer

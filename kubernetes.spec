@@ -1,7 +1,7 @@
 #debuginfo not supported with Go
 %global debug_package	%{nil}
 %global import_path	github.com/GoogleCloudPlatform/kubernetes
-%global commit		a18cdac616962a2c486feb22afa3538fc3cf3a3a
+%global commit		808be2d13b7bf14a3cf6985bc7c9d02f48a3d1e0
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #binaries which should be called kube-*
@@ -17,8 +17,8 @@
 %global _checkshell	/bin/bash
 
 Name:		kubernetes
-Version:	0.4+
-Release:	426.0.git%{shortcommit}%{?dist}
+Version:	0.4
+Release:	453.0.git%{shortcommit}%{?dist}
 Summary:	Container cluster management
 License:	ASL 2.0
 URL:		https://github.com/GoogleCloudPlatform/kubernetes
@@ -84,34 +84,38 @@ BuildRequires:	golang(gopkg.in/v1/yaml)
 %build
 export KUBE_GIT_COMMIT=%{commit}
 export KUBE_GIT_TREE_STATE="dirty"
-export KUBE_GIT_VERSION=v0.4-426-ga18cdac616962a
+export KUBE_GIT_VERSION=v0.4-453-g808be2d13b7bf1
 
 export KUBE_EXTRA_GOPATH=%{gopath}
 export KUBE_NO_GODEPS="true"
 
-. hack/config-go.sh
+. hack/lib/init.sh
+kube::golang::setup_env
 
-kube::setup_go_environment
+version_ldflags=$(kube::version::ldflags)
 
-version_ldflags=$(kube::version_ldflags)
+targets=("${KUBE_ALL_TARGETS[@]}")
+binaries=($(kube::golang::binaries_from_targets "${targets[@]}"))
 
-targets=($(kube::default_build_targets))
-targets+=("cmd/integration")
-binaries=($(kube::binaries_from_targets "${targets[@]}"))
+platform="$(kube::golang::host_platform)"
+kube::golang::set_platform_envs "${platform}"
 
 for binary in ${binaries[@]}; do
   bin=$(basename "${binary}")
-  echo "+++ Building ${bin}"
-  go build -o "${KUBE_TARGET}/bin/${bin}" \
+  output_path="${KUBE_GOPATH}/bin/"
+  go build -o "${output_path}/${bin}" \
         "${goflags[@]:+${goflags[@]}}" \
         -ldflags "${version_ldflags}" \
         "${binary}"
 done
 
+kube::golang::place_bins
+
 %check
 export KUBE_EXTRA_GOPATH=%{gopath}
 export KUBE_NO_GODEPS="true"
 export KUBE_NO_BUILD_INTEGRATION="true"
+
 echo "******Testing the commands*****"
 hack/test-cmd.sh
 # In Fedora 20 and RHEL7 the go cover tools isn't available correctly
@@ -125,14 +129,19 @@ echo "******Benchmarking kube********"
 hack/benchmark-go.sh
 
 %install
+. hack/lib/init.sh
+kube::golang::setup_env
+
+output_path="${KUBE_OUTPUT_BINPATH}/$(kube::golang::current_platform)"
+
 install -m 755 -d %{buildroot}%{_bindir}
 for bin in %{prefixed_binaries}; do
   echo "+++ INSTALLING ${bin}"
-  install -p -m 755 _output/go/bin/${bin} %{buildroot}%{_bindir}/kube-${bin}
+  install -p -m 755 ${output_path}/${bin} %{buildroot}%{_bindir}/kube-${bin}
 done
 for bin in %{nonprefixed_binaries}; do
   echo "+++ INSTALLING ${bin}"
-  install -p -m 755 _output/go/bin/${bin} %{buildroot}%{_bindir}/${bin}
+  install -p -m 755 ${output_path}/${bin} %{buildroot}%{_bindir}/${bin}
 done
 
 # install the bash completion
@@ -192,6 +201,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Mon Nov 03 2014 Eric Paris <eparis@redhat.com - 0.4-453.0.git808be2d
+- Bump to upstream 808be2d13b7bf14a3cf6985bc7c9d02f48a3d1e0
+- Includes upstream change to remove --machines from the APIServer
+- Port to new build system
 - Start running %check tests again
 
 * Fri Oct 31 2014 Eric Paris <eparis@redhat.com - 0.4+-426.0.gita18cdac

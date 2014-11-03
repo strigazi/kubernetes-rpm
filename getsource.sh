@@ -11,12 +11,11 @@ SPEC=kubernetes.spec
 
 wget https://github.com/GoogleCloudPlatform/kubernetes/archive/${KUBE_GIT_COMMIT}/kubernetes-${KUBE_GIT_COMMIT:0:7}.tar.gz
 
-
+since_tag=0
 if [[ "${KUBE_GIT_VERSION}" =~ ^v([0-9]+)\.([0-9]+)\-([0-9]+)\-(.*)?$ ]]; then
   git_major=${BASH_REMATCH[1]}
   git_minor=${BASH_REMATCH[2]}
   if [[ -n "${BASH_REMATCH[3]}" ]]; then
-    git_minor+="+"
     since_tag=${BASH_REMATCH[3]}
   fi
 fi

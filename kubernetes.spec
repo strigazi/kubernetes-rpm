@@ -1,7 +1,7 @@
 #debuginfo not supported with Go
 %global debug_package	%{nil}
 %global import_path	github.com/GoogleCloudPlatform/kubernetes
-%global commit		a4abafea02babc529c9b5b9c825ba0bb3eec74c6
+%global commit		5a649f2b9360a756fc8124897d3453a5fa9473a6
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #binaries which should be called kube-*
@@ -18,7 +18,7 @@
 
 Name:		kubernetes
 Version:	0.4
-Release:	477.0.git%{shortcommit}%{?dist}
+Release:	510.0.git%{shortcommit}%{?dist}
 Summary:	Container cluster management
 License:	ASL 2.0
 URL:		https://github.com/GoogleCloudPlatform/kubernetes
@@ -84,32 +84,12 @@ BuildRequires:	golang(gopkg.in/v1/yaml)
 %build
 export KUBE_GIT_COMMIT=%{commit}
 export KUBE_GIT_TREE_STATE="dirty"
-export KUBE_GIT_VERSION=v0.4-477-ga4abafea02babc
+export KUBE_GIT_VERSION=v0.4-510-g5a649f2b9360a7
 
 export KUBE_EXTRA_GOPATH=%{gopath}
 export KUBE_NO_GODEPS="true"
 
-. hack/lib/init.sh
-kube::golang::setup_env
-
-version_ldflags=$(kube::version::ldflags)
-
-targets=("${KUBE_ALL_TARGETS[@]}")
-binaries=($(kube::golang::binaries_from_targets "${targets[@]}"))
-
-platform="$(kube::golang::host_platform)"
-kube::golang::set_platform_envs "${platform}"
-
-for binary in ${binaries[@]}; do
-  bin=$(basename "${binary}")
-  output_path="${KUBE_GOPATH}/bin/"
-  go build -o "${output_path}/${bin}" \
-        "${goflags[@]:+${goflags[@]}}" \
-        -ldflags "${version_ldflags}" \
-        "${binary}"
-done
-
-kube::golang::place_bins
+hack/build-go.sh --use_go_build
 
 %check
 export KUBE_EXTRA_GOPATH=%{gopath}
@@ -123,7 +103,7 @@ hack/test-cmd.sh
 echo "******Testing the go code******"
 hack/test-go.sh
 echo "******Testing integration******"
-hack/test-integration.sh
+hack/test-integration.sh --use_go_build
 %endif
 echo "******Benchmarking kube********"
 hack/benchmark-go.sh
@@ -201,6 +181,9 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Tue Nov 04 2014 Eric Paris <eparis@redhat.com - 0.4-510.0.git5a649f2
+- Bump to upstream 5a649f2b9360a756fc8124897d3453a5fa9473a6
+
 * Mon Nov 03 2014 Eric Paris <eparis@redhat.com - 0.4-477.0.gita4abafe
 - Bump to upstream a4abafea02babc529c9b5b9c825ba0bb3eec74c6
 

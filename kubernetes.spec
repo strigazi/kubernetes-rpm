@@ -1,7 +1,7 @@
 #debuginfo not supported with Go
 %global debug_package	%{nil}
 %global import_path	github.com/GoogleCloudPlatform/kubernetes
-%global commit		5a649f2b9360a756fc8124897d3453a5fa9473a6
+%global commit		3b1ef739d1fb32a822a22216fb965e22cdd28e7f
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #binaries which should be called kube-*
@@ -18,14 +18,16 @@
 
 Name:		kubernetes
 Version:	0.4
-Release:	510.0.git%{shortcommit}%{?dist}
+Release:	567.0.git%{shortcommit}%{?dist}
 Summary:	Container cluster management
 License:	ASL 2.0
 URL:		https://github.com/GoogleCloudPlatform/kubernetes
 ExclusiveArch:	x86_64
 Source0:	https://github.com/GoogleCloudPlatform/kubernetes/archive/%{commit}/kubernetes-%{shortcommit}.tar.gz
 
+%if 0%{?fedora}
 Patch1:		0001-remove-all-third-party-software.patch
+%endif
 
 %if 0%{?fedora} >= 21 || 0%{?rhel}
 Requires:	docker
@@ -43,6 +45,8 @@ BuildRequires:	golang >= 1.2-7
 BuildRequires:	systemd
 BuildRequires:	golang-cover
 BuildRequires:	etcd
+
+%if 0%{?fedora}
 BuildRequires:	golang(bitbucket.org/kardianos/osext)
 BuildRequires:	golang(code.google.com/p/gcfg)
 BuildRequires:	golang(code.google.com/p/goauth2)
@@ -73,7 +77,7 @@ BuildRequires:	golang(github.com/stretchr/testify)
 BuildRequires:	golang(github.com/tonnerre/golang-pretty)
 BuildRequires:	golang(github.com/vaughan0/go-ini)
 BuildRequires:	golang(gopkg.in/v1/yaml)
-
+%endif
 
 %description
 %{summary}
@@ -83,21 +87,27 @@ BuildRequires:	golang(gopkg.in/v1/yaml)
 
 %build
 export KUBE_GIT_COMMIT=%{commit}
-export KUBE_GIT_TREE_STATE="dirty"
-export KUBE_GIT_VERSION=v0.4-510-g5a649f2b9360a7
+export KUBE_GIT_VERSION=v0.4-567-g3b1ef739d1fb32
 
+%if 0%{?fedora}
+export KUBE_GIT_TREE_STATE="dirty"
 export KUBE_EXTRA_GOPATH=%{gopath}
 export KUBE_NO_GODEPS="true"
+%endif
 
 hack/build-go.sh --use_go_build
 
 %check
+%if 0%{?fedora}
 export KUBE_EXTRA_GOPATH=%{gopath}
 export KUBE_NO_GODEPS="true"
-export KUBE_NO_BUILD_INTEGRATION="true"
+%endif
 
 echo "******Testing the commands*****"
 hack/test-cmd.sh
+echo "******Benchmarking kube********"
+hack/benchmark-go.sh
+
 # In Fedora 20 and RHEL7 the go cover tools isn't available correctly
 %if 0%{?fedora} >= 21
 echo "******Testing the go code******"
@@ -105,8 +115,6 @@ hack/test-go.sh
 echo "******Testing integration******"
 hack/test-integration.sh --use_go_build
 %endif
-echo "******Benchmarking kube********"
-hack/benchmark-go.sh
 
 %install
 . hack/lib/init.sh
@@ -181,6 +189,13 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Thu Nov 06 2014 Eric Paris <eparis@redhat.com> - 0.4-567.0.git3b1ef73
+- Bump to upstream 3b1ef739d1fb32a822a22216fb965e22cdd28e7f
+
+* Thu Nov 06 2014 Eric Paris <eparis@redhat.com> - 0.4-561.0.git06633bf
+- Bump to upstream 06633bf4cdc1ebd4fc848f85025e14a794b017b4
+- Make spec file more RHEL/CentOS friendly
+
 * Tue Nov 04 2014 Eric Paris <eparis@redhat.com - 0.4-510.0.git5a649f2
 - Bump to upstream 5a649f2b9360a756fc8124897d3453a5fa9473a6
 

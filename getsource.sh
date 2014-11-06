@@ -30,7 +30,7 @@ sed -i -e "s/Release:\t[[:digit:]]\+\.[[:digit:]]\+/Release:\t${since_tag}.0/" $
 sed -i -e "s/export KUBE_GIT_VERSION=v.*/export KUBE_GIT_VERSION=${KUBE_GIT_VERSION}/" ${SPEC}
 
 #increment the version number
-./add-chglog --comment="Bump to upstream ${KUBE_GIT_COMMIT}" --userstring="Eric Paris <eparis@redhat.com" ${SPEC}
+./add-chglog --comment="Bump to upstream ${KUBE_GIT_COMMIT}" --userstring="Eric Paris <eparis@redhat.com>" ${SPEC}
 
 fedpkg clog
 

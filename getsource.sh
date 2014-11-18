@@ -1,6 +1,7 @@
 #!/bin/sh
 
 KUBE_GIT_COMMIT="$1"
+KUBE_GIT_SHORT="${KUBE_GIT_COMMIT:0:7}"
 KUBE_GIT_VERSION="$2"
 
 set -o errexit
@@ -9,7 +10,7 @@ set -o pipefail
 
 SPEC=kubernetes.spec
 
-wget https://github.com/GoogleCloudPlatform/kubernetes/archive/${KUBE_GIT_COMMIT}/kubernetes-${KUBE_GIT_COMMIT:0:7}.tar.gz
+curl -s -L https://github.com/GoogleCloudPlatform/kubernetes/archive/${KUBE_GIT_COMMIT}.tar.gz > kubernetes-${KUBE_GIT_SHORT}.tar.gz
 
 since_tag=0
 if [[ "${KUBE_GIT_VERSION}" =~ ^v([0-9]+)\.([0-9]+)\-([0-9]+)\-(.*)?$ ]]; then
@@ -34,4 +35,4 @@ sed -i -e "s/export KUBE_GIT_VERSION=v.*/export KUBE_GIT_VERSION=${KUBE_GIT_VERS
 
 fedpkg clog
 
-echo "****Don't forget to run: fedpkg new-sources kubernetes-${KUBE_GIT_COMMIT:0:7}.tar.gz"
+echo "****Don't forget to run: fedpkg new-sources kubernetes-${KUBE_GIT_SHORT}.tar.gz"

@@ -1,15 +1,8 @@
 #debuginfo not supported with Go
 %global debug_package	%{nil}
 %global import_path	github.com/GoogleCloudPlatform/kubernetes
-%global commit		30fcf241312f6d0767c7d9305b4c462f1655f790
+%global commit		df0981bc01c5782ad30fc45cb6f510f365737fc1
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
-
-#binaries which should be called kube-*
-%global prefixed_binaries proxy apiserver controller-manager scheduler
-#binaries which should not be renamed at all
-%global nonprefixed_binaries kubelet kubectl
-#all of the above
-%global binaries	%{prefixed_binaries} %{nonprefixed_binaries}
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
 # does not work
@@ -17,8 +10,8 @@
 %global _checkshell	/bin/bash
 
 Name:		kubernetes
-Version:	0.4
-Release:	680.0.git%{shortcommit}%{?dist}
+Version:	0.5
+Release:	14.0.git%{shortcommit}%{?dist}
 Summary:	Container cluster management
 License:	ASL 2.0
 URL:		https://github.com/GoogleCloudPlatform/kubernetes
@@ -87,7 +80,7 @@ BuildRequires:	golang(gopkg.in/v1/yaml)
 
 %build
 export KUBE_GIT_COMMIT=%{commit}
-export KUBE_GIT_VERSION=v0.4-680-g30fcf241312f6d
+export KUBE_GIT_VERSION=v0.5-14-gdf0981bc01c578
 
 %if 0%{?fedora}
 export KUBE_GIT_TREE_STATE="dirty"
@@ -122,14 +115,11 @@ kube::golang::setup_env
 
 output_path="${KUBE_OUTPUT_BINPATH}/$(kube::golang::current_platform)"
 
+binaries=(kube-apiserver kube-controller-manager kube-scheduler kube-proxy kubelet kubectl)
 install -m 755 -d %{buildroot}%{_bindir}
-for bin in %{prefixed_binaries}; do
+for bin in "${binaries[@]}"; do
   echo "+++ INSTALLING ${bin}"
-  install -p -m 755 ${output_path}/${bin} %{buildroot}%{_bindir}/kube-${bin}
-done
-for bin in %{nonprefixed_binaries}; do
-  echo "+++ INSTALLING ${bin}"
-  install -p -m 755 ${output_path}/${bin} %{buildroot}%{_bindir}/${bin}
+  install -p -m 755 -t %{buildroot}%{_bindir} ${output_path}/${bin}
 done
 
 # install the bash completion
@@ -189,6 +179,9 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Tue Nov 18 2014 Eric Paris <eparis@redhat.com> - 0.5-14.0.gitdf0981b
+- Bump to upstream df0981bc01c5782ad30fc45cb6f510f365737fc1
+
 * Tue Nov 11 2014 Eric Paris <eparis@redhat.com> - 0.4-680.0.git30fcf24
 - Bump to upstream 30fcf241312f6d0767c7d9305b4c462f1655f790
 

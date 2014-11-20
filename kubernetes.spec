@@ -1,7 +1,7 @@
 #debuginfo not supported with Go
 %global debug_package	%{nil}
 %global import_path	github.com/GoogleCloudPlatform/kubernetes
-%global commit		df0981bc01c5782ad30fc45cb6f510f365737fc1
+%global commit		c6158b8aa9c40fbf1732650a8611429536466b21
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
@@ -11,7 +11,7 @@
 
 Name:		kubernetes
 Version:	0.5
-Release:	14.0.git%{shortcommit}%{?dist}
+Release:	65.0.git%{shortcommit}%{?dist}
 Summary:	Container cluster management
 License:	ASL 2.0
 URL:		https://github.com/GoogleCloudPlatform/kubernetes
@@ -20,6 +20,7 @@ Source0:	https://github.com/GoogleCloudPlatform/kubernetes/archive/%{commit}/kub
 
 %if 0%{?fedora}
 Patch1:		0001-remove-all-third-party-software.patch
+Patch2:		0002-revert-to-code.google.com-p-go.net-until-fedora-pack.patch
 %endif
 
 %if 0%{?fedora} >= 21 || 0%{?rhel}
@@ -80,7 +81,7 @@ BuildRequires:	golang(gopkg.in/v1/yaml)
 
 %build
 export KUBE_GIT_COMMIT=%{commit}
-export KUBE_GIT_VERSION=v0.5-14-gdf0981bc01c578
+export KUBE_GIT_VERSION=v0.5-65-gc6158b8aa9c40f
 
 %if 0%{?fedora}
 export KUBE_GIT_TREE_STATE="dirty"
@@ -179,6 +180,9 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Thu Nov 20 2014 Eric Paris <eparis@redhat.com> - 0.5-65.0.gitc6158b8
+- Bump to upstream c6158b8aa9c40fbf1732650a8611429536466b21
+
 * Tue Nov 18 2014 Eric Paris <eparis@redhat.com> - 0.5-14.0.gitdf0981b
 - Bump to upstream df0981bc01c5782ad30fc45cb6f510f365737fc1
 

@@ -41,18 +41,16 @@ BuildRequires:	golang-cover
 BuildRequires:	etcd
 
 %if 0%{?fedora}
-BuildRequires:	golang(bitbucket.org/kardianos/osext)
 BuildRequires:	golang(code.google.com/p/gcfg)
 BuildRequires:	golang(code.google.com/p/goauth2)
 BuildRequires:	golang(code.google.com/p/go.net/context)
 BuildRequires:	golang(code.google.com/p/go.net/html)
 BuildRequires:	golang(code.google.com/p/go.net/websocket)
-BuildRequires:	golang(code.google.com/p/google-api-go-client)
+BuildRequires:	golang(code.google.com/p/google-api-go-client) > 0-0.3
 BuildRequires:	golang(code.google.com/p/go-uuid)
 BuildRequires:	golang(github.com/coreos/go-etcd/etcd)
-BuildRequires:	golang(github.com/coreos/go-log/log)
-BuildRequires:	golang(github.com/coreos/go-systemd)
 BuildRequires:	golang(github.com/elazarl/go-bindata-assetfs)
+BuildRequires:	golang(github.com/emicklei/go-restful)
 BuildRequires:	golang(github.com/fsouza/go-dockerclient) > 0-0.6
 BuildRequires:	golang(github.com/golang/glog)
 BuildRequires:	golang(github.com/google/cadvisor)
@@ -182,6 +180,7 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %changelog
 * Thu Nov 20 2014 Eric Paris <eparis@redhat.com> - 0.5-65.0.gitc6158b8
 - Bump to upstream c6158b8aa9c40fbf1732650a8611429536466b21
+- include go-restful build requirement
 
 * Tue Nov 18 2014 Eric Paris <eparis@redhat.com> - 0.5-14.0.gitdf0981b
 - Bump to upstream df0981bc01c5782ad30fc45cb6f510f365737fc1

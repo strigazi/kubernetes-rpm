@@ -1,15 +1,8 @@
 #debuginfo not supported with Go
 %global debug_package	%{nil}
 %global import_path	github.com/GoogleCloudPlatform/kubernetes
-%global commit		8e1d41670783cb75cf0c5088f199961a7d8e05e5
+%global commit		3f74a1e9f56b3c3502762930c0c551ccab0557ea
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
-
-#binaries which should be called kube-*
-%global prefixed_binaries proxy apiserver controller-manager scheduler
-#binaries which should not be renamed at all
-%global nonprefixed_binaries kubelet kubectl
-#all of the above
-%global binaries	%{prefixed_binaries} %{nonprefixed_binaries}
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
 # does not work
@@ -17,15 +10,18 @@
 %global _checkshell	/bin/bash
 
 Name:		kubernetes
-Version:	0.4+
-Release:	0.9.git%{shortcommit}%{?dist}
+Version:	0.5
+Release:	105.0.git%{shortcommit}%{?dist}
 Summary:	Container cluster management
 License:	ASL 2.0
 URL:		https://github.com/GoogleCloudPlatform/kubernetes
 ExclusiveArch:	x86_64
 Source0:	https://github.com/GoogleCloudPlatform/kubernetes/archive/%{commit}/kubernetes-%{shortcommit}.tar.gz
 
+%if 0%{?fedora}
 Patch1:		0001-remove-all-third-party-software.patch
+Patch2:		0002-revert-to-code.google.com-p-go.net-until-fedora-pack.patch
+%endif
 
 %if 0%{?fedora} >= 21 || 0%{?rhel}
 Requires:	docker
@@ -43,18 +39,18 @@ BuildRequires:	golang >= 1.2-7
 BuildRequires:	systemd
 BuildRequires:	golang-cover
 BuildRequires:	etcd
-BuildRequires:	golang(bitbucket.org/kardianos/osext)
+
+%if 0%{?fedora}
 BuildRequires:	golang(code.google.com/p/gcfg)
 BuildRequires:	golang(code.google.com/p/goauth2)
 BuildRequires:	golang(code.google.com/p/go.net/context)
 BuildRequires:	golang(code.google.com/p/go.net/html)
 BuildRequires:	golang(code.google.com/p/go.net/websocket)
-BuildRequires:	golang(code.google.com/p/google-api-go-client)
+BuildRequires:	golang(code.google.com/p/google-api-go-client) > 0-0.3
 BuildRequires:	golang(code.google.com/p/go-uuid)
 BuildRequires:	golang(github.com/coreos/go-etcd/etcd)
-BuildRequires:	golang(github.com/coreos/go-log/log)
-BuildRequires:	golang(github.com/coreos/go-systemd)
 BuildRequires:	golang(github.com/elazarl/go-bindata-assetfs)
+BuildRequires:	golang(github.com/emicklei/go-restful)
 BuildRequires:	golang(github.com/fsouza/go-dockerclient) > 0-0.6
 BuildRequires:	golang(github.com/golang/glog)
 BuildRequires:	golang(github.com/google/cadvisor)
@@ -73,7 +69,7 @@ BuildRequires:	golang(github.com/stretchr/testify)
 BuildRequires:	golang(github.com/tonnerre/golang-pretty)
 BuildRequires:	golang(github.com/vaughan0/go-ini)
 BuildRequires:	golang(gopkg.in/v1/yaml)
-
+%endif
 
 %description
 %{summary}
@@ -83,57 +79,46 @@ BuildRequires:	golang(gopkg.in/v1/yaml)
 
 %build
 export KUBE_GIT_COMMIT=%{commit}
-export KUBE_GIT_TREE_STATE="dirty"
-export KUBE_GIT_VERSION=v%{version}
+export KUBE_GIT_VERSION=v0.5-105-g3f74a1e9f56b3c
 
+%if 0%{?fedora}
+export KUBE_GIT_TREE_STATE="dirty"
 export KUBE_EXTRA_GOPATH=%{gopath}
 export KUBE_NO_GODEPS="true"
+%endif
 
-. hack/config-go.sh
-
-kube::setup_go_environment
-
-version_ldflags=$(kube::version_ldflags)
-
-targets=($(kube::default_build_targets))
-targets+=("cmd/integration")
-binaries=($(kube::binaries_from_targets "${targets[@]}"))
-
-for binary in ${binaries[@]}; do
-  bin=$(basename "${binary}")
-  echo "+++ Building ${bin}"
-  go build -o "${KUBE_TARGET}/bin/${bin}" \
-        "${goflags[@]:+${goflags[@]}}" \
-        -ldflags "${version_ldflags}" \
-        "${binary}"
-done
+hack/build-go.sh --use_go_build
 
 %check
+%if 0%{?fedora}
 export KUBE_EXTRA_GOPATH=%{gopath}
 export KUBE_NO_GODEPS="true"
-export KUBE_NO_BUILD_INTEGRATION="true"
-exit
+%endif
+
 echo "******Testing the commands*****"
 hack/test-cmd.sh
+echo "******Benchmarking kube********"
+hack/benchmark-go.sh
+
 # In Fedora 20 and RHEL7 the go cover tools isn't available correctly
 %if 0%{?fedora} >= 21
 echo "******Testing the go code******"
 hack/test-go.sh
 echo "******Testing integration******"
-hack/test-integration.sh
+hack/test-integration.sh --use_go_build
 %endif
-echo "******Benchmarking kube********"
-hack/benchmark-go.sh
 
 %install
+. hack/lib/init.sh
+kube::golang::setup_env
+
+output_path="${KUBE_OUTPUT_BINPATH}/$(kube::golang::current_platform)"
+
+binaries=(kube-apiserver kube-controller-manager kube-scheduler kube-proxy kubelet kubectl)
 install -m 755 -d %{buildroot}%{_bindir}
-for bin in %{prefixed_binaries}; do
+for bin in "${binaries[@]}"; do
   echo "+++ INSTALLING ${bin}"
-  install -p -m 755 _output/go/bin/${bin} %{buildroot}%{_bindir}/kube-${bin}
-done
-for bin in %{nonprefixed_binaries}; do
-  echo "+++ INSTALLING ${bin}"
-  install -p -m 755 _output/go/bin/${bin} %{buildroot}%{_bindir}/${bin}
+  install -p -m 755 -t %{buildroot}%{_bindir} ${output_path}/${bin}
 done
 
 # install the bash completion
@@ -193,6 +178,50 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Fri Nov 21 2014 Eric Paris <eparis@redhat.com> - 0.5-105.0.git3f74a1e
+- Bump to upstream 3f74a1e9f56b3c3502762930c0c551ccab0557ea
+
+* Thu Nov 20 2014 Eric Paris <eparis@redhat.com> - 0.5-65.0.gitc6158b8
+- Bump to upstream c6158b8aa9c40fbf1732650a8611429536466b21
+- include go-restful build requirement
+
+* Tue Nov 18 2014 Eric Paris <eparis@redhat.com> - 0.5-14.0.gitdf0981b
+- Bump to upstream df0981bc01c5782ad30fc45cb6f510f365737fc1
+
+* Tue Nov 11 2014 Eric Paris <eparis@redhat.com> - 0.4-680.0.git30fcf24
+- Bump to upstream 30fcf241312f6d0767c7d9305b4c462f1655f790
+
+* Mon Nov 10 2014 Eric Paris <eparis@redhat.com> - 0.4-633.0.git6c70227
+- Bump to upstream 6c70227a2eccc23966d32ea6d558ee05df46e400
+
+* Fri Nov 07 2014 Eric Paris <eparis@redhat.com> - 0.4-595.0.gitb695650
+- Bump to upstream b6956506fa2682afa93770a58ea8c7ba4b4caec1
+
+* Thu Nov 06 2014 Eric Paris <eparis@redhat.com> - 0.4-567.0.git3b1ef73
+- Bump to upstream 3b1ef739d1fb32a822a22216fb965e22cdd28e7f
+
+* Thu Nov 06 2014 Eric Paris <eparis@redhat.com> - 0.4-561.0.git06633bf
+- Bump to upstream 06633bf4cdc1ebd4fc848f85025e14a794b017b4
+- Make spec file more RHEL/CentOS friendly
+
+* Tue Nov 04 2014 Eric Paris <eparis@redhat.com - 0.4-510.0.git5a649f2
+- Bump to upstream 5a649f2b9360a756fc8124897d3453a5fa9473a6
+
+* Mon Nov 03 2014 Eric Paris <eparis@redhat.com - 0.4-477.0.gita4abafe
+- Bump to upstream a4abafea02babc529c9b5b9c825ba0bb3eec74c6
+
+* Mon Nov 03 2014 Eric Paris <eparis@redhat.com - 0.4-453.0.git808be2d
+- Bump to upstream 808be2d13b7bf14a3cf6985bc7c9d02f48a3d1e0
+- Includes upstream change to remove --machines from the APIServer
+- Port to new build system
+- Start running %check tests again
+
+* Fri Oct 31 2014 Eric Paris <eparis@redhat.com - 0.4+-426.0.gita18cdac
+- Bump to upstream a18cdac616962a2c486feb22afa3538fc3cf3a3a
+
+* Thu Oct 30 2014 Eric Paris <eparis@redhat.com - 0.4+-397.0.git78df011
+- Bump to upstream 78df01172af5cc132b7276afb668d31e91e61c11
+
 * Wed Oct 29 2014 Eric Paris <eparis@redhat.com - 0.4+-0.9.git8e1d416
 - Bump to upstream 8e1d41670783cb75cf0c5088f199961a7d8e05e5
 

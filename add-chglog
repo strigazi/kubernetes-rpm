@@ -1,0 +1,117 @@
+#!/usr/bin/python -t
+# -*- mode: Python; indent-tabs-mode: nil; coding: utf-8 -*-
+#
+# Copyright (c) 2005-2013 Fedora Project
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+
+import re
+import subprocess
+import sys
+import textwrap
+import time
+from optparse import OptionParser
+
+
+__version__ = "1.0.12"
+
+class SpecFile:
+    def __init__(self, filename):
+        self.filename = filename
+        f = None
+        try:
+            f = open(filename,"r")
+            self.lines = f.readlines()
+        finally:
+            f and f.close()
+
+    _changelog_pattern = re.compile(r"^%changelog(\s|$)", re.I)
+
+    def addChangelogEntry(self, evr, entry, email):
+        for i in range(len(self.lines)):
+            if SpecFile._changelog_pattern.match(self.lines[i]):
+                if len(evr):
+                    evrstring = ' - %s' % evr
+                else:
+                    evrstring = ''
+                date = time.strftime("%a %b %d %Y", time.gmtime())
+                newchangelogentry = "* %s %s%s\n%s\n\n" % \
+                    (date, email, evrstring, entry)
+                self.lines[i] += newchangelogentry
+                return
+
+    def writeFile(self, filename):
+        f = open(filename, "w")
+        f.writelines(self.lines)
+        f.close()
+
+    def debugdiff(self, old, new):
+        print ('%s\n-%s\n+%s\n' % (self.filename, old, new))
+
+if __name__ == "__main__":
+    usage = '''Usage: %prog [OPTION]... SPECFILE...'''
+
+    userstring = subprocess.Popen("rpmdev-packager 2>/dev/null", shell = True,
+                                  stdout = subprocess.PIPE).communicate()[0]
+    userstring = userstring.strip() or None
+
+    parser = OptionParser(usage=usage)
+    parser.add_option("-c", "--comment", default='- rebuilt',
+                      help="changelog comment (default: \"- rebuilt\")")
+    parser.add_option("-u", "--userstring", default=userstring,
+                      help="user name+email string (default: output from "+
+                      "rpmdev-packager(1))")
+    (opts, args) = parser.parse_args()
+
+    if not args:
+        parser.error('No specfiles specified')
+
+    if not opts.userstring:
+        parser.error('Userstring required, see option -u')
+
+    # Grab bullet, insert one if not found.
+    bullet_re = re.compile(r'^([^\s\w])\s', re.UNICODE)
+    bullet = "-"
+    match = bullet_re.search(opts.comment)
+    if match:
+        bullet = match.group(1)
+    else:
+        opts.comment = bullet + " " + opts.comment
+
+    # Format comment.
+    if opts.comment.find("\n") == -1:
+        wrapopts = { "subsequent_indent": (len(bullet)+1) * " ",
+                     "break_long_words":  False }
+        if sys.version_info[:2] > (2, 5):
+            wrapopts["break_on_hyphens"] = False
+        opts.comment = textwrap.fill(opts.comment, 80, **wrapopts)
+
+    for aspec in args:
+        try:
+            s = SpecFile(aspec)
+        except:
+            # Not actually a parser error, but... meh.
+            parser.error(sys.exc_info()[1])
+
+        # Get EVR for changelog entry.
+        cmd = ("rpm", "-q", "--specfile", "--define", "dist %{nil}",
+               "--qf=%|epoch?{%{epoch}:}:{}|%{version}-%{release}\n", aspec)
+        popen = subprocess.Popen(cmd, stdout = subprocess.PIPE)
+        evr = str(popen.communicate()[0]).split("\n")[0]
+
+        s.addChangelogEntry(evr, opts.comment, opts.userstring)
+        s.writeFile(aspec)
+
+sys.exit(0)

@@ -30,17 +30,18 @@ Requires:	docker-io
 %endif
 
 Requires:	etcd
-Requires:	cadvisor
 
 Requires(pre):	shadow-utils
 
 BuildRequires:	git
 BuildRequires:	golang >= 1.2-7
 BuildRequires:	systemd
-BuildRequires:	golang-cover
 BuildRequires:	etcd
 
 %if 0%{?fedora}
+# needed for go cover.  Not available in RHEL/CentOS (available in Fedora/EPEL)
+BuildRequires:	golang-cover
+
 BuildRequires:	golang(code.google.com/p/gcfg)
 BuildRequires:	golang(code.google.com/p/goauth2)
 BuildRequires:	golang(code.google.com/p/go.net/context)
@@ -78,6 +79,7 @@ BuildRequires:	golang(gopkg.in/v1/yaml)
 %autosetup -Sgit -n %{name}-%{commit}
 
 %build
+export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
 export KUBE_GIT_VERSION=v0.5-125-g162e4983b947d2
 

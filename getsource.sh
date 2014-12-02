@@ -16,9 +16,12 @@ since_tag=0
 if [[ "${KUBE_GIT_VERSION}" =~ ^v([0-9]+)\.([0-9]+)\-([0-9]+)\-(.*)?$ ]]; then
   git_major=${BASH_REMATCH[1]}
   git_minor=${BASH_REMATCH[2]}
-  if [[ -n "${BASH_REMATCH[3]}" ]]; then
-    since_tag=${BASH_REMATCH[3]}
-  fi
+  since_tag=${BASH_REMATCH[3]}
+# handle version like 0.4.2 (although we just ignore the .2 portion...)
+elif [[ "${KUBE_GIT_VERSION}" =~ ^v([0-9]+)\.([0-9]+)\.([0-9]+)\-([0-9]+)\-(.*)?$ ]]; then
+  git_major=${BASH_REMATCH[1]}
+  git_minor=${BASH_REMATCH[2]}
+  since_tag=${BASH_REMATCH[4]}
 fi
 
 #put the git hash in as the commit

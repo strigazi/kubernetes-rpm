@@ -1,7 +1,7 @@
 #debuginfo not supported with Go
 %global debug_package	%{nil}
 %global import_path	github.com/GoogleCloudPlatform/kubernetes
-%global commit		3f74a1e9f56b3c3502762930c0c551ccab0557ea
+%global commit		993ef88eec9012b221f79abe8f2932ee97997d28
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
@@ -10,8 +10,8 @@
 %global _checkshell	/bin/bash
 
 Name:		kubernetes
-Version:	0.5
-Release:	105.0.git%{shortcommit}%{?dist}
+Version:	0.6
+Release:	4.0.git%{shortcommit}%{?dist}
 Summary:	Container cluster management
 License:	ASL 2.0
 URL:		https://github.com/GoogleCloudPlatform/kubernetes
@@ -30,17 +30,18 @@ Requires:	docker-io
 %endif
 
 Requires:	etcd
-Requires:	cadvisor
 
 Requires(pre):	shadow-utils
 
 BuildRequires:	git
 BuildRequires:	golang >= 1.2-7
 BuildRequires:	systemd
-BuildRequires:	golang-cover
 BuildRequires:	etcd
 
 %if 0%{?fedora}
+# needed for go cover.  Not available in RHEL/CentOS (available in Fedora/EPEL)
+BuildRequires:	golang-cover
+
 BuildRequires:	golang(code.google.com/p/gcfg)
 BuildRequires:	golang(code.google.com/p/goauth2)
 BuildRequires:	golang(code.google.com/p/go.net/context)
@@ -78,8 +79,9 @@ BuildRequires:	golang(gopkg.in/v1/yaml)
 %autosetup -Sgit -n %{name}-%{commit}
 
 %build
+export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
-export KUBE_GIT_VERSION=v0.5-105-g3f74a1e9f56b3c
+export KUBE_GIT_VERSION=v0.6.0-4-g993ef88eec9012
 
 %if 0%{?fedora}
 export KUBE_GIT_TREE_STATE="dirty"
@@ -178,6 +180,21 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Tue Dec 02 2014 Eric Paris <eparis@redhat.com> - 0.6-4.0.git993ef88
+- Bump to upstream 993ef88eec9012b221f79abe8f2932ee97997d28
+
+* Mon Dec 01 2014 Eric Paris <eparis@redhat.com> - 0.5-235.0.git6aabd98
+- Bump to upstream 6aabd9804fb75764b70e9172774002d4febcae34
+
+* Wed Nov 26 2014 Eric Paris <eparis@redhat.com> - 0.5-210.0.gitff1e9f4
+- Bump to upstream ff1e9f4c191342c24974c030e82aceaff8ea9c24
+
+* Tue Nov 25 2014 Eric Paris <eparis@redhat.com> - 0.5-174.0.git64e07f7
+- Bump to upstream 64e07f7fe03d8692c685b09770c45f364967a119
+
+* Mon Nov 24 2014 Eric Paris <eparis@redhat.com> - 0.5-125.0.git162e498
+- Bump to upstream 162e4983b947d2f6f858ca7607869d70627f5dff
+
 * Fri Nov 21 2014 Eric Paris <eparis@redhat.com> - 0.5-105.0.git3f74a1e
 - Bump to upstream 3f74a1e9f56b3c3502762930c0c551ccab0557ea
 

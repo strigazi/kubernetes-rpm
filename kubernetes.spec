@@ -1,7 +1,7 @@
 #debuginfo not supported with Go
 %global debug_package	%{nil}
 %global import_path	github.com/GoogleCloudPlatform/kubernetes
-%global commit		993ef88eec9012b221f79abe8f2932ee97997d28
+%global commit		52e165a4fd720d1703ebc31bd6660e01334227b8
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
@@ -10,8 +10,8 @@
 %global _checkshell	/bin/bash
 
 Name:		kubernetes
-Version:	0.6
-Release:	4.0.git%{shortcommit}%{?dist}
+Version:	0.7.0
+Release:	18.0.git%{shortcommit}%{?dist}
 Summary:	Container cluster management
 License:	ASL 2.0
 URL:		https://github.com/GoogleCloudPlatform/kubernetes
@@ -20,7 +20,6 @@ Source0:	https://github.com/GoogleCloudPlatform/kubernetes/archive/%{commit}/kub
 
 %if 0%{?fedora}
 Patch1:		0001-remove-all-third-party-software.patch
-Patch2:		0002-revert-to-code.google.com-p-go.net-until-fedora-pack.patch
 %endif
 
 %if 0%{?fedora} >= 21 || 0%{?rhel}
@@ -44,17 +43,16 @@ BuildRequires:	golang-cover
 
 BuildRequires:	golang(code.google.com/p/gcfg)
 BuildRequires:	golang(code.google.com/p/goauth2)
-BuildRequires:	golang(code.google.com/p/go.net/context)
-BuildRequires:	golang(code.google.com/p/go.net/html)
-BuildRequires:	golang(code.google.com/p/go.net/websocket)
 BuildRequires:	golang(code.google.com/p/google-api-go-client) > 0-0.3
 BuildRequires:	golang(code.google.com/p/go-uuid)
 BuildRequires:	golang(github.com/coreos/go-etcd/etcd)
+BuildRequires:	golang(github.com/davecgh/go-spew/spew)
 BuildRequires:	golang(github.com/elazarl/go-bindata-assetfs)
 BuildRequires:	golang(github.com/emicklei/go-restful)
 BuildRequires:	golang(github.com/fsouza/go-dockerclient) > 0-0.6
+BuildRequires:	golang(github.com/ghodss/yaml)
 BuildRequires:	golang(github.com/golang/glog)
-BuildRequires:	golang(github.com/google/cadvisor)
+BuildRequires:	golang(github.com/google/cadvisor) >= 0.6.2
 BuildRequires:	golang(github.com/google/gofuzz)
 BuildRequires:	golang(github.com/kr/text)
 BuildRequires:	golang(github.com/mitchellh/goamz/aws)
@@ -69,7 +67,10 @@ BuildRequires:	golang(github.com/stretchr/objx)
 BuildRequires:	golang(github.com/stretchr/testify)
 BuildRequires:	golang(github.com/tonnerre/golang-pretty)
 BuildRequires:	golang(github.com/vaughan0/go-ini)
-BuildRequires:	golang(gopkg.in/v1/yaml)
+BuildRequires:	golang(golang.org/x/net/context)
+BuildRequires:	golang(golang.org/x/net/html)
+BuildRequires:	golang(golang.org/x/net/websocket)
+BuildRequires:	golang(gopkg.in/v2/yaml)
 %endif
 
 %description
@@ -81,7 +82,7 @@ BuildRequires:	golang(gopkg.in/v1/yaml)
 %build
 export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
-export KUBE_GIT_VERSION=v0.6.0-4-g993ef88eec9012
+export KUBE_GIT_VERSION=v0.7.0-18-g52e165a4fd720d
 
 %if 0%{?fedora}
 export KUBE_GIT_TREE_STATE="dirty"
@@ -180,6 +181,15 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Tue Dec 16 2014 Eric Paris <eparis@redhat.com> - 0.7.0-18.0.git52e165a
+- Bump to upstream 52e165a4fd720d1703ebc31bd6660e01334227b8
+
+* Mon Dec 15 2014 Eric Paris <eparis@redhat.com> - 0.6-297.0.git5ef34bf
+- Bump to upstream 5ef34bf52311901b997119cc49eff944c610081b
+
+* Wed Dec 03 2014 Eric Paris <eparis@redhat.com>
+- Replace patch to use old googlecode/go.net/ with BuildRequires on golang.org/x/net/
+
 * Tue Dec 02 2014 Eric Paris <eparis@redhat.com> - 0.6-4.0.git993ef88
 - Bump to upstream 993ef88eec9012b221f79abe8f2932ee97997d28
 

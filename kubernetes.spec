@@ -11,7 +11,7 @@
 
 Name:		kubernetes
 Version:	0.8.0
-Release:	125.0.git%{shortcommit}%{?dist}
+Release:	126.0.git%{shortcommit}%{?dist}
 Summary:	Container cluster management
 License:	ASL 2.0
 URL:		https://github.com/GoogleCloudPlatform/kubernetes
@@ -41,6 +41,9 @@ BuildRequires:	etcd
 # needed for go cover.  Not available in RHEL/CentOS (available in Fedora/EPEL)
 BuildRequires:	golang-cover
 
+BuildRequires:	golang(github.com/Sirupsen/logrus)
+BuildRequires:	golang(speter.net/go/exp/math/dec/inf)
+BuildRequires:	golang(github.com/rackspace/gophercloud/openstack)
 BuildRequires:	golang(code.google.com/p/gcfg)
 BuildRequires:	golang(code.google.com/p/goauth2)
 BuildRequires:	golang(code.google.com/p/google-api-go-client) > 0-0.3
@@ -54,11 +57,8 @@ BuildRequires:	golang(github.com/ghodss/yaml)
 BuildRequires:	golang(github.com/golang/glog)
 BuildRequires:	golang(github.com/google/cadvisor) >= 0.6.2
 BuildRequires:	golang(github.com/google/gofuzz)
-BuildRequires:	golang(github.com/kr/text)
 BuildRequires:	golang(github.com/mitchellh/goamz/aws)
 BuildRequires:	golang(github.com/mitchellh/goamz/ec2)
-BuildRequires:	golang(github.com/mitchellh/mapstructure)
-BuildRequires:	golang(github.com/racker/perigee)
 BuildRequires:	golang(github.com/rackspace/gophercloud)
 BuildRequires:	golang(github.com/skratchdot/open-golang/open)
 BuildRequires:	golang(github.com/spf13/cobra)
@@ -181,6 +181,9 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Sun Jan 18 2015 jchaloup <jchaloup@redhat.com> - 0.8.0-126.0.git68298f0
+- Add some missing dependencies
+
 * Fri Jan 09 2015 Eric Paris <eparis@redhat.com> - 0.8.0-125.0.git68298f0
 - Bump to upstream 68298f08a4980f95dfbf7b9f58bfec1808fb2670
 

@@ -1,7 +1,11 @@
 #debuginfo not supported with Go
 %global debug_package	%{nil}
-%global import_path	github.com/GoogleCloudPlatform/kubernetes
-%global commit		68298f08a4980f95dfbf7b9f58bfec1808fb2670
+%global provider        github
+%global provider_tld    com
+%global project         GoogleCloudPlatform
+%global repo            kubernetes
+%global import_path     %{provider}.%{provider_tld}/%{project}/%{repo}
+%global commit		5b046406a957a1e7eda7c0c86dd7a89e9c94fc5f
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
@@ -10,17 +14,13 @@
 %global _checkshell	/bin/bash
 
 Name:		kubernetes
-Version:	0.8.0
-Release:	126.0.git%{shortcommit}%{?dist}
+Version:	0.8.2
+Release:	0.1.git%{shortcommit}%{?dist}
 Summary:	Container cluster management
 License:	ASL 2.0
 URL:		https://github.com/GoogleCloudPlatform/kubernetes
 ExclusiveArch:	x86_64
 Source0:	https://github.com/GoogleCloudPlatform/kubernetes/archive/%{commit}/kubernetes-%{shortcommit}.tar.gz
-
-%if 0%{?fedora}
-Patch1:		0001-remove-all-third-party-software.patch
-%endif
 
 %if 0%{?fedora} >= 21 || 0%{?rhel}
 Requires:	docker
@@ -378,6 +378,9 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Wed Jan 21 2015 jchaloup <jchaloup@redhat.com> - 0.8.2-0.1.git5b04640
+- Bump to upstream 5b046406a957a1e7eda7c0c86dd7a89e9c94fc5f
+
 * Sun Jan 18 2015 jchaloup <jchaloup@redhat.com> - 0.8.0-126.0.git68298f0
 - Add some missing dependencies
 - Add devel subpackage

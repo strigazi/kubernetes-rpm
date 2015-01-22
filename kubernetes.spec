@@ -5,7 +5,7 @@
 %global project		GoogleCloudPlatform
 %global repo		kubernetes
 %global import_path	%{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit		5b046406a957a1e7eda7c0c86dd7a89e9c94fc5f
+%global commit		b2f287c259d856f4c08052a51cd7772c563aff77
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
@@ -15,14 +15,12 @@
 
 Name:		kubernetes
 Version:	0.8.2
-Release:	0.1.git%{shortcommit}%{?dist}
+Release:	571.git%{shortcommit}%{?dist}
 Summary:	Container cluster management
 License:	ASL 2.0
 URL:		https://github.com/GoogleCloudPlatform/kubernetes
 ExclusiveArch:	x86_64
 Source0:	https://github.com/GoogleCloudPlatform/kubernetes/archive/%{commit}/kubernetes-%{shortcommit}.tar.gz
-
-Patch1:		Use-docker.service-not-docker.socket-in-unit-files.patch
 
 %if 0%{?fedora} >= 21 || 0%{?rhel}
 Requires:	docker
@@ -381,7 +379,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
-* Thu Jan 22 2015 Eric Paris <eparis@redhat.com>
+* Thu Jan 22 2015 jchaloup <jchaloup@redhat.com> - 0.8.2-571.gitb2f287c
++- Bump to upstream b2f287c259d856f4c08052a51cd7772c563aff77
+
+* Thu Jan 22 2015 Eric Paris <eparis@redhat.com> - 0.8.2-570.gitb2f287c
 - patch kubelet service file to use docker.service not docker.socket
 
 * Wed Jan 21 2015 jchaloup <jchaloup@redhat.com> - 0.8.2-0.1.git5b04640

@@ -1,10 +1,10 @@
 #debuginfo not supported with Go
 %global debug_package	%{nil}
-%global provider        github
-%global provider_tld    com
-%global project         GoogleCloudPlatform
-%global repo            kubernetes
-%global import_path     %{provider}.%{provider_tld}/%{project}/%{repo}
+%global provider	github
+%global provider_tld	com
+%global project		GoogleCloudPlatform
+%global repo		kubernetes
+%global import_path	%{provider}.%{provider_tld}/%{project}/%{repo}
 %global commit		5b046406a957a1e7eda7c0c86dd7a89e9c94fc5f
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
@@ -36,6 +36,7 @@ BuildRequires:	git
 BuildRequires:	golang >= 1.2-7
 BuildRequires:	systemd
 BuildRequires:	etcd
+BuildRequires:	hostname
 
 %if 0%{?fedora}
 # needed for go cover.  Not available in RHEL/CentOS (available in Fedora/EPEL)

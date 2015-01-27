@@ -5,7 +5,7 @@
 %global project		GoogleCloudPlatform
 %global repo		kubernetes
 %global import_path	%{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit		b2f287c259d856f4c08052a51cd7772c563aff77
+%global commit		3623a01bf0e90de6345147eef62894057fe04b29
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
@@ -14,8 +14,8 @@
 %global _checkshell	/bin/bash
 
 Name:		kubernetes
-Version:	0.8.2
-Release:	571.git%{shortcommit}%{?dist}
+Version:	0.9.1
+Release:	0.1.git%{shortcommit}%{?dist}
 Summary:	Container cluster management
 License:	ASL 2.0
 URL:		https://github.com/GoogleCloudPlatform/kubernetes
@@ -39,6 +39,8 @@ BuildRequires:	etcd
 BuildRequires:	hostname
 
 %if 0%{?fedora}
+Patch1: 0001-patch.patch
+
 # needed for go cover.  Not available in RHEL/CentOS (available in Fedora/EPEL)
 BuildRequires:	golang-cover
 
@@ -50,8 +52,12 @@ BuildRequires:	golang(github.com/Sirupsen/logrus)
 BuildRequires:	golang(speter.net/go/exp/math/dec/inf)
 BuildRequires:	golang(github.com/rackspace/gophercloud/openstack)
 BuildRequires:	golang(code.google.com/p/gcfg)
-BuildRequires:	golang(code.google.com/p/goauth2)
-BuildRequires:	golang(code.google.com/p/google-api-go-client) > 0-0.3
+BuildRequires:	golang(golang.org/x/oauth2)
+
+BuildRequires:  golang(google.golang.org/api/compute/v1)
+BuildRequires:  golang(google.golang.org/api/container/v1beta1)
+BuildRequires:  golang(google.golang.org/api/googleapi)
+BuildRequires:  golang(google.golang.org/api/googleapi/internal/uritemplates)
 BuildRequires:	golang(code.google.com/p/go-uuid)
 BuildRequires:	golang(github.com/coreos/go-etcd/etcd)
 BuildRequires:	golang(github.com/davecgh/go-spew/spew)
@@ -85,8 +91,10 @@ BuildRequires:	golang(gopkg.in/v2/yaml)
 Summary:       %{summary}
 BuildRequires: golang >= 1.2.1-3
 BuildRequires: golang(github.com/spf13/cobra)
-BuildRequires: golang(code.google.com/p/google-api-go-client/compute/v1)
-BuildRequires: golang(code.google.com/p/google-api-go-client/container/v1beta1)
+BuildRequires: golang(google.golang.org/api/compute/v1)
+BuildRequires: golang(google.golang.org/api/container/v1beta1)
+BuildRequires: golang(google.golang.org/api/googleapi)
+BuildRequires: golang(google.golang.org/api/googleapi/internal/uritemplates)
 BuildRequires: golang(speter.net/go/exp/math/dec/inf)
 BuildRequires: golang(github.com/ghodss/yaml)
 BuildRequires: golang(gopkg.in/v2/yaml)
@@ -107,7 +115,11 @@ BuildRequires: golang(github.com/fsouza/go-dockerclient)
 BuildRequires: golang(github.com/mitchellh/goamz/aws)
 BuildRequires: golang(github.com/mitchellh/goamz/ec2)
 BuildRequires: golang(github.com/elazarl/go-bindata-assetfs)
-BuildRequires: golang(code.google.com/p/goauth2/compute/serviceaccount)
+BuildRequires: golang(golang.org/x/oauth2)
+BuildRequires: golang(golang.org/x/oauth2/google)
+BuildRequires: golang(golang.org/x/oauth2/internal)
+BuildRequires: golang(golang.org/x/oauth2/jws)
+BuildRequires: golang(golang.org/x/oauth2/jwt)
 BuildRequires: golang(github.com/skynetservices/skydns/msg)
 BuildRequires: golang(github.com/imdario/mergo)
 BuildRequires: golang(github.com/spf13/pflag)
@@ -117,8 +129,10 @@ BuildRequires: golang(github.com/google/cadvisor/client)
 BuildRequires: golang(github.com/google/cadvisor/info)
 
 Requires: golang(github.com/spf13/cobra)
-Requires: golang(code.google.com/p/google-api-go-client/compute/v1)
-Requires: golang(code.google.com/p/google-api-go-client/container/v1beta1)
+Requires: golang(google.golang.org/api/compute/v1)
+Requires: golang(google.golang.org/api/container/v1beta1)
+Requires: golang(google.golang.org/api/googleapi)
+Requires: golang(google.golang.org/api/googleapi/internal/uritemplates)
 Requires: golang(speter.net/go/exp/math/dec/inf)
 Requires: golang(github.com/ghodss/yaml)
 Requires: golang(gopkg.in/v2/yaml)
@@ -139,7 +153,11 @@ Requires: golang(github.com/fsouza/go-dockerclient)
 Requires: golang(github.com/mitchellh/goamz/aws)
 Requires: golang(github.com/mitchellh/goamz/ec2)
 Requires: golang(github.com/elazarl/go-bindata-assetfs)
-Requires: golang(code.google.com/p/goauth2/compute/serviceaccount)
+Requires: golang(golang.org/x/oauth2)
+Requires: golang(golang.org/x/oauth2/google)
+Requires: golang(golang.org/x/oauth2/internal)
+Requires: golang(golang.org/x/oauth2/jws)
+Requires: golang(golang.org/x/oauth2/jwt)
 Requires: golang(github.com/skynetservices/skydns/msg)
 Requires: golang(github.com/imdario/mergo)
 Requires: golang(github.com/spf13/pflag)
@@ -280,7 +298,7 @@ building other packages which use %{project}/%{repo}.
 %build
 export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
-export KUBE_GIT_VERSION=v0.8.0-125-g68298f08a4980f
+export KUBE_GIT_VERSION=v0.9.1
 
 %if 0%{?fedora}
 export KUBE_GIT_TREE_STATE="dirty"
@@ -379,6 +397,9 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Tue Jan 27 2015 jchaloup <jchaloup@redhat.com> - 0.9.1-0.1.git3623a01
+- Bump to upstream 3623a01bf0e90de6345147eef62894057fe04b29
+
 * Thu Jan 22 2015 jchaloup <jchaloup@redhat.com> - 0.8.2-571.gitb2f287c
 +- Bump to upstream b2f287c259d856f4c08052a51cd7772c563aff77
 

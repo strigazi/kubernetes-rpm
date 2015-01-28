@@ -1,0 +1,32 @@
+From 8f1eb1cd89d155aee111b69db8b1b6af119a1422 Mon Sep 17 00:00:00 2001
+From: rpm-build <rpm-build>
+Date: Wed, 28 Jan 2015 18:41:42 +0100
+Subject: [PATCH] update tests to etcd-2.0
+
+---
+ hack/lib/etcd.sh | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/hack/lib/etcd.sh b/hack/lib/etcd.sh
+index a783454..917649a 100644
+--- a/hack/lib/etcd.sh
++++ b/hack/lib/etcd.sh
+@@ -32,10 +32,13 @@ kube::etcd::start() {
+ 
+   # Start etcd
+   ETCD_DIR=$(mktemp -d -t test-etcd.XXXXXX)
+-  etcd -name test -data-dir ${ETCD_DIR} -addr ${host}:${port} >/dev/null 2>/dev/null &
++  etcd -name default -data-dir ${ETCD_DIR} -addr ${host}:${port} >/dev/null 2>/dev/null &
+   ETCD_PID=$!
+ 
+-  kube::util::wait_for_url "http://${host}:${port}/v2/keys/" "etcd: "
++  # no key => error on http://127.0.0.1:4001/v2/keys => test version
++  kube::util::wait_for_url "http://${host}:${port}/version" "etcd: "
++  # no key => error on http://127.0.0.1:4001/v2/keys => fails on integration test => add one key
++  curl -L http://${host}:${port}/v2/keys/kube_etcd_test_key -XPUT -d value="kube_etcd_test_key value"
+ }
+ 
+ kube::etcd::cleanup() {
+-- 
+1.9.3
+

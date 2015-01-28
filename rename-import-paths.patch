@@ -1,0 +1,27 @@
+From 3eedc089ba9be8ac3c11bae084b95b8c34728a48 Mon Sep 17 00:00:00 2001
+From: rpm-build <rpm-build>
+Date: Fri, 23 Jan 2015 15:05:29 +0100
+Subject: [PATCH] patch
+
+---
+ pkg/cloudprovider/gce/gce.go | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/pkg/cloudprovider/gce/gce.go b/pkg/cloudprovider/gce/gce.go
+index 65e62f6..b240ac6 100644
+--- a/pkg/cloudprovider/gce/gce.go
++++ b/pkg/cloudprovider/gce/gce.go
+@@ -32,8 +32,8 @@ import (
+ 	"github.com/GoogleCloudPlatform/kubernetes/pkg/api/resource"
+ 	"github.com/GoogleCloudPlatform/kubernetes/pkg/cloudprovider"
+ 
+-	compute "code.google.com/p/google-api-go-client/compute/v1"
+-	container "code.google.com/p/google-api-go-client/container/v1beta1"
++	compute "google.golang.org/api/compute/v1"
++	container "google.golang.org/api/container/v1beta1"
+ 	"github.com/golang/glog"
+ 	"golang.org/x/oauth2"
+ 	"golang.org/x/oauth2/google"
+-- 
+1.9.3
+

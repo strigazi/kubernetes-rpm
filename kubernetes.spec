@@ -39,7 +39,8 @@ BuildRequires:	etcd
 BuildRequires:	hostname
 
 %if 0%{?fedora}
-Patch1: 0001-patch.patch
+Patch1: rename-import-paths.patch
+Patch2: update-tests-to-etcd-2.0.patch
 
 # needed for go cover.  Not available in RHEL/CentOS (available in Fedora/EPEL)
 BuildRequires:	golang-cover
@@ -359,6 +360,12 @@ install -p -m 644 docs/man/man1/* %{buildroot}%{_mandir}/man1
 # install the place the kubelet defaults to put volumes
 install -d %{buildroot}/var/lib/kubelet
 
+# install devel source codes
+install -d %{buildroot}/%{gopath}/src/%{import_path}
+for d in build cluster cmd contrib examples hack pkg plugin test; do
+    cp -rpav $d %{buildroot}/%{gopath}/src/%{import_path}/
+done
+
 %files
 %doc README.md LICENSE CONTRIB.md CONTRIBUTING.md DESIGN.md
 %{_mandir}/man1/*
@@ -383,6 +390,11 @@ install -d %{buildroot}/var/lib/kubelet
 %config(noreplace) %{_sysconfdir}/%{name}/kubelet
 %config(noreplace) %{_sysconfdir}/%{name}/scheduler
 
+%files devel
+%doc README.md LICENSE CONTRIB.md CONTRIBUTING.md DESIGN.md
+%dir %{gopath}/src/%{provider}.%{provider_tld}/%{project}
+%{gopath}/src/%{import_path}
+
 %pre
 getent group kube >/dev/null || groupadd -r kube
 getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
@@ -399,6 +411,7 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %changelog
 * Tue Jan 27 2015 jchaloup <jchaloup@redhat.com> - 0.9.1-0.1.git3623a01
 - Bump to upstream 3623a01bf0e90de6345147eef62894057fe04b29
+- update tests for etcd-2.0
 
 * Thu Jan 22 2015 jchaloup <jchaloup@redhat.com> - 0.8.2-571.gitb2f287c
 +- Bump to upstream b2f287c259d856f4c08052a51cd7772c563aff77

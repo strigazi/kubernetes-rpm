@@ -5,7 +5,7 @@
 %global project		GoogleCloudPlatform
 %global repo		kubernetes
 %global import_path	%{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit		3623a01bf0e90de6345147eef62894057fe04b29
+%global commit		ca6de16df7762d4fc9b4ad44baa78d22e3f30742
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
@@ -85,6 +85,7 @@ BuildRequires:	golang(golang.org/x/net/context)
 BuildRequires:	golang(golang.org/x/net/html)
 BuildRequires:	golang(golang.org/x/net/websocket)
 BuildRequires:	golang(gopkg.in/v2/yaml)
+BuildRequires:  golang(github.com/onsi/ginkgo)
 %endif
 
 %description
@@ -411,7 +412,8 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
-* Fri Feb 06 2015 jchaloup <jchaloup@redhat.com> - 0.9.1-0.2.git3623a01
+* Thu Jan 29 2015 jchaloup <jchaloup@redhat.com> - 0.9.1-0.2.gitca6de16
+- Bump to upstream ca6de16df7762d4fc9b4ad44baa78d22e3f30742
 - Change docker.socket dependency to docker.service
   resolves: #1190192
 

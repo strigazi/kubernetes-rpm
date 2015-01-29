@@ -86,6 +86,7 @@ BuildRequires:	golang(golang.org/x/net/html)
 BuildRequires:	golang(golang.org/x/net/websocket)
 BuildRequires:	golang(gopkg.in/v2/yaml)
 BuildRequires:  golang(github.com/onsi/ginkgo)
+BuildRequires:  golang(github.com/onsi/gomega)
 %endif
 
 %description

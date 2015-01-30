@@ -5,7 +5,7 @@
 %global project		GoogleCloudPlatform
 %global repo		kubernetes
 %global import_path	%{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit		ca6de16df7762d4fc9b4ad44baa78d22e3f30742
+%global commit		55793ac2066745f7243c666316499e1a8cf074f0
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
@@ -15,7 +15,7 @@
 
 Name:		kubernetes
 Version:	0.9.1
-Release:	0.2.git%{shortcommit}%{?dist}
+Release:	0.3.git%{shortcommit}%{?dist}
 Summary:	Container cluster management
 License:	ASL 2.0
 URL:		https://github.com/GoogleCloudPlatform/kubernetes
@@ -42,7 +42,6 @@ BuildRequires:	hostname
 Patch0: Change-docker.socket-dependency-to-docker.service.patch
 %if 0%{?fedora}
 Patch1: rename-import-paths.patch
-Patch2: update-tests-to-etcd-2.0.patch
 
 # needed for go cover.  Not available in RHEL/CentOS (available in Fedora/EPEL)
 BuildRequires:	golang-cover
@@ -303,7 +302,7 @@ building other packages which use %{project}/%{repo}.
 %build
 export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
-export KUBE_GIT_VERSION=v0.9.1
+export KUBE_GIT_VERSION=v0.9.0-331-g55793ac2066745
 
 %if 0%{?fedora}
 export KUBE_GIT_TREE_STATE="dirty"
@@ -413,6 +412,9 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Fri Jan 30 2015 jchaloup <jchaloup@redhat.com> - 0.9.1-0.3.git55793ac
+- Bump to upstream 55793ac2066745f7243c666316499e1a8cf074f0
+
 * Thu Jan 29 2015 jchaloup <jchaloup@redhat.com> - 0.9.1-0.2.gitca6de16
 - Bump to upstream ca6de16df7762d4fc9b4ad44baa78d22e3f30742
 - Change docker.socket dependency to docker.service

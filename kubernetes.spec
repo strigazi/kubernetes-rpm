@@ -15,12 +15,13 @@
 
 Name:		kubernetes
 Version:	0.9.1
-Release:	0.1.git%{shortcommit}%{?dist}
+Release:	0.2.git%{shortcommit}%{?dist}
 Summary:	Container cluster management
 License:	ASL 2.0
 URL:		https://github.com/GoogleCloudPlatform/kubernetes
 ExclusiveArch:	x86_64
 Source0:	https://github.com/GoogleCloudPlatform/kubernetes/archive/%{commit}/kubernetes-%{shortcommit}.tar.gz
+
 
 %if 0%{?fedora} >= 21 || 0%{?rhel}
 Requires:	docker
@@ -38,6 +39,7 @@ BuildRequires:	systemd
 BuildRequires:	etcd
 BuildRequires:	hostname
 
+Patch0: Change-docker.socket-dependency-to-docker.service.patch
 %if 0%{?fedora}
 Patch1: rename-import-paths.patch
 Patch2: update-tests-to-etcd-2.0.patch
@@ -409,6 +411,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Fri Feb 06 2015 jchaloup <jchaloup@redhat.com> - 0.9.1-0.2.git3623a01
+- Change docker.socket dependency to docker.service
+  resolves: #1190192
+
 * Tue Jan 27 2015 jchaloup <jchaloup@redhat.com> - 0.9.1-0.1.git3623a01
 - Bump to upstream 3623a01bf0e90de6345147eef62894057fe04b29
 - update tests for etcd-2.0

@@ -1,0 +1,27 @@
+From f6feca113c856583968bc4f463d026b8296046bd Mon Sep 17 00:00:00 2001
+From: rpm-build <rpm-build>
+Date: Fri, 6 Feb 2015 18:01:06 +0100
+Subject: [PATCH] Change docker.socket dependency to docker.service
+
+---
+ contrib/init/systemd/kubelet.service | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/contrib/init/systemd/kubelet.service b/contrib/init/systemd/kubelet.service
+index 52b5b85..6990f29 100644
+--- a/contrib/init/systemd/kubelet.service
++++ b/contrib/init/systemd/kubelet.service
+@@ -1,8 +1,8 @@
+ [Unit]
+ Description=Kubernetes Kubelet Server
+ Documentation=https://github.com/GoogleCloudPlatform/kubernetes
+-After=docker.socket cadvisor.service
+-Requires=docker.socket
++After=docker.service cadvisor.service
++Requires=docker.service
+ 
+ [Service]
+ EnvironmentFile=-/etc/kubernetes/config
+-- 
+1.9.3
+

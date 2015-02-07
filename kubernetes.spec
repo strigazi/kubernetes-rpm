@@ -5,7 +5,7 @@
 %global project		GoogleCloudPlatform
 %global repo		kubernetes
 %global import_path	%{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit		7f5ed541f794348ae6279414cf70523a4d5133cc
+%global commit		c9c98ab19eaa6f0b2ea17152c9a455338853f4d0
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
@@ -15,7 +15,7 @@
 
 Name:		kubernetes
 Version:	0.9.1
-Release:	0.6.git%{shortcommit}%{?dist}
+Release:	0.7.git%{shortcommit}%{?dist}
 Summary:	Container cluster management
 License:	ASL 2.0
 URL:		https://github.com/GoogleCloudPlatform/kubernetes
@@ -39,261 +39,13 @@ BuildRequires:	systemd
 BuildRequires:	etcd
 BuildRequires:	hostname
 
-%if 0%{?fedora}
-Patch1: rename-import-paths.patch
-
+%if 0%{?fedora} 
 # needed for go cover.  Not available in RHEL/CentOS (available in Fedora/EPEL)
 BuildRequires:	golang-cover
-
-BuildRequires:	golang(github.com/skynetservices/skydns/msg)
-BuildRequires:	golang(github.com/imdario/mergo)
-BuildRequires:	docker-io-devel
-BuildRequires:	docker-io-pkg-devel
-BuildRequires:	golang(github.com/Sirupsen/logrus)
-BuildRequires:	golang(speter.net/go/exp/math/dec/inf)
-BuildRequires:	golang(github.com/rackspace/gophercloud/openstack)
-BuildRequires:	golang(code.google.com/p/gcfg)
-BuildRequires:	golang(golang.org/x/oauth2)
-
-BuildRequires:  golang(google.golang.org/api/compute/v1)
-BuildRequires:  golang(google.golang.org/api/container/v1beta1)
-BuildRequires:  golang(google.golang.org/api/googleapi)
-BuildRequires:  golang(google.golang.org/api/googleapi/internal/uritemplates)
-BuildRequires:	golang(code.google.com/p/go-uuid)
-BuildRequires:	golang(github.com/coreos/go-etcd/etcd)
-BuildRequires:	golang(github.com/davecgh/go-spew/spew)
-BuildRequires:	golang(github.com/elazarl/go-bindata-assetfs)
-BuildRequires:	golang(github.com/emicklei/go-restful)
-BuildRequires:	golang(github.com/fsouza/go-dockerclient) > 0-0.6
-BuildRequires:	golang(github.com/ghodss/yaml)
-BuildRequires:	golang(github.com/golang/glog)
-BuildRequires:	golang(github.com/google/cadvisor) >= 0.6.2
-BuildRequires:	golang(github.com/google/gofuzz)
-BuildRequires:	golang(github.com/mitchellh/goamz/aws)
-BuildRequires:	golang(github.com/mitchellh/goamz/ec2)
-BuildRequires:	golang(github.com/rackspace/gophercloud)
-BuildRequires:	golang(github.com/skratchdot/open-golang/open)
-BuildRequires:	golang(github.com/spf13/cobra)
-BuildRequires:	golang(github.com/spf13/pflag)
-BuildRequires:	golang(github.com/stretchr/objx)
-BuildRequires:	golang(github.com/stretchr/testify)
-BuildRequires:	golang(github.com/tonnerre/golang-pretty)
-BuildRequires:	golang(github.com/vaughan0/go-ini)
-BuildRequires:	golang(golang.org/x/net/context)
-BuildRequires:	golang(golang.org/x/net/html)
-BuildRequires:	golang(golang.org/x/net/websocket)
-BuildRequires:	golang(gopkg.in/v2/yaml)
-BuildRequires:  golang(github.com/onsi/ginkgo)
-BuildRequires:  golang(github.com/onsi/gomega)
 %endif
 
 %description
 %{summary}
-
-%package devel
-Summary:       %{summary}
-BuildRequires: golang >= 1.2.1-3
-BuildRequires: golang(github.com/spf13/cobra)
-BuildRequires: golang(google.golang.org/api/compute/v1)
-BuildRequires: golang(google.golang.org/api/container/v1beta1)
-BuildRequires: golang(google.golang.org/api/googleapi)
-BuildRequires: golang(google.golang.org/api/googleapi/internal/uritemplates)
-BuildRequires: golang(speter.net/go/exp/math/dec/inf)
-BuildRequires: golang(github.com/ghodss/yaml)
-BuildRequires: golang(gopkg.in/v2/yaml)
-BuildRequires: golang(github.com/gorilla/mux)
-BuildRequires: golang(github.com/rackspace/gophercloud)
-BuildRequires: golang(github.com/coreos/go-etcd/etcd)
-BuildRequires: golang(github.com/emicklei/go-restful)
-BuildRequires: golang(github.com/emicklei/go-restful/swagger)
-BuildRequires: golang(code.google.com/p/gcfg)
-BuildRequires: golang(code.google.com/p/go-uuid)
-BuildRequires: golang(golang.org/x/net/context)
-BuildRequires: golang(golang.org/x/net/html)
-BuildRequires: golang(golang.org/x/net/websocket)
-BuildRequires: golang(github.com/stretchr/testify/mock)
-BuildRequires: golang(github.com/google/gofuzz)
-BuildRequires: golang(github.com/golang/glog)
-BuildRequires: golang(github.com/fsouza/go-dockerclient)
-BuildRequires: golang(github.com/mitchellh/goamz/aws)
-BuildRequires: golang(github.com/mitchellh/goamz/ec2)
-BuildRequires: golang(github.com/elazarl/go-bindata-assetfs)
-BuildRequires: golang(golang.org/x/oauth2)
-BuildRequires: golang(golang.org/x/oauth2/google)
-BuildRequires: golang(golang.org/x/oauth2/internal)
-BuildRequires: golang(golang.org/x/oauth2/jws)
-BuildRequires: golang(golang.org/x/oauth2/jwt)
-BuildRequires: golang(github.com/skynetservices/skydns/msg)
-BuildRequires: golang(github.com/imdario/mergo)
-BuildRequires: golang(github.com/spf13/pflag)
-BuildRequires: golang(github.com/davecgh/go-spew/spew)
-BuildRequires: golang(github.com/skratchdot/open-golang/open)
-BuildRequires: golang(github.com/google/cadvisor/client)
-BuildRequires: golang(github.com/google/cadvisor/info)
-
-Requires: golang(github.com/spf13/cobra)
-Requires: golang(google.golang.org/api/compute/v1)
-Requires: golang(google.golang.org/api/container/v1beta1)
-Requires: golang(google.golang.org/api/googleapi)
-Requires: golang(google.golang.org/api/googleapi/internal/uritemplates)
-Requires: golang(speter.net/go/exp/math/dec/inf)
-Requires: golang(github.com/ghodss/yaml)
-Requires: golang(gopkg.in/v2/yaml)
-Requires: golang(github.com/gorilla/mux)
-Requires: golang(github.com/rackspace/gophercloud)
-Requires: golang(github.com/coreos/go-etcd/etcd)
-Requires: golang(github.com/emicklei/go-restful)
-Requires: golang(github.com/emicklei/go-restful/swagger)
-Requires: golang(code.google.com/p/gcfg)
-Requires: golang(code.google.com/p/go-uuid)
-Requires: golang(golang.org/x/net/context)
-Requires: golang(golang.org/x/net/html)
-Requires: golang(golang.org/x/net/websocket)
-Requires: golang(github.com/stretchr/testify/mock)
-Requires: golang(github.com/google/gofuzz)
-Requires: golang(github.com/golang/glog)
-Requires: golang(github.com/fsouza/go-dockerclient)
-Requires: golang(github.com/mitchellh/goamz/aws)
-Requires: golang(github.com/mitchellh/goamz/ec2)
-Requires: golang(github.com/elazarl/go-bindata-assetfs)
-Requires: golang(golang.org/x/oauth2)
-Requires: golang(golang.org/x/oauth2/google)
-Requires: golang(golang.org/x/oauth2/internal)
-Requires: golang(golang.org/x/oauth2/jws)
-Requires: golang(golang.org/x/oauth2/jwt)
-Requires: golang(github.com/skynetservices/skydns/msg)
-Requires: golang(github.com/imdario/mergo)
-Requires: golang(github.com/spf13/pflag)
-Requires: golang(github.com/davecgh/go-spew/spew)
-Requires: golang(github.com/skratchdot/open-golang/open)
-Requires: golang(github.com/google/cadvisor/client)
-Requires: golang(github.com/google/cadvisor/info)
-
-Provides: golang(%{import_path}/test/integration) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/tools) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/api) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/api/meta) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/api/errors) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/api/errors/etcd) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/api/testapi) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/api/latest) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/api/validation) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/api/v1beta1) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/api/v1beta2) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/api/resource) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/api/v1beta3) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/kubecfg) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/controller) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/capabilities) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/auth/user) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/auth/handlers) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/auth/authenticator) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/auth/authenticator/bearertoken) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/auth/authorizer) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/auth/authorizer/abac) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/conversion) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/clientauth) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/service) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/labels) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/client) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/client/clientcmd) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/client/record) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/client/cache) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/kubelet) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/kubelet/dockertools) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/kubelet/envvars) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/kubelet/config) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/watch) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/watch/json) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/healthz) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/util) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/util/exec) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/util/errors) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/util/wait) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/util/iptables) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/util/mount) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/util/config) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/version) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/version/verflag) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/cloudprovider) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/cloudprovider/controller) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/cloudprovider/vagrant) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/cloudprovider/aws) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/cloudprovider/openstack) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/cloudprovider/ovirt) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/cloudprovider/fake) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/cloudprovider/gce) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/runtime) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/apiserver) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/standalone) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/ui) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/kubectl) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/kubectl/cmd) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/constraint) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/httplog) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/volume) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/health) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/registry) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/registry/controller) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/registry/minion) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/registry/service) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/registry/endpoint) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/registry/generic) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/registry/generic/etcd) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/registry/event) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/registry/binding) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/registry/registrytest) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/registry/etcd) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/registry/pod) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/credentialprovider) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/credentialprovider/gcp) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/master) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/master/ports) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/config) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/proxy) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/proxy/config) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/scheduler) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/admission) = %{version}-%{release}
-Provides: golang(%{import_path}/cluster/addons/dns/kube2sky) = %{version}-%{release}
-Provides: golang(%{import_path}/plugin/pkg/auth) = %{version}-%{release}
-Provides: golang(%{import_path}/plugin/pkg/auth/authenticator) = %{version}-%{release}
-Provides: golang(%{import_path}/plugin/pkg/auth/authenticator/request/union) = %{version}-%{release}
-Provides: golang(%{import_path}/plugin/pkg/auth/authenticator/request/basicauth) = %{version}-%{release}
-Provides: golang(%{import_path}/plugin/pkg/auth/authenticator/request/x509) = %{version}-%{release}
-Provides: golang(%{import_path}/plugin/pkg/auth/authenticator/password) = %{version}-%{release}
-Provides: golang(%{import_path}/plugin/pkg/auth/authenticator/password/allow) = %{version}-%{release}
-Provides: golang(%{import_path}/plugin/pkg/auth/authenticator/token/tokenfile) = %{version}-%{release}
-Provides: golang(%{import_path}/plugin/pkg/auth/authenticator/token/tokentest) = %{version}-%{release}
-Provides: golang(%{import_path}/plugin/pkg/scheduler) = %{version}-%{release}
-Provides: golang(%{import_path}/plugin/pkg/scheduler/factory) = %{version}-%{release}
-Provides: golang(%{import_path}/plugin/pkg/scheduler/algorithmprovider) = %{version}-%{release}
-Provides: golang(%{import_path}/plugin/pkg/scheduler/algorithmprovider/defaults) = %{version}-%{release}
-Provides: golang(%{import_path}/plugin/pkg/admission/deny) = %{version}-%{release}
-Provides: golang(%{import_path}/plugin/pkg/admission/admit) = %{version}-%{release}
-Provides: golang(%{import_path}/plugin/cmd/kube-scheduler) = %{version}-%{release}
-Provides: golang(%{import_path}/cmd/kube-apiserver) = %{version}-%{release}
-Provides: golang(%{import_path}/cmd/kubecfg) = %{version}-%{release}
-Provides: golang(%{import_path}/cmd/kube-proxy) = %{version}-%{release}
-Provides: golang(%{import_path}/cmd/kube-controller-manager) = %{version}-%{release}
-Provides: golang(%{import_path}/cmd/integration) = %{version}-%{release}
-Provides: golang(%{import_path}/cmd/kubelet) = %{version}-%{release}
-Provides: golang(%{import_path}/cmd/kubernetes) = %{version}-%{release}
-Provides: golang(%{import_path}/cmd/e2e) = %{version}-%{release}
-Provides: golang(%{import_path}/cmd/kubectl) = %{version}-%{release}
-Provides: golang(%{import_path}/contrib/for-tests/network-tester) = %{version}-%{release}
-Provides: golang(%{import_path}/contrib/srvexpand) = %{version}-%{release}
-Provides: golang(%{import_path}/contrib/flags2yaml) = %{version}-%{release}
-Provides: golang(%{import_path}/contrib/simplegen) = %{version}-%{release}
-Provides: golang(%{import_path}/contrib/for-demos/test-webserver) = %{version}-%{release}
-Provides: golang(%{import_path}/contrib/for-demos/serve_hostname) = %{version}-%{release}
-Provides: golang(%{import_path}/contrib/enscope) = %{version}-%{release}
-Provides: golang(%{import_path}/contrib/podex) = %{version}-%{release}
-
-%description devel
-%{summary}
-
-This package contains library source intended for
-building other packages which use %{project}/%{repo}.
 
 %prep
 %autosetup -Sgit -n %{name}-%{commit}
@@ -301,20 +53,20 @@ building other packages which use %{project}/%{repo}.
 %build
 export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
-export KUBE_GIT_VERSION=v0.9.0-391-ge335e2d3e26a9a
+export KUBE_GIT_VERSION=v0.9.0-391-gc9c98ab19eaa6f
 
 %if 0%{?fedora}
-export KUBE_GIT_TREE_STATE="dirty"
-export KUBE_EXTRA_GOPATH=%{gopath}
-export KUBE_NO_GODEPS="true"
+#export KUBE_GIT_TREE_STATE="dirty"
+#export KUBE_EXTRA_GOPATH=%{gopath}
+#export KUBE_NO_GODEPS="true"
 %endif
 
 hack/build-go.sh --use_go_build
 
 %check
 %if 0%{?fedora}
-export KUBE_EXTRA_GOPATH=%{gopath}
-export KUBE_NO_GODEPS="true"
+#export KUBE_EXTRA_GOPATH=%{gopath}
+#export KUBE_NO_GODEPS="true"
 %endif
 
 echo "******Testing the commands*****"
@@ -362,12 +114,6 @@ install -p -m 644 docs/man/man1/* %{buildroot}%{_mandir}/man1
 # install the place the kubelet defaults to put volumes
 install -d %{buildroot}/var/lib/kubelet
 
-# install devel source codes
-install -d %{buildroot}/%{gopath}/src/%{import_path}
-for d in build cluster cmd contrib examples hack pkg plugin test; do
-    cp -rpav $d %{buildroot}/%{gopath}/src/%{import_path}/
-done
-
 %files
 %doc README.md LICENSE CONTRIB.md CONTRIBUTING.md DESIGN.md
 %{_mandir}/man1/*
@@ -392,11 +138,6 @@ done
 %config(noreplace) %{_sysconfdir}/%{name}/kubelet
 %config(noreplace) %{_sysconfdir}/%{name}/scheduler
 
-%files devel
-%doc README.md LICENSE CONTRIB.md CONTRIBUTING.md DESIGN.md
-%dir %{gopath}/src/%{provider}.%{provider_tld}/%{project}
-%{gopath}/src/%{import_path}
-
 %pre
 getent group kube >/dev/null || groupadd -r kube
 getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
@@ -411,6 +152,11 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Sat Feb 07 2015 jchaloup <jchaloup@redhat.com> - 0.9.1-0.7.gitc9c98ab
+- Bump to upstream c9c98ab19eaa6f0b2ea17152c9a455338853f4d0
+  Since some dependencies are broken, we can not build Kubernetes from Fedora deps.
+  Switching to vendored source codes until Go draft is resolved
+
 * Wed Feb 04 2015 jchaloup <jchaloup@redhat.com> - 0.9.1-0.6.git7f5ed54
 - Bump to upstream 7f5ed541f794348ae6279414cf70523a4d5133cc
 

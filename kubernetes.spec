@@ -5,7 +5,7 @@
 %global project		GoogleCloudPlatform
 %global repo		kubernetes
 %global import_path	%{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit		c9c98ab19eaa6f0b2ea17152c9a455338853f4d0
+%global commit		7d6130edcdfabd7dd2e6a06fdc8fe5e333f07f5c
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
@@ -14,8 +14,8 @@
 %global _checkshell	/bin/bash
 
 Name:		kubernetes
-Version:	0.9.1
-Release:	0.7.git%{shortcommit}%{?dist}
+Version:	0.10.1
+Release:	0.1.git%{shortcommit}%{?dist}
 Summary:	Container cluster management
 License:	ASL 2.0
 URL:		https://github.com/GoogleCloudPlatform/kubernetes
@@ -152,6 +152,9 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Tue Feb 17 2015 jchaloup <jchaloup@redhat.com> - 0.10.1-0.1.git7d6130e
+- Bump to upstream 7d6130edcdfabd7dd2e6a06fdc8fe5e333f07f5c
+
 * Sat Feb 07 2015 jchaloup <jchaloup@redhat.com> - 0.9.1-0.7.gitc9c98ab
 - Bump to upstream c9c98ab19eaa6f0b2ea17152c9a455338853f4d0
   Since some dependencies are broken, we can not build Kubernetes from Fedora deps.

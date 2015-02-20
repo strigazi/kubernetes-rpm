@@ -5,7 +5,7 @@
 %global project		GoogleCloudPlatform
 %global repo		kubernetes
 %global import_path	%{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit		6f84bdaba853872dbac69c84d3ab4b6964e85d8c
+%global commit		4c87805870b1b22e463c4bd711238ef68c77f0af
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
@@ -15,7 +15,7 @@
 
 Name:		kubernetes
 Version:	0.10.1
-Release:	0.2.git%{shortcommit}%{?dist}
+Release:	0.3.git%{shortcommit}%{?dist}
 Summary:	Container cluster management
 License:	ASL 2.0
 URL:		https://github.com/GoogleCloudPlatform/kubernetes
@@ -151,6 +151,9 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Fri Feb 20 2015 jchaloup <jchaloup@redhat.com> - 0.10.1-0.3.git4c87805
+- Bump to upstream 4c87805870b1b22e463c4bd711238ef68c77f0af
+
 * Tue Feb 17 2015 jchaloup <jchaloup@redhat.com> - 0.10.1-0.2.git6f84bda
 - Bump to upstream 6f84bdaba853872dbac69c84d3ab4b6964e85d8c
 

@@ -5,7 +5,7 @@
 %global project		GoogleCloudPlatform
 %global repo		kubernetes
 %global import_path	%{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit		754a2a8305c812121c3845d8293efdd819b6a704
+%global commit		86434b4038ab87ac40219562ad420c3cc58c7c6b
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
@@ -15,7 +15,7 @@
 
 Name:		kubernetes
 Version:	0.11.0
-Release:	0.1.git%{shortcommit}%{?dist}
+Release:	0.2.git%{shortcommit}%{?dist}
 Summary:	Container cluster management
 License:	ASL 2.0
 URL:		https://github.com/GoogleCloudPlatform/kubernetes
@@ -311,7 +311,7 @@ building other packages which use %{project}/%{repo}.
 %build
 export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
-export KUBE_GIT_VERSION=v0.11.0-323-g754a2a8305c8
+export KUBE_GIT_VERSION=v0.11.0-363-g86434b4038ab87
 
 %if 0%{?fedora}
 #export KUBE_GIT_TREE_STATE="dirty"
@@ -425,6 +425,9 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Wed Feb 25 2015 jchaloup <jchaloup@redhat.com> - 0.11.0-0.2.git86434b4
+- Bump to upstream 86434b4038ab87ac40219562ad420c3cc58c7c6b
+
 * Tue Feb 24 2015 jchaloup <jchaloup@redhat.com> - 0.11.0-0.1.git754a2a8
 - Bump to upstream 754a2a8305c812121c3845d8293efdd819b6a704
   turn off integration tests until "FAILED: unexpected endpoints:

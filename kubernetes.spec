@@ -5,7 +5,7 @@
 %global project		GoogleCloudPlatform
 %global repo		kubernetes
 %global import_path	%{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit		8b627f516fd3e4f62da90d401ceb3d38de6f8077
+%global commit		2700871b049d5498167671cea6de8317099ad406
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
@@ -15,7 +15,7 @@
 
 Name:		kubernetes
 Version:	0.12.0
-Release:	0.2.git%{shortcommit}%{?dist}
+Release:	0.3.git%{shortcommit}%{?dist}
 Summary:	Container cluster management
 License:	ASL 2.0
 URL:		https://github.com/GoogleCloudPlatform/kubernetes
@@ -312,7 +312,7 @@ building other packages which use %{project}/%{repo}.
 %build
 export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
-export KUBE_GIT_VERSION=v0.12.0-120-g8b627f516fd3e4
+export KUBE_GIT_VERSION=v0.12.0-206-g2700871b049d54
 
 %if 0%{?fedora}
 #export KUBE_GIT_TREE_STATE="dirty"
@@ -426,6 +426,9 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Fri Mar 06 2015 jchaloup <jchaloup@redhat.com> - 0.12.0-0.3.git2700871
+- Bump to upstream 2700871b049d5498167671cea6de8317099ad406
+
 * Thu Mar 05 2015 jchaloup <jchaloup@redhat.com> - 0.12.0-0.2.git8b627f5
 - Bump to upstream 8b627f516fd3e4f62da90d401ceb3d38de6f8077
 

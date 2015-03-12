@@ -15,7 +15,7 @@
 
 Name:		kubernetes
 Version:	0.12.0
-Release:	0.6.git%{shortcommit}%{?dist}
+Release:	0.7.git%{shortcommit}%{?dist}
 Summary:	Container cluster management
 License:	ASL 2.0
 URL:		https://github.com/GoogleCloudPlatform/kubernetes
@@ -372,9 +372,9 @@ install -p -m 644 docs/man/man1/* %{buildroot}%{_mandir}/man1
 # install the place the kubelet defaults to put volumes
 install -d %{buildroot}/var/lib/kubelet
 
-# place contrib/init/systemd/tmpfiles.d/kubernetes.conf to /etc/tmpfiles.d/kubernetes.conf
-install -d -m 0755 %{buildroot}/etc/tmpfiles.d/
-install -p -m 0644 -t %{buildroot}/etc/tmpfiles.d/ contrib/init/systemd/tmpfiles.d/kubernetes.conf
+# place contrib/init/systemd/tmpfiles.d/kubernetes.conf to /usr/lib/tmpfiles.d/kubernetes.conf
+install -d -m 0755 %{buildroot}%{_tmpfilesdir}
+install -p -m 0644 -t %{buildroot}/%{_tmpfilesdir} contrib/init/systemd/tmpfiles.d/kubernetes.conf
 
 %if 0%{?fedora}
 # install devel source codes
@@ -407,7 +407,7 @@ done
 %config(noreplace) %{_sysconfdir}/%{name}/proxy
 %config(noreplace) %{_sysconfdir}/%{name}/kubelet
 %config(noreplace) %{_sysconfdir}/%{name}/scheduler
-/etc/tmpfiles.d/kubernetes.conf
+%{_tmpfilesdir}/kubernetes.conf
 
 %if 0%{?fedora}
 %files devel
@@ -430,6 +430,9 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Thu Mar 12 2015 Eric Paris <eparis@redhat.com> - 0.12.0-0.7.gita3fd0a9
+- Move from /etc/tmpfiles.d to %{_tmpfilesdir}
+
 * Thu Mar 12 2015 jchaloup <jchaloup@redhat.com> - 0.12.0-0.6.gita3fd0a9
 - Place contrib/init/systemd/tmpfiles.d/kubernetes.conf to /etc/tmpfiles.d/kubernetes.conf
 

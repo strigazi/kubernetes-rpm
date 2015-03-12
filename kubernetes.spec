@@ -15,7 +15,7 @@
 
 Name:		kubernetes
 Version:	0.12.0
-Release:	0.5.git%{shortcommit}%{?dist}
+Release:	0.6.git%{shortcommit}%{?dist}
 Summary:	Container cluster management
 License:	ASL 2.0
 URL:		https://github.com/GoogleCloudPlatform/kubernetes
@@ -373,6 +373,10 @@ install -p -m 644 docs/man/man1/* %{buildroot}%{_mandir}/man1
 # install the place the kubelet defaults to put volumes
 install -d %{buildroot}/var/lib/kubelet
 
+# place contrib/init/systemd/tmpfiles.d/kubernetes.conf to /etc/tmpfiles.d/kubernetes.conf
+install -d -m 0755 %{buildroot}/etc/tmpfiles.d/
+install -p -m 0644 -t %{buildroot}/etc/tmpfiles.d/ contrib/init/systemd/tmpfiles.d/kubernetes.conf
+
 %if 0%{?fedora}
 # install devel source codes
 install -d %{buildroot}/%{gopath}/src/%{import_path}
@@ -404,6 +408,7 @@ done
 %config(noreplace) %{_sysconfdir}/%{name}/proxy
 %config(noreplace) %{_sysconfdir}/%{name}/kubelet
 %config(noreplace) %{_sysconfdir}/%{name}/scheduler
+/etc/tmpfiles.d/kubernetes.conf
 
 %if 0%{?fedora}
 %files devel
@@ -426,6 +431,9 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Thu Mar 12 2015 jchaloup <jchaloup@redhat.com> - 0.12.0-0.6.gita3fd0a9
+- Place contrib/init/systemd/tmpfiles.d/kubernetes.conf to /etc/tmpfiles.d/kubernetes.conf
+
 * Thu Mar 12 2015 jchaloup <jchaloup@redhat.com> - 0.12.0-0.5.gita3fd0a9
 - Bump to upstream a3fd0a9fd516bb6033f32196ae97aaecf8c096b1
 

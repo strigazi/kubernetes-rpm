@@ -5,7 +5,7 @@
 %global project		GoogleCloudPlatform
 %global repo		kubernetes
 %global import_path	%{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit		53b25a7890e31bdec6f2a95b32200d6cc27ae2ca
+%global commit		a8f2cee8c5418676ee33a311fad57d6821d3d29a
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
@@ -14,8 +14,8 @@
 %global _checkshell	/bin/bash
 
 Name:		kubernetes
-Version:	0.12.0
-Release:	0.9.git%{shortcommit}%{?dist}
+Version:	0.13.2
+Release:	0.1.git%{shortcommit}%{?dist}
 Summary:	Container cluster management
 License:	ASL 2.0
 URL:		https://github.com/GoogleCloudPlatform/kubernetes
@@ -431,6 +431,9 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Fri Mar 20 2015 jchaloup <jchaloup@redhat.com> - 0.13.2-0.1.gita8f2cee
+- Bump to upstream a8f2cee8c5418676ee33a311fad57d6821d3d29a
+
 * Fri Mar 13 2015 jchaloup <jchaloup@redhat.com> - 0.12.0-0.9.git53b25a7
 - Bump to upstream 53b25a7890e31bdec6f2a95b32200d6cc27ae2ca
   fix kube-proxy.service and kubelet

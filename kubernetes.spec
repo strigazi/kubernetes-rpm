@@ -15,7 +15,7 @@
 
 Name:		kubernetes
 Version:	0.13.2
-Release:	0.2.git%{shortcommit}%{?dist}
+Release:	0.3.git%{shortcommit}%{?dist}
 Summary:	Container cluster management
 License:	ASL 2.0
 URL:		https://github.com/GoogleCloudPlatform/kubernetes
@@ -28,8 +28,6 @@ Requires:	docker
 %else
 Requires:	docker-io
 %endif
-
-Requires:	etcd
 
 Requires(pre):	shadow-utils
 
@@ -431,6 +429,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Mon Mar 23 2015 jchaloup <jchaloup@redhat.com> - 0.13.2-0.3.gitef75888
+- Remove runtime dependency on etcd
+  resolves: #1202923
+
 * Sun Mar 22 2015 jchaloup <jchaloup@redhat.com> - 0.13.2-0.2.gitef75888
 - Bump to upstream ef758881d108bb53a128126c503689104d17f477
 

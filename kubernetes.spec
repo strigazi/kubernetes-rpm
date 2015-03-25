@@ -5,7 +5,7 @@
 %global project		GoogleCloudPlatform
 %global repo		kubernetes
 %global import_path	%{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit		ef758881d108bb53a128126c503689104d17f477
+%global commit		455fe8235be8fd9ba0ce21bf4f50a69d42e18693
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
@@ -15,7 +15,7 @@
 
 Name:		kubernetes
 Version:	0.13.2
-Release:	0.3.git%{shortcommit}%{?dist}
+Release:	0.4.git%{shortcommit}%{?dist}
 Summary:	Container cluster management
 License:	ASL 2.0
 URL:		https://github.com/GoogleCloudPlatform/kubernetes
@@ -309,7 +309,7 @@ building other packages which use %{project}/%{repo}.
 %build
 export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
-export KUBE_GIT_VERSION=v0.12.0-1041-gef758881d108bb
+export KUBE_GIT_VERSION=v0.13.1-dev-418-g455fe8235be8fd
 
 %if 0%{?fedora}
 #export KUBE_GIT_TREE_STATE="dirty"
@@ -428,6 +428,9 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Wed Mar 25 2015 jchaloup <jchaloup@redhat.com> - 0.13.2-0.4.git455fe82
+- Bump to upstream 455fe8235be8fd9ba0ce21bf4f50a69d42e18693
+
 * Mon Mar 23 2015 jchaloup <jchaloup@redhat.com> - 0.13.2-0.3.gitef75888
 - Remove runtime dependency on etcd
   resolves: #1202923

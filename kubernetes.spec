@@ -5,7 +5,7 @@
 %global project		GoogleCloudPlatform
 %global repo		kubernetes
 %global import_path	%{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit		8a7a127352263439e22253a58628d37a93fdaeb2
+%global commit		9ed87612d07f75143ac96ad90ff1ff68f13a2c67
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
@@ -14,8 +14,8 @@
 %global _checkshell	/bin/bash
 
 Name:		kubernetes
-Version:	0.13.2
-Release:	0.6.git%{shortcommit}%{?dist}
+Version:	0.14.0
+Release:	0.1.git%{shortcommit}%{?dist}
 Summary:	Container cluster management
 License:	ASL 2.0
 URL:		https://github.com/GoogleCloudPlatform/kubernetes
@@ -52,81 +52,6 @@ BuildRequires: golang >= 1.2.1-3
 
 %description devel
 %{summary}
-BuildRequires: golang(github.com/spf13/cobra)
-BuildRequires: golang(google.golang.org/api/compute/v1)
-BuildRequires: golang(google.golang.org/api/container/v1beta1)
-BuildRequires: golang(google.golang.org/api/googleapi)
-BuildRequires: golang(google.golang.org/api/googleapi/internal/uritemplates)
-BuildRequires: golang(speter.net/go/exp/math/dec/inf)
-BuildRequires: golang(github.com/ghodss/yaml)
-BuildRequires: golang(gopkg.in/v2/yaml)
-BuildRequires: golang(github.com/gorilla/mux)
-BuildRequires: golang(github.com/rackspace/gophercloud)
-BuildRequires: golang(github.com/coreos/go-etcd/etcd)
-BuildRequires: golang(github.com/emicklei/go-restful)
-BuildRequires: golang(github.com/emicklei/go-restful/swagger)
-BuildRequires: golang(code.google.com/p/gcfg)
-BuildRequires: golang(code.google.com/p/go-uuid)
-BuildRequires: golang(golang.org/x/net/context)
-BuildRequires: golang(golang.org/x/net/html)
-BuildRequires: golang(golang.org/x/net/websocket)
-BuildRequires: golang(github.com/stretchr/testify/mock)
-BuildRequires: golang(github.com/google/gofuzz)
-BuildRequires: golang(github.com/golang/glog)
-BuildRequires: golang(github.com/fsouza/go-dockerclient)
-BuildRequires: golang(github.com/mitchellh/goamz/aws)
-BuildRequires: golang(github.com/mitchellh/goamz/ec2)
-BuildRequires: golang(github.com/elazarl/go-bindata-assetfs)
-BuildRequires: golang(golang.org/x/oauth2)
-BuildRequires: golang(golang.org/x/oauth2/google)
-BuildRequires: golang(golang.org/x/oauth2/internal)
-BuildRequires: golang(golang.org/x/oauth2/jws)
-BuildRequires: golang(golang.org/x/oauth2/jwt)
-BuildRequires: golang(github.com/skynetservices/skydns/msg)
-BuildRequires: golang(github.com/imdario/mergo)
-BuildRequires: golang(github.com/spf13/pflag)
-BuildRequires: golang(github.com/davecgh/go-spew/spew)
-BuildRequires: golang(github.com/skratchdot/open-golang/open)
-BuildRequires: golang(github.com/google/cadvisor/client)
-BuildRequires: golang(github.com/google/cadvisor/info)
-
-Requires: golang(github.com/spf13/cobra)
-Requires: golang(google.golang.org/api/compute/v1)
-Requires: golang(google.golang.org/api/container/v1beta1)
-Requires: golang(google.golang.org/api/googleapi)
-Requires: golang(google.golang.org/api/googleapi/internal/uritemplates)
-Requires: golang(speter.net/go/exp/math/dec/inf)
-Requires: golang(github.com/ghodss/yaml)
-Requires: golang(gopkg.in/v2/yaml)
-Requires: golang(github.com/gorilla/mux)
-Requires: golang(github.com/rackspace/gophercloud)
-Requires: golang(github.com/coreos/go-etcd/etcd)
-Requires: golang(github.com/emicklei/go-restful)
-Requires: golang(github.com/emicklei/go-restful/swagger)
-Requires: golang(code.google.com/p/gcfg)
-Requires: golang(code.google.com/p/go-uuid)
-Requires: golang(golang.org/x/net/context)
-Requires: golang(golang.org/x/net/html)
-Requires: golang(golang.org/x/net/websocket)
-Requires: golang(github.com/stretchr/testify/mock)
-Requires: golang(github.com/google/gofuzz)
-Requires: golang(github.com/golang/glog)
-Requires: golang(github.com/fsouza/go-dockerclient)
-Requires: golang(github.com/mitchellh/goamz/aws)
-Requires: golang(github.com/mitchellh/goamz/ec2)
-Requires: golang(github.com/elazarl/go-bindata-assetfs)
-Requires: golang(golang.org/x/oauth2)
-Requires: golang(golang.org/x/oauth2/google)
-Requires: golang(golang.org/x/oauth2/internal)
-Requires: golang(golang.org/x/oauth2/jws)
-Requires: golang(golang.org/x/oauth2/jwt)
-Requires: golang(github.com/skynetservices/skydns/msg)
-Requires: golang(github.com/imdario/mergo)
-Requires: golang(github.com/spf13/pflag)
-Requires: golang(github.com/davecgh/go-spew/spew)
-Requires: golang(github.com/skratchdot/open-golang/open)
-Requires: golang(github.com/google/cadvisor/client)
-Requires: golang(github.com/google/cadvisor/info)
 
 Provides: golang(%{import_path}/build/hello-kubernetes) = %{version}-%{release}
 Provides: golang(%{import_path}/build/pause) = %{version}-%{release}
@@ -310,7 +235,7 @@ building other packages which use %{project}/%{repo}.
 %build
 export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
-export KUBE_GIT_VERSION=v0.13.1-dev-714-g8a7a1273522634
+export KUBE_GIT_VERSION=v0.14.0-49-g9ed87612d07f75
 
 %if 0%{?fedora}
 #export KUBE_GIT_TREE_STATE="dirty"
@@ -429,6 +354,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Tue Mar 31 2015 jchaloup <jchaloup@redhat.com> - 0.14.0-0.1.git9ed8761
+- Bump to upstream 9ed87612d07f75143ac96ad90ff1ff68f13a2c67
+- Remove [B]R from devel branch until the package has stable API
+
 * Mon Mar 30 2015 jchaloup <jchaloup@redhat.com> - 0.13.2-0.6.git8a7a127
 - Bump to upstream 8a7a127352263439e22253a58628d37a93fdaeb2
 

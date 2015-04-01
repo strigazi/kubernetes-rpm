@@ -5,7 +5,7 @@
 %global project		GoogleCloudPlatform
 %global repo		kubernetes
 %global import_path	%{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit		9ed87612d07f75143ac96ad90ff1ff68f13a2c67
+%global commit		81683441b96537d4b51d146e39929b7003401cd5
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
@@ -15,12 +15,13 @@
 
 Name:		kubernetes
 Version:	0.14.0
-Release:	0.1.git%{shortcommit}%{?dist}
+Release:	0.2.git%{shortcommit}%{?dist}
 Summary:	Container cluster management
 License:	ASL 2.0
 URL:		https://github.com/GoogleCloudPlatform/kubernetes
 ExclusiveArch:	x86_64
 Source0:	https://github.com/GoogleCloudPlatform/kubernetes/archive/%{commit}/kubernetes-%{shortcommit}.tar.gz
+Patch0:		0001-No-Nicer-error-msg-if-stdlib-pkg-with-cgo-flag-is-no.patch
 
 
 %if 0%{?fedora} >= 21 || 0%{?rhel}
@@ -53,36 +54,13 @@ BuildRequires: golang >= 1.2.1-3
 %description devel
 %{summary}
 
-Provides: golang(%{import_path}/build/hello-kubernetes) = %{version}-%{release}
-Provides: golang(%{import_path}/build/pause) = %{version}-%{release}
-Provides: golang(%{import_path}/cluster/addons/dns/kube2sky) = %{version}-%{release}
-Provides: golang(%{import_path}/cmd/e2e) = %{version}-%{release}
-Provides: golang(%{import_path}/cmd/gendocs) = %{version}-%{release}
-Provides: golang(%{import_path}/cmd/genman) = %{version}-%{release}
-Provides: golang(%{import_path}/cmd/hyperkube) = %{version}-%{release}
-Provides: golang(%{import_path}/cmd/integration) = %{version}-%{release}
-Provides: golang(%{import_path}/cmd/kube-apiserver) = %{version}-%{release}
 Provides: golang(%{import_path}/cmd/kube-apiserver/app) = %{version}-%{release}
-Provides: golang(%{import_path}/cmd/kube-controller-manager) = %{version}-%{release}
 Provides: golang(%{import_path}/cmd/kube-controller-manager/app) = %{version}-%{release}
-Provides: golang(%{import_path}/cmd/kubectl) = %{version}-%{release}
-Provides: golang(%{import_path}/cmd/kubelet) = %{version}-%{release}
-Provides: golang(%{import_path}/cmd/kubelet/app) = %{version}-%{release}
-Provides: golang(%{import_path}/cmd/kube-proxy) = %{version}-%{release}
 Provides: golang(%{import_path}/cmd/kube-proxy/app) = %{version}-%{release}
-Provides: golang(%{import_path}/cmd/kubernetes) = %{version}-%{release}
-Provides: golang(%{import_path}/contrib/for-demos/serve_hostname) = %{version}-%{release}
-Provides: golang(%{import_path}/contrib/for-demos/test-webserver) = %{version}-%{release}
-Provides: golang(%{import_path}/contrib/for-tests/network-tester) = %{version}-%{release}
-Provides: golang(%{import_path}/contrib/git-sync) = %{version}-%{release}
-Provides: golang(%{import_path}/contrib/go2docker) = %{version}-%{release}
-Provides: golang(%{import_path}/contrib/podex) = %{version}-%{release}
-Provides: golang(%{import_path}/examples) = %{version}-%{release}
-Provides: golang(%{import_path}/examples/guestbook-go/_src) = %{version}-%{release}
-Provides: golang(%{import_path}/examples/liveness/image) = %{version}-%{release}
-Provides: golang(%{import_path}/hack) = %{version}-%{release}
+Provides: golang(%{import_path}/cmd/kubelet/app) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/admission) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/api) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/api/endpoints) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/api/errors) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/api/errors/etcd) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/api/latest) = %{version}-%{release}
@@ -90,13 +68,13 @@ Provides: golang(%{import_path}/pkg/api/meta) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/api/resource) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/api/rest) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/api/rest/resttest) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/apiserver) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/api/testapi) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/api/testing) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/api/v1beta1) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/api/v1beta2) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/api/v1beta3) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/api/validation) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/apiserver) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/auth/authenticator) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/auth/authenticator/bearertoken) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/auth/authorizer) = %{version}-%{release}
@@ -105,7 +83,6 @@ Provides: golang(%{import_path}/pkg/auth/handlers) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/auth/user) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/capabilities) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/client) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/clientauth) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/client/cache) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/client/clientcmd) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/client/clientcmd/api) = %{version}-%{release}
@@ -114,6 +91,7 @@ Provides: golang(%{import_path}/pkg/client/clientcmd/api/v1) = %{version}-%{rele
 Provides: golang(%{import_path}/pkg/client/portforward) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/client/record) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/client/remotecommand) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/clientauth) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/cloudprovider) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/cloudprovider/aws) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/cloudprovider/controller) = %{version}-%{release}
@@ -124,11 +102,11 @@ Provides: golang(%{import_path}/pkg/cloudprovider/ovirt) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/cloudprovider/rackspace) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/cloudprovider/vagrant) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/config) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/constraint) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/controller) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/conversion) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/credentialprovider) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/credentialprovider/gcp) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/fields) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/healthz) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/httplog) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/hyperkube) = %{version}-%{release}
@@ -138,19 +116,19 @@ Provides: golang(%{import_path}/pkg/kubectl/cmd/config) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/kubectl/cmd/util) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/kubectl/resource) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/kubelet) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/kubelet/cadvisor) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/kubelet/config) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/kubelet/container) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/kubelet/dockertools) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/kubelet/envvars) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/kubelet/leaky) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/kubelet/volume) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/kubelet/volume/empty_dir) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/kubelet/volume/gce_pd) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/kubelet/volume/git_repo) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/kubelet/volume/host_path) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/kubelet/volume/secret) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/kubelet/metrics) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/kubelet/network) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/kubelet/network/exec) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/labels) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/master) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/master/ports) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/namespace) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/probe) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/probe/exec) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/probe/http) = %{version}-%{release}
@@ -158,21 +136,24 @@ Provides: golang(%{import_path}/pkg/probe/tcp) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/proxy) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/proxy/config) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/registry/binding) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/controller) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/registry/controller/etcd) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/endpoint) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/registry/endpoint/etcd) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/etcd) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/event) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/generic) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/generic/etcd) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/limitrange) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/minion) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/registry/minion/etcd) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/namespace) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/registry/namespace/etcd) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/pod) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/pod/etcd) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/registrytest) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/resourcequota) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/registry/resourcequotausage) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/registry/resourcequota/etcd) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/secret) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/service) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/resourcequota) = %{version}-%{release}
@@ -186,26 +167,32 @@ Provides: golang(%{import_path}/pkg/util) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/util/config) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/util/errors) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/util/exec) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/util/fielderrors) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/util/httpstream) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/util/httpstream/spdy) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/util/iptables) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/util/merge) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/util/mount) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/util/slice) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/util/wait) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/util/yaml) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/version) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/version/verflag) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/volume) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/volume/empty_dir) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/volume/gce_pd) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/volume/git_repo) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/volume/host_path) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/volume/nfs) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/volume/secret) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/watch) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/watch/json) = %{version}-%{release}
-Provides: golang(%{import_path}/plugin/cmd/kube-scheduler) = %{version}-%{release}
 Provides: golang(%{import_path}/plugin/cmd/kube-scheduler/app) = %{version}-%{release}
 Provides: golang(%{import_path}/plugin/pkg/admission/admit) = %{version}-%{release}
 Provides: golang(%{import_path}/plugin/pkg/admission/deny) = %{version}-%{release}
 Provides: golang(%{import_path}/plugin/pkg/admission/limitranger) = %{version}-%{release}
 Provides: golang(%{import_path}/plugin/pkg/admission/namespace/autoprovision) = %{version}-%{release}
 Provides: golang(%{import_path}/plugin/pkg/admission/namespace/exists) = %{version}-%{release}
-Provides: golang(%{import_path}/plugin/pkg/admission/resourcedefaults) = %{version}-%{release}
+Provides: golang(%{import_path}/plugin/pkg/admission/namespace/lifecycle) = %{version}-%{release}
 Provides: golang(%{import_path}/plugin/pkg/admission/resourcequota) = %{version}-%{release}
 Provides: golang(%{import_path}/plugin/pkg/auth) = %{version}-%{release}
 Provides: golang(%{import_path}/plugin/pkg/auth/authenticator) = %{version}-%{release}
@@ -218,8 +205,11 @@ Provides: golang(%{import_path}/plugin/pkg/auth/authenticator/token/tokenfile) =
 Provides: golang(%{import_path}/plugin/pkg/auth/authenticator/token/tokentest) = %{version}-%{release}
 Provides: golang(%{import_path}/plugin/pkg/scheduler) = %{version}-%{release}
 Provides: golang(%{import_path}/plugin/pkg/scheduler/algorithmprovider) = %{version}-%{release}
-Provides: golang(%{import_path}/plugin/pkg/scheduler/algorithmprovider/affinity) = %{version}-%{release}
 Provides: golang(%{import_path}/plugin/pkg/scheduler/algorithmprovider/defaults) = %{version}-%{release}
+Provides: golang(%{import_path}/plugin/pkg/scheduler/api) = %{version}-%{release}
+Provides: golang(%{import_path}/plugin/pkg/scheduler/api/latest) = %{version}-%{release}
+Provides: golang(%{import_path}/plugin/pkg/scheduler/api/v1) = %{version}-%{release}
+Provides: golang(%{import_path}/plugin/pkg/scheduler/api/validation) = %{version}-%{release}
 Provides: golang(%{import_path}/plugin/pkg/scheduler/factory) = %{version}-%{release}
 Provides: golang(%{import_path}/test/e2e) = %{version}-%{release}
 Provides: golang(%{import_path}/test/integration) = %{version}-%{release}
@@ -230,12 +220,12 @@ building other packages which use %{project}/%{repo}.
 %endif
 
 %prep
-%autosetup -n %{name}-%{commit}
+%autosetup -n %{name}-%{commit} -p1
 
 %build
 export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
-export KUBE_GIT_VERSION=v0.14.0-49-g9ed87612d07f75
+export KUBE_GIT_VERSION=v0.14.0-130-g81683441b96537
 
 %if 0%{?fedora}
 #export KUBE_GIT_TREE_STATE="dirty"
@@ -354,6 +344,9 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Wed Apr 01 2015 jchaloup <jchaloup@redhat.com> - 0.14.0-0.2.git8168344
+- Bump to upstream 81683441b96537d4b51d146e39929b7003401cd5
+
 * Tue Mar 31 2015 jchaloup <jchaloup@redhat.com> - 0.14.0-0.1.git9ed8761
 - Bump to upstream 9ed87612d07f75143ac96ad90ff1ff68f13a2c67
 - Remove [B]R from devel branch until the package has stable API

@@ -1,0 +1,33 @@
+From d0ebdcd6bcee9e7e2d6407003ce276f21fcad0e2 Mon Sep 17 00:00:00 2001
+From: Jan Chaloupka <jchaloup@redhat.com>
+Date: Wed, 1 Apr 2015 10:31:55 +0200
+Subject: [PATCH] No Nicer error msg if stdlib pkg with cgo flag is not
+ installed
+
+---
+ hack/lib/golang.sh | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/hack/lib/golang.sh b/hack/lib/golang.sh
+index 3683ef2..49a9ceb 100644
+--- a/hack/lib/golang.sh
++++ b/hack/lib/golang.sh
+@@ -331,7 +331,6 @@ kube::golang::build_binaries() {
+           fi
+           
+           if kube::golang::is_statically_linked_library "${binary}"; then
+-            kube::golang::exit_if_stdlib_not_installed;
+             CGO_ENABLED=0 go build -installsuffix cgo -o "${output_path}/${bin}" \
+               "${goflags[@]:+${goflags[@]}}" \
+               -ldflags "${version_ldflags}" \
+@@ -346,7 +345,6 @@ kube::golang::build_binaries() {
+       else
+         for binary in "${binaries[@]}"; do
+           if kube::golang::is_statically_linked_library "${binary}"; then
+-            kube::golang::exit_if_stdlib_not_installed;
+             CGO_ENABLED=0 go install -installsuffix cgo "${goflags[@]:+${goflags[@]}}" \
+               -ldflags "${version_ldflags}" \
+               "${binary}"
+-- 
+1.9.3
+

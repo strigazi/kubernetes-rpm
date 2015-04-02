@@ -1,7 +1,7 @@
-From d0ebdcd6bcee9e7e2d6407003ce276f21fcad0e2 Mon Sep 17 00:00:00 2001
+From b3c9f9e91378e1f09cc9cb867e24c13677571cf8 Mon Sep 17 00:00:00 2001
 From: Jan Chaloupka <jchaloup@redhat.com>
-Date: Wed, 1 Apr 2015 10:31:55 +0200
-Subject: [PATCH] No Nicer error msg if stdlib pkg with cgo flag is not
+Date: Thu, 2 Apr 2015 12:38:02 +0200
+Subject: [PATCH] No Nicer error msg if stdlib pkg with cgo flag is not 
  installed
 
 ---
@@ -9,25 +9,25 @@ Subject: [PATCH] No Nicer error msg if stdlib pkg with cgo flag is not
  1 file changed, 2 deletions(-)
 
 diff --git a/hack/lib/golang.sh b/hack/lib/golang.sh
-index 3683ef2..49a9ceb 100644
+index 111a6a0..d315634 100644
 --- a/hack/lib/golang.sh
 +++ b/hack/lib/golang.sh
-@@ -331,7 +331,6 @@ kube::golang::build_binaries() {
-           fi
-           
-           if kube::golang::is_statically_linked_library "${binary}"; then
--            kube::golang::exit_if_stdlib_not_installed;
-             CGO_ENABLED=0 go build -installsuffix cgo -o "${output_path}/${bin}" \
-               "${goflags[@]:+${goflags[@]}}" \
-               -ldflags "${version_ldflags}" \
-@@ -346,7 +345,6 @@ kube::golang::build_binaries() {
-       else
+@@ -323,7 +323,6 @@ kube::golang::build_binaries() {
+         local -a nonstatics=()
          for binary in "${binaries[@]}"; do
            if kube::golang::is_statically_linked_library "${binary}"; then
 -            kube::golang::exit_if_stdlib_not_installed;
-             CGO_ENABLED=0 go install -installsuffix cgo "${goflags[@]:+${goflags[@]}}" \
-               -ldflags "${version_ldflags}" \
-               "${binary}"
+             statics+=($binary)
+           else
+             nonstatics+=($binary)
+@@ -345,7 +344,6 @@ kube::golang::build_binaries() {
+             fi
+ 
+             if kube::golang::is_statically_linked_library "${binary}"; then
+-              kube::golang::exit_if_stdlib_not_installed;
+               CGO_ENABLED=0 go build -installsuffix cgo -o "${output_path}/${bin}" \
+                 "${goflags[@]:+${goflags[@]}}" \
+                 -ldflags "${version_ldflags}" \
 -- 
 1.9.3
 

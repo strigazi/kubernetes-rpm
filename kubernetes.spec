@@ -36,9 +36,9 @@ BuildRequires:	golang >= 1.2-7
 BuildRequires:	systemd
 BuildRequires:	etcd
 BuildRequires:	hostname
-BuildRequires:  rsync
+BuildRequires:	rsync
 
-%if 0%{?fedora} 
+%if 0%{?fedora}
 # needed for go cover.  Not available in RHEL/CentOS (available in Fedora/EPEL)
 BuildRequires:	golang-cover
 %endif
@@ -48,8 +48,8 @@ BuildRequires:	golang-cover
 
 %if 0%{?fedora}
 %package devel
-Summary:       %{summary}
-BuildRequires: golang >= 1.2.1-3
+Summary:	%{summary}
+BuildRequires:	golang >= 1.2.1-3
 
 %description devel
 %{summary}

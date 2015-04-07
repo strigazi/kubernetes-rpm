@@ -1,7 +1,7 @@
-From b3c9f9e91378e1f09cc9cb867e24c13677571cf8 Mon Sep 17 00:00:00 2001
+From 9e1cf168d92f155e478cd56c3b78ac4dee155237 Mon Sep 17 00:00:00 2001
 From: Jan Chaloupka <jchaloup@redhat.com>
-Date: Thu, 2 Apr 2015 12:38:02 +0200
-Subject: [PATCH] No Nicer error msg if stdlib pkg with cgo flag is not 
+Date: Tue, 7 Apr 2015 16:06:19 +0200
+Subject: [PATCH] No Nicer error msg if stdlib pkg with cgo flag is not
  installed
 
 ---
@@ -9,25 +9,25 @@ Subject: [PATCH] No Nicer error msg if stdlib pkg with cgo flag is not
  1 file changed, 2 deletions(-)
 
 diff --git a/hack/lib/golang.sh b/hack/lib/golang.sh
-index 111a6a0..d315634 100644
+index 5dc923f..588992b 100644
 --- a/hack/lib/golang.sh
 +++ b/hack/lib/golang.sh
-@@ -323,7 +323,6 @@ kube::golang::build_binaries() {
-         local -a nonstatics=()
-         for binary in "${binaries[@]}"; do
-           if kube::golang::is_statically_linked_library "${binary}"; then
--            kube::golang::exit_if_stdlib_not_installed;
-             statics+=($binary)
-           else
-             nonstatics+=($binary)
-@@ -345,7 +344,6 @@ kube::golang::build_binaries() {
-             fi
+@@ -276,7 +276,6 @@ kube::golang::build_binaries_for_platform() {
+   local -a nonstatics=()
+   for binary in "${binaries[@]}"; do
+     if kube::golang::is_statically_linked_library "${binary}"; then
+-      kube::golang::exit_if_stdlib_not_installed;
+       statics+=($binary)
+     else
+       nonstatics+=($binary)
+@@ -298,7 +297,6 @@ kube::golang::build_binaries_for_platform() {
+       fi
  
-             if kube::golang::is_statically_linked_library "${binary}"; then
--              kube::golang::exit_if_stdlib_not_installed;
-               CGO_ENABLED=0 go build -installsuffix cgo -o "${output_path}/${bin}" \
-                 "${goflags[@]:+${goflags[@]}}" \
-                 -ldflags "${version_ldflags}" \
+       if kube::golang::is_statically_linked_library "${binary}"; then
+-        kube::golang::exit_if_stdlib_not_installed;
+         CGO_ENABLED=0 go build -installsuffix cgo -o "${output_path}/${bin}" \
+           "${goflags[@]:+${goflags[@]}}" \
+           -ldflags "${version_ldflags}" \
 -- 
 1.9.3
 

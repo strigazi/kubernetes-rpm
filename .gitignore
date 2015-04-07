@@ -1,4 +1,3 @@
 clog
 *.tar.gz
 *.src.rpm
-/kubernetes-a94ffc8.tar.gz

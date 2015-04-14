@@ -257,7 +257,10 @@ hack/build-go.sh --use_go_build
 %endif
 
 echo "******Testing the commands*****"
-hack/test-cmd.sh
+# run the test only if /fs/sys/cgroup is mounted
+if [ -d /sys/fs/cgroup ]; then
+	hack/test-cmd.sh
+fi
 echo "******Benchmarking kube********"
 hack/benchmark-go.sh
 

@@ -15,7 +15,7 @@
 
 Name:		kubernetes
 Version:	0.15.0
-Release:	0.2.git%{shortcommit}%{?dist}
+Release:	2%{?dist}
 Summary:	Container cluster management
 License:	ASL 2.0
 URL:		https://github.com/GoogleCloudPlatform/kubernetes

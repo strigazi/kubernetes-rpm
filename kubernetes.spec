@@ -21,7 +21,7 @@ License:	ASL 2.0
 URL:		https://github.com/GoogleCloudPlatform/kubernetes
 ExclusiveArch:	x86_64
 Source0:	https://github.com/GoogleCloudPlatform/kubernetes/archive/%{commit}/kubernetes-%{shortcommit}.tar.gz
-Patch0:		0001-No-Nicer-error-msg-if-stdlib-pkg-with-cgo-flag-is-no.patch
+Patch0:		No-Nicer-error-msg-if-stdlib-pkg-with-cgo-flag-is-no.patch
 
 
 %if 0%{?fedora} >= 21 || 0%{?rhel}

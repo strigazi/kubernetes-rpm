@@ -15,13 +15,15 @@
 
 Name:		kubernetes
 Version:	0.15.0
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	Container cluster management
 License:	ASL 2.0
 URL:		https://github.com/GoogleCloudPlatform/kubernetes
 ExclusiveArch:	x86_64
 Source0:	https://github.com/GoogleCloudPlatform/kubernetes/archive/%{commit}/kubernetes-%{shortcommit}.tar.gz
 Patch0:		No-Nicer-error-msg-if-stdlib-pkg-with-cgo-flag-is-no.patch
+
+Obsoletes:      cadvisor
 
 %if 0%{?fedora} >= 21 || 0%{?rhel}
 Requires:	docker
@@ -361,6 +363,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Fri Apr 17 2015 jchaloup <jchaloup@redhat.com> - 0.15.0-3
+- Obsolete cadvisor as it is integrated in kubelet
+  related: #1211266
+
 * Wed Apr 15 2015 jchaloup <jchaloup@redhat.com> - 0.15.0-0.2.git0ea87e4
 - Bump to upstream 0ea87e486407298dc1e3126c47f4076b9022fb09
   related: #1211266

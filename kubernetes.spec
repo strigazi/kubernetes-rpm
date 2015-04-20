@@ -5,7 +5,7 @@
 %global project		GoogleCloudPlatform
 %global repo		kubernetes
 %global import_path	%{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit		0ea87e486407298dc1e3126c47f4076b9022fb09
+%global commit		eb1ea269954da2ce557f3305fa88d42e3ade7975
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
@@ -15,13 +15,12 @@
 
 Name:		kubernetes
 Version:	0.15.0
-Release:	3%{?dist}
+Release:	4%{?dist}
 Summary:	Container cluster management
 License:	ASL 2.0
 URL:		https://github.com/GoogleCloudPlatform/kubernetes
 ExclusiveArch:	x86_64
 Source0:	https://github.com/GoogleCloudPlatform/kubernetes/archive/%{commit}/kubernetes-%{shortcommit}.tar.gz
-Patch0:		No-Nicer-error-msg-if-stdlib-pkg-with-cgo-flag-is-no.patch
 
 Obsoletes:      cadvisor
 
@@ -55,10 +54,12 @@ BuildRequires:	golang >= 1.2.1-3
 %description devel
 %{summary}
 
+Provides: golang(%{import_path}/cmd/genutils) = %{version}-%{release}
 Provides: golang(%{import_path}/cmd/kube-apiserver/app) = %{version}-%{release}
 Provides: golang(%{import_path}/cmd/kube-controller-manager/app) = %{version}-%{release}
 Provides: golang(%{import_path}/cmd/kube-proxy/app) = %{version}-%{release}
 Provides: golang(%{import_path}/cmd/kubelet/app) = %{version}-%{release}
+Provides: golang(%{import_path}/examples) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/admission) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/api) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/api/endpoints) = %{version}-%{release}
@@ -85,6 +86,7 @@ Provides: golang(%{import_path}/pkg/auth/user) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/capabilities) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/client) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/client/cache) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/client/chaosclient) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/client/clientcmd) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/client/clientcmd/api) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/client/clientcmd/api/latest) = %{version}-%{release}
@@ -97,12 +99,13 @@ Provides: golang(%{import_path}/pkg/client/testclient) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/clientauth) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/cloudprovider) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/cloudprovider/aws) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/cloudprovider/controller) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/cloudprovider/fake) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/cloudprovider/gce) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/cloudprovider/nodecontroller) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/cloudprovider/openstack) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/cloudprovider/ovirt) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/cloudprovider/rackspace) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/cloudprovider/servicecontroller) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/cloudprovider/vagrant) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/config) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/controller) = %{version}-%{release}
@@ -182,13 +185,16 @@ Provides: golang(%{import_path}/pkg/util/httpstream) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/util/httpstream/spdy) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/util/iptables) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/util/mount) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/util/proxy) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/util/slice) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/util/strategicpatch) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/util/wait) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/util/workqueue) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/util/yaml) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/version) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/version/verflag) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/volume) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/volume/aws_ebs) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/volume/empty_dir) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/volume/gce_pd) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/volume/git_repo) = %{version}-%{release}
@@ -196,6 +202,7 @@ Provides: golang(%{import_path}/pkg/volume/glusterfs) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/volume/host_path) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/volume/iscsi) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/volume/nfs) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/volume/persistent_claim) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/volume/secret) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/watch) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/watch/json) = %{version}-%{release}
@@ -241,7 +248,7 @@ building other packages which use %{project}/%{repo}.
 %build
 export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
-export KUBE_GIT_VERSION=v0.15.0-123-g0ea87e48640729
+export KUBE_GIT_VERSION=v0.15.0-328-geb1ea269954da2
 
 %if 0%{?fedora}
 #export KUBE_GIT_TREE_STATE="dirty"
@@ -363,6 +370,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Mon Apr 20 2015 jchaloup <jchaloup@redhat.com> - 0.15.0-4
+- Bump to upstream eb1ea269954da2ce557f3305fa88d42e3ade7975
+  related: #1211266
+
 * Fri Apr 17 2015 jchaloup <jchaloup@redhat.com> - 0.15.0-3
 - Obsolete cadvisor as it is integrated in kubelet
   related: #1211266

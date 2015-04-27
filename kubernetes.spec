@@ -5,7 +5,7 @@
 %global project		GoogleCloudPlatform
 %global repo		kubernetes
 %global import_path	%{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit		9f753c2592481a226d72cea91648db8fb97f0da8
+%global commit		051dd96c542799dfab39184d2a7c8bacf9e88d85
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
@@ -15,7 +15,7 @@
 
 Name:		kubernetes
 Version:	0.15.0
-Release:	7%{?dist}
+Release:	8%{?dist}
 Summary:	Container cluster management
 License:	ASL 2.0
 URL:		https://github.com/GoogleCloudPlatform/kubernetes
@@ -59,7 +59,6 @@ Provides: golang(%{import_path}/cmd/kube-apiserver/app) = %{version}-%{release}
 Provides: golang(%{import_path}/cmd/kube-controller-manager/app) = %{version}-%{release}
 Provides: golang(%{import_path}/cmd/kube-proxy/app) = %{version}-%{release}
 Provides: golang(%{import_path}/cmd/kubelet/app) = %{version}-%{release}
-Provides: golang(%{import_path}/examples) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/admission) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/api) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/api/endpoints) = %{version}-%{release}
@@ -143,6 +142,7 @@ Provides: golang(%{import_path}/pkg/probe/tcp) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/proxy) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/proxy/config) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/registry/componentstatus) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/controller) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/controller/etcd) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/endpoint) = %{version}-%{release}
@@ -163,6 +163,8 @@ Provides: golang(%{import_path}/pkg/registry/persistentvolumeclaim) = %{version}
 Provides: golang(%{import_path}/pkg/registry/persistentvolumeclaim/etcd) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/pod) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/pod/etcd) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/registry/podtemplate) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/registry/podtemplate/etcd) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/registrytest) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/resourcequota) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/resourcequota/etcd) = %{version}-%{release}
@@ -204,6 +206,7 @@ Provides: golang(%{import_path}/pkg/volume/iscsi) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/volume/nfs) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/volume/persistent_claim) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/volume/secret) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/volume/util) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/watch) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/watch/json) = %{version}-%{release}
 Provides: golang(%{import_path}/plugin/cmd/kube-scheduler/app) = %{version}-%{release}
@@ -234,9 +237,6 @@ Provides: golang(%{import_path}/plugin/pkg/scheduler/factory) = %{version}-%{rel
 Provides: golang(%{import_path}/plugin/pkg/scheduler/metrics) = %{version}-%{release}
 Provides: golang(%{import_path}/test/e2e) = %{version}-%{release}
 Provides: golang(%{import_path}/test/integration) = %{version}-%{release}
-Provides: golang(%{import_path}/third_party/forked/json) = %{version}-%{release}
-Provides: golang(%{import_path}/third_party/forked/reflect) = %{version}-%{release}
-Provides: golang(%{import_path}/third_party/golang/netutil) = %{version}-%{release}
 
 This package contains library source intended for
 building other packages which use %{project}/%{repo}.
@@ -248,7 +248,7 @@ building other packages which use %{project}/%{repo}.
 %build
 export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
-export KUBE_GIT_VERSION=v0.15.0-667-g9f753c2592481a
+export KUBE_GIT_VERSION=v0.15.0-732-g051dd96c542799
 
 %if 0%{?fedora}
 #export KUBE_GIT_TREE_STATE="dirty"
@@ -370,6 +370,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Mon Apr 27 2015 jchaloup <jchaloup@redhat.com> - 0.15.0-8
+- Bump to upstream 051dd96c542799dfab39184d2a7c8bacf9e88d85
+  related: #1211266
+
 * Fri Apr 24 2015 jchaloup <jchaloup@redhat.com> - 0.15.0-7
 - Bump to upstream 9f753c2592481a226d72cea91648db8fb97f0da8
   related: #1211266

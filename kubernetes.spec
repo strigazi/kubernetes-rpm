@@ -4,6 +4,7 @@
 %global provider_tld	com
 %global project		GoogleCloudPlatform
 %global repo		kubernetes
+# https://github.com/GoogleCloudPlatform/kubernetes
 %global import_path	%{provider}.%{provider_tld}/%{project}/%{repo}
 %global commit		99fc906f78cd2bcb08536c262867fa6803f816d5
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
@@ -15,13 +16,14 @@
 
 Name:		kubernetes
 Version:	0.15.0
-Release:	9%{?dist}
-Summary:	Container cluster management
-License:	ASL 2.0
-URL:		https://github.com/GoogleCloudPlatform/kubernetes
-ExclusiveArch:	x86_64
-Source0:	https://github.com/GoogleCloudPlatform/kubernetes/archive/%{commit}/kubernetes-%{shortcommit}.tar.gz
+Release:	10%{?dist}
+Summary:        Container cluster management
+License:        ASL 2.0
+URL:            %{import_path}
+ExclusiveArch:  x86_64
+Source0:        https://%{import_path}/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
 
+# It obsoletes cadvisor but needs its source code (literally integrated)
 Obsoletes:      cadvisor
 
 %if 0%{?fedora} >= 21 || 0%{?rhel}
@@ -40,7 +42,7 @@ BuildRequires:	rsync
 
 %if 0%{?fedora}
 # needed for go cover.  Not available in RHEL/CentOS (available in Fedora/EPEL)
-BuildRequires:	golang-cover
+BuildRequires: golang-cover
 %endif
 
 %description
@@ -48,8 +50,8 @@ BuildRequires:	golang-cover
 
 %if 0%{?fedora}
 %package devel
-Summary:	%{summary}
-BuildRequires:	golang >= 1.2.1-3
+Summary:       %{summary}
+BuildRequires: golang >= 1.2.1-3
 
 %description devel
 %{summary}
@@ -245,6 +247,18 @@ This package contains library source intended for
 building other packages which use %{project}/%{repo}.
 %endif
 
+%package unit-test
+Summary: %{summary} - for running unit tests
+
+# below Rs used for testing
+Requires: golang >= 1.2-7
+Requires: etcd >= 2.0.9
+Requires: hostname
+Requires: rsync
+
+%description unit-test
+%{summary} - for running unit tests
+
 %prep
 %autosetup -n %{name}-%{commit} -p1
 
@@ -260,28 +274,6 @@ export KUBE_GIT_VERSION=v0.15.0-824-g99fc906f78cd2b
 %endif
 
 hack/build-go.sh --use_go_build
-
-%check
-%if 0%{?fedora}
-#export KUBE_EXTRA_GOPATH=%{gopath}
-#export KUBE_NO_GODEPS="true"
-%endif
-
-echo "******Testing the commands*****"
-# run the test only if /fs/sys/cgroup is mounted
-if [ -d /sys/fs/cgroup ]; then
-	hack/test-cmd.sh
-fi
-echo "******Benchmarking kube********"
-hack/benchmark-go.sh
-
-# In Fedora 20 and RHEL7 the go cover tools isn't available correctly
-%if 0%{?fedora} >= 21
-echo "******Testing the go code******"
-hack/test-go.sh
-echo "******Testing integration******"
-#hack/test-integration.sh --use_go_build
-%endif
 
 %install
 . hack/lib/init.sh
@@ -313,7 +305,7 @@ install -d %{buildroot}%{_mandir}/man1
 install -p -m 644 docs/man/man1/* %{buildroot}%{_mandir}/man1
 
 # install the place the kubelet defaults to put volumes
-install -d %{buildroot}/var/lib/kubelet
+install -d %{buildroot}%{_sharedstatedir}/kubelet
 
 # place contrib/init/systemd/tmpfiles.d/kubernetes.conf to /usr/lib/tmpfiles.d/kubernetes.conf
 install -d -m 0755 %{buildroot}%{_tmpfilesdir}
@@ -325,6 +317,32 @@ install -d %{buildroot}/%{gopath}/src/%{import_path}
 for d in build cluster cmd contrib examples hack pkg plugin test; do
     cp -rpav $d %{buildroot}/%{gopath}/src/%{import_path}/
 done
+%endif
+
+# place files for unit-test rpm
+install -d -m 0755 %{buildroot}%{_sharedstatedir}/kubernetes-unit-test/
+for d in _output Godeps cmd examples hack pkg plugin third_party test; do
+  cp -a $d %{buildroot}%{_sharedstatedir}/kubernetes-unit-test/
+done
+
+%check
+# RHEL7 and CentOS are tested via unit-test subpackage
+%if 0%{?fedora}
+#export KUBE_EXTRA_GOPATH=%{gopath}
+#export KUBE_NO_GODEPS="true"
+
+echo "******Testing the commands*****"
+hack/test-cmd.sh
+echo "******Benchmarking kube********"
+hack/benchmark-go.sh
+
+# In Fedora 20 and RHEL7 the go cover tools isn't available correctly
+%if 0%{?fedora} >= 21
+echo "******Testing the go code******"
+hack/test-go.sh
+echo "******Testing integration******"
+#hack/test-integration.sh --use_go_build
+%endif
 %endif
 
 %files
@@ -352,6 +370,9 @@ done
 %config(noreplace) %{_sysconfdir}/%{name}/scheduler
 %{_tmpfilesdir}/kubernetes.conf
 
+%files unit-test
+%{_sharedstatedir}/kubernetes-unit-test/
+
 %if 0%{?fedora}
 %files devel
 %doc README.md LICENSE CONTRIB.md CONTRIBUTING.md DESIGN.md
@@ -363,6 +384,7 @@ done
 getent group kube >/dev/null || groupadd -r kube
 getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
         -c "Kubernetes user" kube
+
 %post
 %systemd_post kube-apiserver kube-scheduler kube-controller-manager kubelet kube-proxy
 
@@ -373,6 +395,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Tue Apr 28 2015 jchaloup <jchaloup@redhat.com> - 0.15.0-10
+- Add unit-test subpackage
+  related: #1211266
+
 * Tue Apr 28 2015 jchaloup <jchaloup@redhat.com> - 0.15.0-9
 - Bump to upstream 99fc906f78cd2bcb08536c262867fa6803f816d5
   related: #1211266

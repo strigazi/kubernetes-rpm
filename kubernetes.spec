@@ -6,7 +6,7 @@
 %global repo		kubernetes
 # https://github.com/GoogleCloudPlatform/kubernetes
 %global import_path	%{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit		99fc906f78cd2bcb08536c262867fa6803f816d5
+%global commit		7dcce2eeb7f28643d599c8b6a244523670d17c93
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
@@ -15,8 +15,8 @@
 %global _checkshell	/bin/bash
 
 Name:		kubernetes
-Version:	0.15.0
-Release:	10%{?dist}
+Version:	0.16.0
+Release:	1%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -73,6 +73,7 @@ Provides: golang(%{import_path}/pkg/api/rest) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/api/rest/resttest) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/api/testapi) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/api/testing) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/api/v1) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/api/v1beta1) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/api/v1beta2) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/api/v1beta3) = %{version}-%{release}
@@ -226,6 +227,7 @@ Provides: golang(%{import_path}/plugin/pkg/auth) = %{version}-%{release}
 Provides: golang(%{import_path}/plugin/pkg/auth/authenticator) = %{version}-%{release}
 Provides: golang(%{import_path}/plugin/pkg/auth/authenticator/password) = %{version}-%{release}
 Provides: golang(%{import_path}/plugin/pkg/auth/authenticator/password/allow) = %{version}-%{release}
+Provides: golang(%{import_path}/plugin/pkg/auth/authenticator/password/passwordfile) = %{version}-%{release}
 Provides: golang(%{import_path}/plugin/pkg/auth/authenticator/request/basicauth) = %{version}-%{release}
 Provides: golang(%{import_path}/plugin/pkg/auth/authenticator/request/union) = %{version}-%{release}
 Provides: golang(%{import_path}/plugin/pkg/auth/authenticator/request/x509) = %{version}-%{release}
@@ -265,7 +267,7 @@ Requires: rsync
 %build
 export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
-export KUBE_GIT_VERSION=v0.15.0-824-g99fc906f78cd2b
+export KUBE_GIT_VERSION=v0.16.0-2-g7dcce2eeb7f286
 
 %if 0%{?fedora}
 #export KUBE_GIT_TREE_STATE="dirty"
@@ -395,6 +397,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Wed Apr 29 2015 jchaloup <jchaloup@redhat.com> - 0.16.0-1
+- Bump to upstream 7dcce2eeb7f28643d599c8b6a244523670d17c93
+  related: #1211266
+
 * Tue Apr 28 2015 jchaloup <jchaloup@redhat.com> - 0.15.0-10
 - Add unit-test subpackage
   related: #1211266

@@ -53,9 +53,6 @@ BuildRequires: golang-cover
 Summary:       %{summary}
 BuildRequires: golang >= 1.2.1-3
 
-%description devel
-%{summary}
-
 Provides: golang(%{import_path}/cmd/genutils) = %{version}-%{release}
 Provides: golang(%{import_path}/cmd/kube-apiserver/app) = %{version}-%{release}
 Provides: golang(%{import_path}/cmd/kube-controller-manager/app) = %{version}-%{release}
@@ -132,9 +129,13 @@ Provides: golang(%{import_path}/pkg/kubelet/container) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/kubelet/dockertools) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/kubelet/envvars) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/kubelet/leaky) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/kubelet/lifecycle) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/kubelet/metrics) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/kubelet/network) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/kubelet/network/exec) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/kubelet/prober) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/kubelet/rkt) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/kubelet/types) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/labels) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/master) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/master/ports) = %{version}-%{release}
@@ -173,6 +174,7 @@ Provides: golang(%{import_path}/pkg/registry/registrytest) = %{version}-%{releas
 Provides: golang(%{import_path}/pkg/registry/resourcequota) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/resourcequota/etcd) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/secret) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/registry/secret/etcd) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/service) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/resourcequota) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/runtime) = %{version}-%{release}
@@ -244,6 +246,9 @@ Provides: golang(%{import_path}/plugin/pkg/scheduler/factory) = %{version}-%{rel
 Provides: golang(%{import_path}/plugin/pkg/scheduler/metrics) = %{version}-%{release}
 Provides: golang(%{import_path}/test/e2e) = %{version}-%{release}
 Provides: golang(%{import_path}/test/integration) = %{version}-%{release}
+
+%description devel
+%{summary}
 
 This package contains library source intended for
 building other packages which use %{project}/%{repo}.

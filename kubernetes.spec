@@ -16,7 +16,7 @@
 
 Name:		kubernetes
 Version:	0.16.2
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -328,7 +328,8 @@ done
 
 # place files for unit-test rpm
 install -d -m 0755 %{buildroot}%{_sharedstatedir}/kubernetes-unit-test/
-for d in _output Godeps cmd examples hack pkg plugin third_party test; do
+cp -pav README.md %{buildroot}%{_sharedstatedir}/kubernetes-unit-test/.
+for d in _output Godeps api cmd examples hack pkg plugin third_party test; do
   cp -a $d %{buildroot}%{_sharedstatedir}/kubernetes-unit-test/
 done
 
@@ -402,6 +403,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Tue May 05 2015 jchaloup <jchaloup@redhat.com> - 0.16.2-2
+- Add api and README.md to kubernetes-unit-test
+  related: #1211266
+
 * Tue May 05 2015 jchaloup <jchaloup@redhat.com> - 0.16.2-1
 - Bump to upstream 72048a824ca16c3921354197953fabecede5af47
   related: #1211266

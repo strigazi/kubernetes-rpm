@@ -6,7 +6,7 @@
 %global repo		kubernetes
 # https://github.com/GoogleCloudPlatform/kubernetes
 %global import_path	%{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit		72048a824ca16c3921354197953fabecede5af47
+%global commit		3a24c0e898cb3060d7905af6df275a3be562451d
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
@@ -16,7 +16,7 @@
 
 Name:		kubernetes
 Version:	0.16.2
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -272,7 +272,7 @@ Requires: rsync
 %build
 export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
-export KUBE_GIT_VERSION=v0.16.2-381-g72048a824ca16c
+export KUBE_GIT_VERSION=v0.16.2-466-g3a24c0e898cb30
 
 %if 0%{?fedora}
 #export KUBE_GIT_TREE_STATE="dirty"
@@ -403,6 +403,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Wed May 06 2015 jchaloup <jchaloup@redhat.com> - 0.16.2-3
+- Bump to upstream 3a24c0e898cb3060d7905af6df275a3be562451d
+  related: #1211266
+
 * Tue May 05 2015 jchaloup <jchaloup@redhat.com> - 0.16.2-2
 - Add api and README.md to kubernetes-unit-test
   related: #1211266

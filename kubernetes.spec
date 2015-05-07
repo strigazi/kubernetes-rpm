@@ -6,7 +6,7 @@
 %global repo		kubernetes
 # https://github.com/GoogleCloudPlatform/kubernetes
 %global import_path	%{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit		3a24c0e898cb3060d7905af6df275a3be562451d
+%global commit		ca0f678b9a0a6dc795ac7a595350d0dbe9d0ac3b
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
@@ -16,7 +16,7 @@
 
 Name:		kubernetes
 Version:	0.16.2
-Release:	4%{?dist}
+Release:	5%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -272,7 +272,7 @@ Requires: rsync
 %build
 export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
-export KUBE_GIT_VERSION=v0.16.2-466-g3a24c0e898cb30
+export KUBE_GIT_VERSION=v0.16.2-536-gca0f678b9a0a6d
 
 %if 0%{?fedora}
 #export KUBE_GIT_TREE_STATE="dirty"
@@ -403,6 +403,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Thu May 07 2015 jchaloup <jchaloup@redhat.com> - 0.16.2-5
+- Bump to upstream ca0f678b9a0a6dc795ac7a595350d0dbe9d0ac3b
+  related: #1211266
+
 * Wed May 06 2015 jchaloup <jchaloup@redhat.com> - 0.16.2-4
 - Add docs to kubernetes-unit-test
   related: #1211266

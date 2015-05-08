@@ -6,7 +6,7 @@
 %global repo		kubernetes
 # https://github.com/GoogleCloudPlatform/kubernetes
 %global import_path	%{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit		ca0f678b9a0a6dc795ac7a595350d0dbe9d0ac3b
+%global commit		d136728df7e2694df9e082902f6239c11b0f2b00
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
@@ -16,7 +16,7 @@
 
 Name:		kubernetes
 Version:	0.16.2
-Release:	5%{?dist}
+Release:	6%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -39,6 +39,7 @@ BuildRequires:	systemd
 BuildRequires:	etcd >= 2.0.8
 BuildRequires:	hostname
 BuildRequires:	rsync
+BuildRequires:  NetworkManager
 
 %if 0%{?fedora}
 # needed for go cover.  Not available in RHEL/CentOS (available in Fedora/EPEL)
@@ -262,6 +263,7 @@ Requires: golang >= 1.2-7
 Requires: etcd >= 2.0.9
 Requires: hostname
 Requires: rsync
+Requires: NetworkManager
 
 %description unit-test
 %{summary} - for running unit tests
@@ -272,7 +274,7 @@ Requires: rsync
 %build
 export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
-export KUBE_GIT_VERSION=v0.16.2-536-gca0f678b9a0a6d
+export KUBE_GIT_VERSION=v0.16.2-619-ga453d0b1871b59
 
 %if 0%{?fedora}
 #export KUBE_GIT_TREE_STATE="dirty"
@@ -403,6 +405,11 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Fri May 08 2015 jchaloup <jchaloup@redhat.com> - 0.16.2-6
+- Bump to upstream d136728df7e2694df9e082902f6239c11b0f2b00
+- Add NetworkManager as dependency for /etc/resolv.conf
+  related: #1211266
+
 * Thu May 07 2015 jchaloup <jchaloup@redhat.com> - 0.16.2-5
 - Bump to upstream ca0f678b9a0a6dc795ac7a595350d0dbe9d0ac3b
   related: #1211266

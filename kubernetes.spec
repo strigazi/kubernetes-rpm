@@ -6,7 +6,7 @@
 %global repo		kubernetes
 # https://github.com/GoogleCloudPlatform/kubernetes
 %global import_path	%{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit		d136728df7e2694df9e082902f6239c11b0f2b00
+%global commit		63182318c5876b94ac9b264d1224813b2b2ab541
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
@@ -16,7 +16,7 @@
 
 Name:		kubernetes
 Version:	0.16.2
-Release:	6%{?dist}
+Release:	7%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -111,6 +111,7 @@ Provides: golang(%{import_path}/pkg/config) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/controller) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/controller/framework) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/conversion) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/conversion/queryparams) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/credentialprovider) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/credentialprovider/gcp) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/fieldpath) = %{version}-%{release}
@@ -180,6 +181,7 @@ Provides: golang(%{import_path}/pkg/registry/service) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/resourcequota) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/runtime) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/scheduler) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/securitycontext) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/service) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/tools) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/tools/etcdtest) = %{version}-%{release}
@@ -226,6 +228,7 @@ Provides: golang(%{import_path}/plugin/pkg/admission/namespace/autoprovision) = 
 Provides: golang(%{import_path}/plugin/pkg/admission/namespace/exists) = %{version}-%{release}
 Provides: golang(%{import_path}/plugin/pkg/admission/namespace/lifecycle) = %{version}-%{release}
 Provides: golang(%{import_path}/plugin/pkg/admission/resourcequota) = %{version}-%{release}
+Provides: golang(%{import_path}/plugin/pkg/admission/securitycontext/scdeny) = %{version}-%{release}
 Provides: golang(%{import_path}/plugin/pkg/auth) = %{version}-%{release}
 Provides: golang(%{import_path}/plugin/pkg/auth/authenticator) = %{version}-%{release}
 Provides: golang(%{import_path}/plugin/pkg/auth/authenticator/password) = %{version}-%{release}
@@ -274,7 +277,7 @@ Requires: NetworkManager
 %build
 export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
-export KUBE_GIT_VERSION=v0.16.2-619-ga453d0b1871b59
+export KUBE_GIT_VERSION=v0.16.2-659-g63182318c5876b
 
 %if 0%{?fedora}
 #export KUBE_GIT_TREE_STATE="dirty"
@@ -405,6 +408,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Mon May 11 2015 jchaloup <jchaloup@redhat.com> - 0.16.2-7
+- Bump to upstream 63182318c5876b94ac9b264d1224813b2b2ab541
+  related: #1211266
+
 * Fri May 08 2015 jchaloup <jchaloup@redhat.com> - 0.16.2-6
 - Bump to upstream d136728df7e2694df9e082902f6239c11b0f2b00
 - Add NetworkManager as dependency for /etc/resolv.conf

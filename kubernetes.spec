@@ -16,7 +16,7 @@
 
 Name:		kubernetes
 Version:	0.17.0
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -288,7 +288,7 @@ export KUBE_GIT_VERSION=v0.17.0-3-g962f10ee580eea
 #export KUBE_NO_GODEPS="true"
 %endif
 
-hack/build-go.sh --use_go_build
+hack/build-go.sh --use_go_build cmd/kube-apiserver cmd/kube-controller-manager plugin/cmd/kube-scheduler cmd/kube-proxy cmd/kubelet cmd/kubectl cmd/kube-version-change
 
 %install
 . hack/lib/init.sh
@@ -296,7 +296,7 @@ kube::golang::setup_env
 
 output_path="${KUBE_OUTPUT_BINPATH}/$(kube::golang::current_platform)"
 
-binaries=(kube-apiserver kube-controller-manager kube-scheduler kube-proxy kubelet kubectl)
+binaries=(kube-apiserver kube-controller-manager kube-scheduler kube-proxy kubelet kubectl kube-version-change)
 install -m 755 -d %{buildroot}%{_bindir}
 for bin in "${binaries[@]}"; do
   echo "+++ INSTALLING ${bin}"
@@ -370,6 +370,7 @@ echo "******Testing integration******"
 %{_bindir}/kubelet
 %{_bindir}/kube-proxy
 %{_bindir}/kube-scheduler
+%{_bindir}/kube-version-change
 %{_unitdir}/kube-apiserver.service
 %{_unitdir}/kubelet.service
 %{_unitdir}/kube-scheduler.service
@@ -411,6 +412,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Tue May 12 2015 jchaloup <jchaloup@redhat.com> - 0.17.0-2
+- Provide /usr/bin/kube-version-change binary
+  related: #1211266
+
 * Tue May 12 2015 jchaloup <jchaloup@redhat.com> - 0.17.0-1
 - Bump to upstream 962f10ee580eea30e5f4ea725c4e9e3743408a58
   related: #1211266

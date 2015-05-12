@@ -20,7 +20,7 @@
 
 Name:		kubernetes
 Version:	0.17.1
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -34,20 +34,10 @@ Patch0:         build-with-debug-info.patch
 # It obsoletes cadvisor but needs its source code (literally integrated)
 Obsoletes:      cadvisor
 
-%if 0%{?fedora} >= 21 || 0%{?rhel}
-Requires:	docker
-%else
-Requires:	docker-io
-%endif
-
-Requires(pre):	shadow-utils
-
-BuildRequires:	golang >= 1.2-7
-BuildRequires:	systemd
-BuildRequires:	etcd >= 2.0.8
-BuildRequires:	hostname
-BuildRequires:	rsync
-BuildRequires:  NetworkManager
+# kubernetes is decomposed into master and node subpackages
+# require both of them for updates
+Requires: kubernetes-master = %{version}-%{release}
+Requires: kubernetes-node = %{version}-%{release}
 
 %if 0%{?fedora}
 # needed for go cover.  Not available in RHEL/CentOS (available in Fedora/EPEL)
@@ -298,6 +288,50 @@ Requires: NetworkManager
 %description unit-test
 %{summary} - for running unit tests
 
+%package master
+Summary: Kubernetes services for master host
+
+BuildRequires: golang >= 1.2-7
+BuildRequires: systemd
+# below BRs used for testing
+BuildRequires: etcd >= 2.0.9
+BuildRequires: hostname
+BuildRequires: rsync
+
+Requires(pre): shadow-utils
+
+# if node is installed with node, version and release must be the same
+Conflicts: kubernetes-node < %{version}-%{release}
+Conflicts: kubernetes-node > %{version}-%{release}
+
+%description master
+Kubernetes services for master host
+
+%package node
+Summary: Kubernetes services for node host
+
+%if 0%{?fedora} >= 21 || 0%{?rhel}
+Requires: docker
+%else
+Requires: docker-io
+%endif
+
+BuildRequires: golang >= 1.2-7
+BuildRequires: systemd
+# below BRs used for testing
+BuildRequires: etcd >= 2.0.9
+BuildRequires: hostname
+BuildRequires: rsync
+
+Requires(pre): shadow-utils
+
+# if master is installed with node, version and release must be the same
+Conflicts: kubernetes-master < %{version}-%{release}
+Conflicts: kubernetes-master > %{version}-%{release}
+
+%description node
+Kubernetes services for node host
+
 %prep
 %autosetup -n %{name}-%{commit} -p1
 
@@ -386,29 +420,49 @@ echo "******Testing integration******"
 %endif
 
 %files
+# empty as it depends on master and node
+
+%files master
 %doc README.md LICENSE CONTRIB.md CONTRIBUTING.md DESIGN.md
-%{_mandir}/man1/*
+%{_mandir}/man1/kube-apiserver.1*
+%{_mandir}/man1/kube-controller-manager.1*
+%{_mandir}/man1/kube-scheduler.1*
+%{_mandir}/man1/kubectl.1*
+%{_mandir}/man1/kubectl-*
 %{_bindir}/kube-apiserver
-%{_bindir}/kubectl
 %{_bindir}/kube-controller-manager
-%{_bindir}/kubelet
-%{_bindir}/kube-proxy
 %{_bindir}/kube-scheduler
 %{_bindir}/kube-version-change
-%{_unitdir}/kube-apiserver.service
-%{_unitdir}/kubelet.service
-%{_unitdir}/kube-scheduler.service
-%{_unitdir}/kube-controller-manager.service
-%{_unitdir}/kube-proxy.service
-%dir %{_sysconfdir}/%{name}
+%{_bindir}/kubectl
 %{_datadir}/bash-completion/completions/kubectl
-%dir /var/lib/kubelet
-%config(noreplace) %{_sysconfdir}/%{name}/config
+%{_unitdir}/kube-apiserver.service
+%{_unitdir}/kube-controller-manager.service
+%{_unitdir}/kube-scheduler.service
+%dir %{_sysconfdir}/%{name}
 %config(noreplace) %{_sysconfdir}/%{name}/apiserver
-%config(noreplace) %{_sysconfdir}/%{name}/controller-manager
-%config(noreplace) %{_sysconfdir}/%{name}/proxy
-%config(noreplace) %{_sysconfdir}/%{name}/kubelet
 %config(noreplace) %{_sysconfdir}/%{name}/scheduler
+%config(noreplace) %{_sysconfdir}/%{name}/config
+%config(noreplace) %{_sysconfdir}/%{name}/controller-manager
+%{_tmpfilesdir}/kubernetes.conf
+
+%files node
+%doc README.md LICENSE CONTRIB.md CONTRIBUTING.md DESIGN.md
+%{_mandir}/man1/kubelet.1*
+%{_mandir}/man1/kube-proxy.1*
+%{_mandir}/man1/kubectl.1*
+%{_mandir}/man1/kubectl-*
+%{_bindir}/kubelet
+%{_bindir}/kube-proxy
+%{_bindir}/kube-version-change
+%{_bindir}/kubectl
+%{_datadir}/bash-completion/completions/kubectl
+%{_unitdir}/kube-proxy.service
+%{_unitdir}/kubelet.service
+%dir %{_sharedstatedir}/kubelet
+%dir %{_sysconfdir}/%{name}
+%config(noreplace) %{_sysconfdir}/%{name}/config
+%config(noreplace) %{_sysconfdir}/%{name}/kubelet
+%config(noreplace) %{_sysconfdir}/%{name}/proxy
 %{_tmpfilesdir}/kubernetes.conf
 
 %files unit-test
@@ -421,21 +475,41 @@ echo "******Testing integration******"
 %{gopath}/src/%{import_path}
 %endif
 
-%pre
+%pre master
 getent group kube >/dev/null || groupadd -r kube
 getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
         -c "Kubernetes user" kube
 
-%post
-%systemd_post kube-apiserver kube-scheduler kube-controller-manager kubelet kube-proxy
+%post master
+%systemd_post kube-apiserver kube-scheduler kube-controller-manager
 
-%preun
-%systemd_preun kube-apiserver kube-scheduler kube-controller-manager kubelet kube-proxy
+%preun master
+%systemd_preun kube-apiserver kube-scheduler kube-controller-manager
 
-%postun
+%postun master
+%systemd_postun
+
+
+%pre node
+getent group kube >/dev/null || groupadd -r kube
+getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
+        -c "Kubernetes user" kube
+
+%post node
+%systemd_post kubelet kube-proxy
+
+%preun node
+%systemd_preun kubelet kube-proxy
+
+%postun node
 %systemd_postun
 
 %changelog
+* Mon May 25 2015 jchaloup <jchaloup@redhat.com> - 0.17.1-3
+- Decompose package into master and node subpackage.
+  Thanks to Avesh for testing and patience.
+  related: #1211266
+
 * Mon May 25 2015 jchaloup <jchaloup@redhat.com> - 0.17.1-2
 - Bump to upstream cf7b0bdc2a41d38613ac7f8eeea91cae23553fa2
   related: #1211266

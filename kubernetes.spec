@@ -1,12 +1,16 @@
-#debuginfo not supported with Go
-%global debug_package	%{nil}
+%if 0%{?fedora}
+# https://bugzilla.redhat.com/show_bug.cgi?id=995136#c12
+%global _dwz_low_mem_die_limit 0
+%else
+%global debug_package   %{nil}
+%endif
 %global provider	github
 %global provider_tld	com
 %global project		GoogleCloudPlatform
 %global repo		kubernetes
 # https://github.com/GoogleCloudPlatform/kubernetes
 %global import_path	%{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit		ec19d41b63f5fe7b2c939e7738a41c0fbe65d796
+%global commit		5010b2dde0f9b9eb820fe047e3b34bc9fa6324de
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
@@ -16,12 +20,16 @@
 
 Name:		kubernetes
 Version:	0.17.0
-Release:	3%{?dist}
+Release:	4%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
 ExclusiveArch:  x86_64
 Source0:        https://%{import_path}/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
+
+%if 0%{?fedora}
+Patch0:         build-with-debug-info.patch
+%endif
 
 # It obsoletes cadvisor but needs its source code (literally integrated)
 Obsoletes:      cadvisor
@@ -284,7 +292,7 @@ Requires: NetworkManager
 %build
 export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
-export KUBE_GIT_VERSION=v0.17.0-86-gec19d41b63f5fe
+export KUBE_GIT_VERSION=v0.17.0-170-g5010b2dde0f9b9
 
 %if 0%{?fedora}
 #export KUBE_GIT_TREE_STATE="dirty"
@@ -416,6 +424,11 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Thu May 14 2015 jchaloup <jchaloup@redhat.com> - 0.17.0-4
+- Bump to upstream 5010b2dde0f9b9eb820fe047e3b34bc9fa6324de
+- Add debug info
+  related: #1211266
+
 * Wed May 13 2015 jchaloup <jchaloup@redhat.com> - 0.17.0-3
 - Bump to upstream ec19d41b63f5fe7b2c939e7738a41c0fbe65d796
   related: #1211266

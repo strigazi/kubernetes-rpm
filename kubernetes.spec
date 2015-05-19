@@ -10,7 +10,7 @@
 %global repo		kubernetes
 # https://github.com/GoogleCloudPlatform/kubernetes
 %global import_path	%{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit		efb42b302d871f7217394205d84e5ae82335d786
+%global commit		10339d72b66a31592f73797a9983e7c207481b22
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
@@ -20,7 +20,7 @@
 
 Name:		kubernetes
 Version:	0.17.0
-Release:	10%{?dist}
+Release:	11%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -269,6 +269,7 @@ Provides: golang(%{import_path}/plugin/pkg/scheduler/factory) = %{version}-%{rel
 Provides: golang(%{import_path}/plugin/pkg/scheduler/metrics) = %{version}-%{release}
 Provides: golang(%{import_path}/test/e2e) = %{version}-%{release}
 Provides: golang(%{import_path}/test/integration) = %{version}-%{release}
+Provides: golang(%{import_path}/test/integration/framework) = %{version}-%{release}
 
 %description devel
 %{summary}
@@ -296,7 +297,7 @@ Requires: NetworkManager
 %build
 export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
-export KUBE_GIT_VERSION=v0.17.0-335-gefb42b302d871f
+export KUBE_GIT_VERSION=v0.17.0-470-g10339d72b66a31
 
 %if 0%{?fedora}
 #export KUBE_GIT_TREE_STATE="dirty"
@@ -428,6 +429,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Tue May 19 2015 jchaloup <jchaloup@redhat.com> - 0.17.0-11
+- Bump to upstream 10339d72b66a31592f73797a9983e7c207481b22
+  related: #1211266
+
 * Mon May 18 2015 jchaloup <jchaloup@redhat.com> - 0.17.0-10
 - Bump to upstream efb42b302d871f7217394205d84e5ae82335d786
   related: #1211266

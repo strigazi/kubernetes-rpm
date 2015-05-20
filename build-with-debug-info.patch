@@ -1,6 +1,6 @@
-From bec14dfead2251b6f89c6bc5a3a8d53e4acdde17 Mon Sep 17 00:00:00 2001
+From e8b2604bb642c39397caf91f361b3e51c8d79e5f Mon Sep 17 00:00:00 2001
 From: Jan Chaloupka <jchaloup@redhat.com>
-Date: Thu, 14 May 2015 11:08:56 +0200
+Date: Wed, 20 May 2015 09:52:33 +0200
 Subject: [PATCH] build with debug info
 
 ---
@@ -8,18 +8,18 @@ Subject: [PATCH] build with debug info
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/hack/lib/golang.sh b/hack/lib/golang.sh
-index 9bd64c9..127bf8b 100644
+index 96caa0a..17f5d9f 100644
 --- a/hack/lib/golang.sh
 +++ b/hack/lib/golang.sh
-@@ -324,12 +324,12 @@ kube::golang::build_binaries_for_platform() {
+@@ -333,12 +333,12 @@ kube::golang::build_binaries_for_platform() {
        if kube::golang::is_statically_linked_library "${binary}"; then
-         CGO_ENABLED=0 go build -o "${output_path}/${bin}" \
+         CGO_ENABLED=0 go build -o "${outfile}" \
            "${goflags[@]:+${goflags[@]}}" \
 -          -ldflags "${version_ldflags}" \
 +          -ldflags "-B 0x$(head -c20 /dev/urandom|od -An -tx1|tr -d ' \n') ${version_ldflags}" \
            "${binary}"
        else
-         go build -o "${output_path}/${bin}" \
+         go build -o "${outfile}" \
            "${goflags[@]:+${goflags[@]}}" \
 -          -ldflags "${version_ldflags}" \
 +          -ldflags "-B 0x$(head -c20 /dev/urandom|od -An -tx1|tr -d ' \n') ${version_ldflags}" \

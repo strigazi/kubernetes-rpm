@@ -10,7 +10,7 @@
 %global repo		kubernetes
 # https://github.com/GoogleCloudPlatform/kubernetes
 %global import_path	%{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit		cf7b0bdc2a41d38613ac7f8eeea91cae23553fa2
+%global commit		01fcb58673001e56c69e128ab57e0c3f701aeea5
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
@@ -20,7 +20,7 @@
 
 Name:		kubernetes
 Version:	0.17.1
-Release:	3%{?dist}
+Release:	4%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -338,7 +338,7 @@ Kubernetes services for node host
 %build
 export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
-export KUBE_GIT_VERSION=v0.17.1-738-gcf7b0bdc2a41d3
+export KUBE_GIT_VERSION=v0.17.1-748-g01fcb58673001e
 
 %if 0%{?fedora}
 #export KUBE_GIT_TREE_STATE="dirty"
@@ -505,6 +505,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Tue May 26 2015 jchaloup <jchaloup@redhat.com> - 0.17.1-4
+- Bump to upstream 01fcb58673001e56c69e128ab57e0c3f701aeea5
+  related: #1211266
+
 * Mon May 25 2015 jchaloup <jchaloup@redhat.com> - 0.17.1-3
 - Decompose package into master and node subpackage.
   Thanks to Avesh for testing and patience.

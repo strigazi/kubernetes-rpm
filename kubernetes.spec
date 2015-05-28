@@ -340,13 +340,8 @@ export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
 export KUBE_GIT_VERSION=v0.17.1-915-g6fa2777e26559f
 
-%if 0%{?fedora}
-#export KUBE_GIT_TREE_STATE="dirty"
-#export KUBE_EXTRA_GOPATH=%{gopath}
-#export KUBE_NO_GODEPS="true"
-%endif
-
-hack/build-go.sh --use_go_build cmd/kube-apiserver cmd/kube-controller-manager plugin/cmd/kube-scheduler cmd/kube-proxy cmd/kubelet cmd/kubectl cmd/kube-version-change
+hack/build-go.sh --use_go_build
+hack/build-go.sh --use_go_build cmd/kube-version-change
 
 %install
 . hack/lib/init.sh
@@ -402,8 +397,6 @@ done
 %check
 # RHEL7 and CentOS are tested via unit-test subpackage
 %if 0%{?fedora}
-#export KUBE_EXTRA_GOPATH=%{gopath}
-#export KUBE_NO_GODEPS="true"
 
 echo "******Testing the commands*****"
 hack/test-cmd.sh

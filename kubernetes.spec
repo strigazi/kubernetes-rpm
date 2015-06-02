@@ -10,7 +10,7 @@
 %global repo		kubernetes
 # https://github.com/GoogleCloudPlatform/kubernetes
 %global import_path	%{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit		0bb78fe6c53ce38198cc3805c78308cdd4805ac8
+%global commit		5520386b180d3ddc4fa7b7dfe6f52642cc0c25f3
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
@@ -20,7 +20,7 @@
 
 Name:		kubernetes
 Version:	0.18.0
-Release:	0.1.git%{shortcommit}%{?dist}
+Release:	0.2.git%{shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -71,8 +71,6 @@ Provides: golang(%{import_path}/pkg/api/rest/resttest) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/api/testapi) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/api/testing) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/api/v1) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/api/v1beta1) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/api/v1beta2) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/api/v1beta3) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/api/validation) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/apiserver) = %{version}-%{release}
@@ -338,7 +336,7 @@ Kubernetes services for node host
 %build
 export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
-export KUBE_GIT_VERSION=v0.18.0-71-g0bb78fe6c53ce3
+export KUBE_GIT_VERSION=v0.18.0-157-g5520386b180d3d
 
 hack/build-go.sh --use_go_build
 hack/build-go.sh --use_go_build cmd/kube-version-change
@@ -498,6 +496,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Tue Jun 02 2015 jchaloup <jchaloup@redhat.com> - 0.18.0-0.2.git5520386
+- Bump to upstream 5520386b180d3ddc4fa7b7dfe6f52642cc0c25f3
+  related: #1211266
+
 * Mon Jun 01 2015 jchaloup <jchaloup@redhat.com> - 0.18.0-0.1.git0bb78fe
 - Bump to upstream 0bb78fe6c53ce38198cc3805c78308cdd4805ac8
   related: #1211266

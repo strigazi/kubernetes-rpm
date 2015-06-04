@@ -10,7 +10,7 @@
 %global repo		kubernetes
 # https://github.com/GoogleCloudPlatform/kubernetes
 %global import_path	%{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit		b5a91bda103ed2459f933959241a2b57331747ba
+%global commit		a161edb3960c01ff6e14813858c2eeb85910009b
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
@@ -19,8 +19,8 @@
 %global _checkshell	/bin/bash
 
 Name:		kubernetes
-Version:	0.18.0
-Release:	0.3.git%{shortcommit}%{?dist}
+Version:	0.18.1
+Release:	0.1.git%{shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -205,7 +205,6 @@ Provides: golang(%{import_path}/pkg/util/httpstream) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/util/httpstream/spdy) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/util/iptables) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/util/mount) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/util/node) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/util/proxy) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/util/slice) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/util/strategicpatch) = %{version}-%{release}
@@ -337,7 +336,7 @@ Kubernetes services for node host
 %build
 export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
-export KUBE_GIT_VERSION=v0.18.0-273-gb5a91bda103ed2
+export KUBE_GIT_VERSION=v0.18.0-376-ga161edb3960c01
 
 hack/build-go.sh --use_go_build
 hack/build-go.sh --use_go_build cmd/kube-version-change
@@ -496,6 +495,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Thu Jun 04 2015 jchaloup <jchaloup@redhat.com> - 0.18.1-0.1.gita161edb
+- Bump to upstream a161edb3960c01ff6e14813858c2eeb85910009b
+  related: #1211266
+
 * Wed Jun 03 2015 jchaloup <jchaloup@redhat.com> - 0.18.0-0.3.gitb5a91bd
 - Bump to upstream b5a91bda103ed2459f933959241a2b57331747ba
 - Don't run %check section (kept only for local run). Tests are now handled via CI.

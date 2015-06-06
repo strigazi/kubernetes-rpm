@@ -10,7 +10,7 @@
 %global repo		kubernetes
 # https://github.com/GoogleCloudPlatform/kubernetes
 %global import_path	%{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit		7309e1f707ea5dd08c51f803037d7d22c20e2b92
+%global commit		0f1c4c25c344f70c3592040b2ef092ccdce0244f
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
@@ -20,7 +20,7 @@
 
 Name:		kubernetes
 Version:	0.18.1
-Release:	0.2.git%{shortcommit}%{?dist}
+Release:	0.3.git%{shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -336,7 +336,7 @@ Kubernetes services for node host
 %build
 export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
-export KUBE_GIT_VERSION=v0.18.1-444-g7309e1f707ea5d
+export KUBE_GIT_VERSION=v0.18.1-518-g0f1c4c25c344f7
 
 hack/build-go.sh --use_go_build
 hack/build-go.sh --use_go_build cmd/kube-version-change
@@ -495,6 +495,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Sat Jun 06 2015 jchaloup <jchaloup@redhat.com> - 0.18.1-0.3.git0f1c4c2
+- Bump to upstream 0f1c4c25c344f70c3592040b2ef092ccdce0244f
+  related: #1211266
+
 * Fri Jun 05 2015 jchaloup <jchaloup@redhat.com> - 0.18.1-0.2.git7309e1f
 - Bump to upstream 7309e1f707ea5dd08c51f803037d7d22c20e2b92
   related: #1211266

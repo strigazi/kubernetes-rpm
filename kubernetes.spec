@@ -30,7 +30,7 @@
 
 Name:		kubernetes
 Version:	0.18.2
-Release:	0.1.git%{shortcommit}%{?dist}
+Release:	0.2.git%{shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -287,7 +287,6 @@ Requires: etcd >= 2.0.9
 Requires: hostname
 Requires: rsync
 Requires: NetworkManager
-Requires: golang-cover
 
 %description unit-test
 %{summary} - for running unit tests
@@ -495,6 +494,9 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Tue Jun 09 2015 jchaloup <jchaloup@redhat.com> - 0.18.2-0.2.gitb68e08f
+- golang-cover is not needed
+
 * Tue Jun 09 2015 jchaloup <jchaloup@redhat.com> - 0.18.2-0.1.gitb68e08f
 - Bump to upstream b68e08f55f5ae566c4ea3905d0993a8735d6d34f
   related: #1211266

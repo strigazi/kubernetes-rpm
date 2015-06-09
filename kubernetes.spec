@@ -1,4 +1,14 @@
 %if 0%{?fedora}
+%global with_devel 1
+%global with_bundled 1
+%global with_debug 1
+%else
+%global with_devel 0
+%global with_bundled 1
+%global with_debug 0
+%endif
+
+%if 0%{?with_debug}
 # https://bugzilla.redhat.com/show_bug.cgi?id=995136#c12
 %global _dwz_low_mem_die_limit 0
 %else
@@ -10,7 +20,7 @@
 %global repo		kubernetes
 # https://github.com/GoogleCloudPlatform/kubernetes
 %global import_path	%{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit		0f1c4c25c344f70c3592040b2ef092ccdce0244f
+%global commit		b68e08f55f5ae566c4ea3905d0993a8735d6d34f
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
@@ -19,15 +29,15 @@
 %global _checkshell	/bin/bash
 
 Name:		kubernetes
-Version:	0.18.1
-Release:	0.3.git%{shortcommit}%{?dist}
+Version:	0.18.2
+Release:	0.1.git%{shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
 ExclusiveArch:  x86_64
 Source0:        https://%{import_path}/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
 
-%if 0%{?fedora}
+%if 0%{?with_debug}
 Patch0:         build-with-debug-info.patch
 %endif
 
@@ -39,15 +49,10 @@ Obsoletes:      cadvisor
 Requires: kubernetes-master = %{version}-%{release}
 Requires: kubernetes-node = %{version}-%{release}
 
-%if 0%{?fedora}
-# needed for go cover.  Not available in RHEL/CentOS (available in Fedora/EPEL)
-BuildRequires: golang-cover
-%endif
-
 %description
 %{summary}
 
-%if 0%{?fedora}
+%if 0%{?with_devel}
 %package devel
 Summary:       %{summary}
 BuildRequires: golang >= 1.2.1-3
@@ -282,6 +287,7 @@ Requires: etcd >= 2.0.9
 Requires: hostname
 Requires: rsync
 Requires: NetworkManager
+Requires: golang-cover
 
 %description unit-test
 %{summary} - for running unit tests
@@ -291,9 +297,6 @@ Summary: Kubernetes services for master host
 
 BuildRequires: golang >= 1.2-7
 BuildRequires: systemd
-# below BRs used for testing
-BuildRequires: etcd >= 2.0.9
-BuildRequires: hostname
 BuildRequires: rsync
 
 Requires(pre): shadow-utils
@@ -316,9 +319,6 @@ Requires: docker-io
 
 BuildRequires: golang >= 1.2-7
 BuildRequires: systemd
-# below BRs used for testing
-BuildRequires: etcd >= 2.0.9
-BuildRequires: hostname
 BuildRequires: rsync
 
 Requires(pre): shadow-utils
@@ -336,7 +336,7 @@ Kubernetes services for node host
 %build
 export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
-export KUBE_GIT_VERSION=v0.18.1-518-g0f1c4c25c344f7
+export KUBE_GIT_VERSION=v0.18.2-590-gb68e08f55f5ae5
 
 hack/build-go.sh --use_go_build
 hack/build-go.sh --use_go_build cmd/kube-version-change
@@ -377,7 +377,7 @@ install -d %{buildroot}%{_sharedstatedir}/kubelet
 install -d -m 0755 %{buildroot}%{_tmpfilesdir}
 install -p -m 0644 -t %{buildroot}/%{_tmpfilesdir} contrib/init/systemd/tmpfiles.d/kubernetes.conf
 
-%if 0%{?fedora}
+%if 0%{?with_devel}
 # install devel source codes
 install -d %{buildroot}/%{gopath}/src/%{import_path}
 for d in build cluster cmd contrib examples hack pkg plugin test; do
@@ -405,7 +405,7 @@ hack/benchmark-go.sh
 echo "******Testing the go code******"
 hack/test-go.sh
 echo "******Testing integration******"
-#hack/test-integration.sh --use_go_build
+hack/test-integration.sh --use_go_build
 %endif
 fi
 
@@ -458,7 +458,7 @@ fi
 %files unit-test
 %{_sharedstatedir}/kubernetes-unit-test/
 
-%if 0%{?fedora}
+%if 0%{?with_devel}
 %files devel
 %doc README.md LICENSE CONTRIB.md CONTRIBUTING.md DESIGN.md
 %dir %{gopath}/src/%{provider}.%{provider_tld}/%{project}
@@ -495,6 +495,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Tue Jun 09 2015 jchaloup <jchaloup@redhat.com> - 0.18.2-0.1.gitb68e08f
+- Bump to upstream b68e08f55f5ae566c4ea3905d0993a8735d6d34f
+  related: #1211266
+
 * Sat Jun 06 2015 jchaloup <jchaloup@redhat.com> - 0.18.1-0.3.git0f1c4c2
 - Bump to upstream 0f1c4c25c344f70c3592040b2ef092ccdce0244f
   related: #1211266

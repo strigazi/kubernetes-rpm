@@ -20,7 +20,7 @@
 %global repo		kubernetes
 # https://github.com/GoogleCloudPlatform/kubernetes
 %global import_path	%{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit		0ca96c3ac8b47114169f3b716ae4521ed8c7657c
+%global commit		5e5c1d10976f2f26d356ca60ef7d0d715c9f00a2
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
@@ -30,7 +30,7 @@
 
 Name:		kubernetes
 Version:	0.19.0
-Release:	0.2.git%{shortcommit}%{?dist}
+Release:	0.3.git%{shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -62,6 +62,30 @@ Provides: golang(%{import_path}/cmd/kube-apiserver/app) = %{version}-%{release}
 Provides: golang(%{import_path}/cmd/kube-controller-manager/app) = %{version}-%{release}
 Provides: golang(%{import_path}/cmd/kube-proxy/app) = %{version}-%{release}
 Provides: golang(%{import_path}/cmd/kubelet/app) = %{version}-%{release}
+Provides: golang(%{import_path}/contrib/mesos/pkg/assert) = %{version}-%{release}
+Provides: golang(%{import_path}/contrib/mesos/pkg/backoff) = %{version}-%{release}
+Provides: golang(%{import_path}/contrib/mesos/pkg/election) = %{version}-%{release}
+Provides: golang(%{import_path}/contrib/mesos/pkg/executor) = %{version}-%{release}
+Provides: golang(%{import_path}/contrib/mesos/pkg/executor/config) = %{version}-%{release}
+Provides: golang(%{import_path}/contrib/mesos/pkg/executor/messages) = %{version}-%{release}
+Provides: golang(%{import_path}/contrib/mesos/pkg/executor/service) = %{version}-%{release}
+Provides: golang(%{import_path}/contrib/mesos/pkg/hyperkube) = %{version}-%{release}
+Provides: golang(%{import_path}/contrib/mesos/pkg/offers) = %{version}-%{release}
+Provides: golang(%{import_path}/contrib/mesos/pkg/offers/metrics) = %{version}-%{release}
+Provides: golang(%{import_path}/contrib/mesos/pkg/proc) = %{version}-%{release}
+Provides: golang(%{import_path}/contrib/mesos/pkg/profile) = %{version}-%{release}
+Provides: golang(%{import_path}/contrib/mesos/pkg/queue) = %{version}-%{release}
+Provides: golang(%{import_path}/contrib/mesos/pkg/redirfd) = %{version}-%{release}
+Provides: golang(%{import_path}/contrib/mesos/pkg/runtime) = %{version}-%{release}
+Provides: golang(%{import_path}/contrib/mesos/pkg/scheduler) = %{version}-%{release}
+Provides: golang(%{import_path}/contrib/mesos/pkg/scheduler/config) = %{version}-%{release}
+Provides: golang(%{import_path}/contrib/mesos/pkg/scheduler/constraint) = %{version}-%{release}
+Provides: golang(%{import_path}/contrib/mesos/pkg/scheduler/ha) = %{version}-%{release}
+Provides: golang(%{import_path}/contrib/mesos/pkg/scheduler/meta) = %{version}-%{release}
+Provides: golang(%{import_path}/contrib/mesos/pkg/scheduler/metrics) = %{version}-%{release}
+Provides: golang(%{import_path}/contrib/mesos/pkg/scheduler/podtask) = %{version}-%{release}
+Provides: golang(%{import_path}/contrib/mesos/pkg/scheduler/service) = %{version}-%{release}
+Provides: golang(%{import_path}/contrib/mesos/pkg/scheduler/uid) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/admission) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/api) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/api/endpoints) = %{version}-%{release}
@@ -336,7 +360,7 @@ Kubernetes services for node host
 %build
 export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
-export KUBE_GIT_VERSION=v0.19.0-166-g0ca96c3ac8b471
+export KUBE_GIT_VERSION=v0.19.0-258-g5e5c1d10976f2f
 
 hack/build-go.sh --use_go_build
 hack/build-go.sh --use_go_build cmd/kube-version-change
@@ -376,6 +400,11 @@ install -d %{buildroot}%{_sharedstatedir}/kubelet
 # place contrib/init/systemd/tmpfiles.d/kubernetes.conf to /usr/lib/tmpfiles.d/kubernetes.conf
 install -d -m 0755 %{buildroot}%{_tmpfilesdir}
 install -p -m 0644 -t %{buildroot}/%{_tmpfilesdir} contrib/init/systemd/tmpfiles.d/kubernetes.conf
+
+%if 0%{?with_debug}
+# remove porter as it is built inside docker container without options for debug info
+rm -rf contrib/for-tests/porter
+%endif
 
 %if 0%{?with_devel}
 # install devel source codes
@@ -495,6 +524,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Sun Jun 14 2015 jchaloup <jchaloup@redhat.com> - 0.19.0-0.3.git5e5c1d1
+- Bump to upstream 5e5c1d10976f2f26d356ca60ef7d0d715c9f00a2
+  related: #1211266
+
 * Fri Jun 12 2015 jchaloup <jchaloup@redhat.com> - 0.19.0-0.2.git0ca96c3
 - Bump to upstream 0ca96c3ac8b47114169f3b716ae4521ed8c7657c
   related: #1211266

@@ -20,7 +20,7 @@
 %global repo		kubernetes
 # https://github.com/GoogleCloudPlatform/kubernetes
 %global import_path	%{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit		a8269e38c9e2bf81ba18cd6420e2309745d5b0b9
+%global commit		43889c612c4d396dcd8fbf3fbd217e106eaf5bce
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
@@ -30,7 +30,7 @@
 
 Name:		kubernetes
 Version:	0.19.0
-Release:	0.4.git%{shortcommit}%{?dist}
+Release:	0.5.git%{shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -138,7 +138,6 @@ Provides: golang(%{import_path}/pkg/cloudprovider/rackspace) = %{version}-%{rele
 Provides: golang(%{import_path}/pkg/cloudprovider/routecontroller) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/cloudprovider/servicecontroller) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/cloudprovider/vagrant) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/config) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/controller) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/controller/framework) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/conversion) = %{version}-%{release}
@@ -363,7 +362,7 @@ Kubernetes services for node host
 %build
 export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
-export KUBE_GIT_VERSION=v0.19.0-348-ga8269e38c9e2bf
+export KUBE_GIT_VERSION=v0.19.0-440-g43889c612c4d39
 
 hack/build-go.sh --use_go_build
 hack/build-go.sh --use_go_build cmd/kube-version-change
@@ -527,6 +526,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Wed Jun 17 2015 jchaloup <jchaloup@redhat.com> - 0.19.0-0.5.git43889c6
+- Bump to upstream 43889c612c4d396dcd8fbf3fbd217e106eaf5bce
+  related: #1211266
+
 * Tue Jun 16 2015 jchaloup <jchaloup@redhat.com> - 0.19.0-0.4.gita8269e3
 - Bump to upstream a8269e38c9e2bf81ba18cd6420e2309745d5b0b9
   related: #1211266

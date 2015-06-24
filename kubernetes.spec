@@ -20,7 +20,7 @@
 %global repo		kubernetes
 # https://github.com/GoogleCloudPlatform/kubernetes
 %global import_path	%{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit		a2ce3ea5293553b1fe0db3cbc6d53bdafe061d79
+%global commit		5b4dc4edaa14e1ab4e3baa19df0388fa54dab344
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
@@ -30,7 +30,7 @@
 
 Name:		kubernetes
 Version:	0.19.3
-Release:	0.2.git%{shortcommit}%{?dist}
+Release:	0.3.git%{shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -106,6 +106,7 @@ Provides: golang(%{import_path}/pkg/api/v1) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/api/v1beta3) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/api/validation) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/apiserver) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/apiserver/metrics) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/auth/authenticator) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/auth/authenticator/bearertoken) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/auth/authorizer) = %{version}-%{release}
@@ -127,23 +128,17 @@ Provides: golang(%{import_path}/pkg/client/remotecommand) = %{version}-%{release
 Provides: golang(%{import_path}/pkg/client/testclient) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/clientauth) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/cloudprovider) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/cloudprovider/aws) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/cloudprovider/fake) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/cloudprovider/gce) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/cloudprovider/mesos) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/cloudprovider/nodecontroller) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/cloudprovider/openstack) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/cloudprovider/ovirt) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/cloudprovider/rackspace) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/cloudprovider/routecontroller) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/cloudprovider/servicecontroller) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/cloudprovider/vagrant) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/controller) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/controller/framework) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/conversion) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/conversion/queryparams) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/credentialprovider) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/credentialprovider/gcp) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/fieldpath) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/fields) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/healthz) = %{version}-%{release}
@@ -362,7 +357,7 @@ Kubernetes services for node host
 %build
 export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
-export KUBE_GIT_VERSION=v0.19.3-777-ga2ce3ea5293553
+export KUBE_GIT_VERSION=v0.19.3-835-g5b4dc4edaa14e1
 
 hack/build-go.sh --use_go_build
 hack/build-go.sh --use_go_build cmd/kube-version-change
@@ -526,6 +521,11 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Wed Jun 24 2015 jchaloup <jchaloup@redhat.com> - 0.19.3-0.3.git5b4dc4e
+- Bump to upstream 5b4dc4edaa14e1ab4e3baa19df0388fa54dab344
+  pkg/cloudprovider/* packages does not conform to golang language specification
+  related: #1211266
+
 * Tue Jun 23 2015 jchaloup <jchaloup@redhat.com> - 0.19.3-0.2.gita2ce3ea
 - Bump to upstream a2ce3ea5293553b1fe0db3cbc6d53bdafe061d79
   related: #1211266

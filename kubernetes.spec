@@ -30,7 +30,7 @@
 
 Name:		kubernetes
 Version:	0.19.3
-Release:	0.3.git%{shortcommit}%{?dist}
+Release:	0.4.git%{shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -445,7 +445,7 @@ fi
 %{_mandir}/man1/kube-scheduler.1*
 %{_mandir}/man1/kubectl.1*
 %{_mandir}/man1/kubectl-*
-%{_bindir}/kube-apiserver
+%caps(cap_net_bind_service=ep) %{_bindir}/kube-apiserver
 %{_bindir}/kube-controller-manager
 %{_bindir}/kube-scheduler
 %{_bindir}/kube-version-change
@@ -521,6 +521,9 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Wed Jun 24 2015 Eric Paris <eparis@redhat.com> - 0.19.3-0.4.git5b4dc4e
+- Set CAP_NET_BIND_SERVICE on the kube-apiserver so it can use 443
+
 * Wed Jun 24 2015 jchaloup <jchaloup@redhat.com> - 0.19.3-0.3.git5b4dc4e
 - Bump to upstream 5b4dc4edaa14e1ab4e3baa19df0388fa54dab344
   pkg/cloudprovider/* packages does not conform to golang language specification

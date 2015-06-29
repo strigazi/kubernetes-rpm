@@ -20,7 +20,7 @@
 %global repo		kubernetes
 # https://github.com/GoogleCloudPlatform/kubernetes
 %global import_path	%{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit		8ebd896351513d446d56bc5785c070d2909226a3
+%global commit		1c0b765df6dabfe9bd0e20489ed3bd18e6b3bda8
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
@@ -30,7 +30,7 @@
 
 Name:		kubernetes
 Version:	0.20.0
-Release:	0.1.git%{shortcommit}%{?dist}
+Release:	0.2.git%{shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -357,7 +357,7 @@ Kubernetes services for node host
 %build
 export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
-export KUBE_GIT_VERSION=v0.20.0-20-g8ebd896351513d
+export KUBE_GIT_VERSION=v0.20.0-82-g1c0b765df6dabf
 
 hack/build-go.sh --use_go_build
 hack/build-go.sh --use_go_build cmd/kube-version-change
@@ -440,9 +440,9 @@ fi
 
 %files master
 %doc README.md LICENSE CONTRIB.md CONTRIBUTING.md DESIGN.md
-%{_mandir}/man1/kube-apiserver.1*
-%{_mandir}/man1/kube-controller-manager.1*
-%{_mandir}/man1/kube-scheduler.1*
+#%{_mandir}/man1/kube-apiserver.1*
+#%{_mandir}/man1/kube-controller-manager.1*
+#%{_mandir}/man1/kube-scheduler.1*
 %{_mandir}/man1/kubectl.1*
 %{_mandir}/man1/kubectl-*
 %caps(cap_net_bind_service=ep) %{_bindir}/kube-apiserver
@@ -521,6 +521,11 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Mon Jun 29 2015 jchaloup <jchaloup@redhat.com> - 0.20.0-0.2.git1c0b765
+- Bump to upstream 1c0b765df6dabfe9bd0e20489ed3bd18e6b3bda8
+  Comment out missing man pages
+  related: #1211266
+
 * Fri Jun 26 2015 jchaloup <jchaloup@redhat.com> - 0.20.0-0.1.git8ebd896
 - Bump to upstream 8ebd896351513d446d56bc5785c070d2909226a3
   related: #1211266

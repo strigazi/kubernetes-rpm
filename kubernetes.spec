@@ -463,8 +463,8 @@ fi
 
 %files node
 %doc README.md LICENSE CONTRIB.md CONTRIBUTING.md DESIGN.md
-%{_mandir}/man1/kubelet.1*
-%{_mandir}/man1/kube-proxy.1*
+#%{_mandir}/man1/kubelet.1*
+#%{_mandir}/man1/kube-proxy.1*
 %{_mandir}/man1/kubectl.1*
 %{_mandir}/man1/kubectl-*
 %{_bindir}/kubelet

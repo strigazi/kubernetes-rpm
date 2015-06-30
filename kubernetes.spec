@@ -20,7 +20,7 @@
 %global repo		kubernetes
 # https://github.com/GoogleCloudPlatform/kubernetes
 %global import_path	%{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit		1c0b765df6dabfe9bd0e20489ed3bd18e6b3bda8
+%global commit		835eded2943dfcf13a89518715e4be842a6a3ac0
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
@@ -30,15 +30,15 @@
 
 Name:		kubernetes
 Version:	0.20.0
-Release:	0.2.git%{shortcommit}%{?dist}
+Release:	0.3.git%{shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
 ExclusiveArch:  x86_64
 Source0:        https://%{import_path}/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
-
+Patch0:         fix-formatting-of-md-documents.patch
 %if 0%{?with_debug}
-Patch0:         build-with-debug-info.patch
+Patch1:         build-with-debug-info.patch
 %endif
 
 # It obsoletes cadvisor but needs its source code (literally integrated)
@@ -319,6 +319,7 @@ Summary: Kubernetes services for master host
 BuildRequires: golang >= 1.2-7
 BuildRequires: systemd
 BuildRequires: rsync
+BuildRequires: go-md2man
 
 Requires(pre): shadow-utils
 
@@ -341,6 +342,7 @@ Requires: docker-io
 BuildRequires: golang >= 1.2-7
 BuildRequires: systemd
 BuildRequires: rsync
+BuildRequires: go-md2man
 
 Requires(pre): shadow-utils
 
@@ -357,10 +359,25 @@ Kubernetes services for node host
 %build
 export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
-export KUBE_GIT_VERSION=v0.20.0-82-g1c0b765df6dabf
+export KUBE_GIT_VERSION=v0.20.0-152-g835eded2943dfc
 
 hack/build-go.sh --use_go_build
 hack/build-go.sh --use_go_build cmd/kube-version-change
+
+# convert md to man
+pushd docs/man
+for md in *.md; do
+	# add header
+	sed -i "s/# NAME/% KUBERNETES(1) kubernetes User Manuals\n# NAME/" $md
+	# modify list of options
+	sed -i -r 's/(^\*[ ]*)(\*\*--[^*]*\*\*)(:)(.*)/\2\n\t\4\n/' $md
+	# modify footer
+	sed -i -r "s/^\[!\[Analytics\].*//" $md
+	# md does not contain section => taking 1
+	name="${md%.md}"
+	go-md2man -in $md -out man1/$name.1
+done
+popd
 
 %install
 . hack/lib/init.sh
@@ -440,9 +457,9 @@ fi
 
 %files master
 %doc README.md LICENSE CONTRIB.md CONTRIBUTING.md DESIGN.md
-#%{_mandir}/man1/kube-apiserver.1*
-#%{_mandir}/man1/kube-controller-manager.1*
-#%{_mandir}/man1/kube-scheduler.1*
+%{_mandir}/man1/kube-apiserver.1*
+%{_mandir}/man1/kube-controller-manager.1*
+%{_mandir}/man1/kube-scheduler.1*
 %{_mandir}/man1/kubectl.1*
 %{_mandir}/man1/kubectl-*
 %caps(cap_net_bind_service=ep) %{_bindir}/kube-apiserver
@@ -463,8 +480,8 @@ fi
 
 %files node
 %doc README.md LICENSE CONTRIB.md CONTRIBUTING.md DESIGN.md
-#%{_mandir}/man1/kubelet.1*
-#%{_mandir}/man1/kube-proxy.1*
+%{_mandir}/man1/kubelet.1*
+%{_mandir}/man1/kube-proxy.1*
 %{_mandir}/man1/kubectl.1*
 %{_mandir}/man1/kubectl-*
 %{_bindir}/kubelet
@@ -521,6 +538,11 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Tue Jun 30 2015 jchaloup <jchaloup@redhat.com> - 0.20.0-0.3.git835eded
+- Bump to upstream 835eded2943dfcf13a89518715e4be842a6a3ac0
+- Generate missing man pages
+  related: #1211266
+
 * Mon Jun 29 2015 jchaloup <jchaloup@redhat.com> - 0.20.0-0.2.git1c0b765
 - Bump to upstream 1c0b765df6dabfe9bd0e20489ed3bd18e6b3bda8
   Comment out missing man pages

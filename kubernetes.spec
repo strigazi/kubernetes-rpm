@@ -20,7 +20,7 @@
 %global repo		kubernetes
 # https://github.com/GoogleCloudPlatform/kubernetes
 %global import_path	%{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit		835eded2943dfcf13a89518715e4be842a6a3ac0
+%global commit		ef41ceb3e477ceada84c5522f429f02ab0f5948e
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
@@ -29,16 +29,15 @@
 %global _checkshell	/bin/bash
 
 Name:		kubernetes
-Version:	0.20.0
-Release:	0.3.git%{shortcommit}%{?dist}
+Version:	0.20.2
+Release:	0.1.git%{shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
 ExclusiveArch:  x86_64
 Source0:        https://%{import_path}/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
-Patch0:         fix-formatting-of-md-documents.patch
 %if 0%{?with_debug}
-Patch1:         build-with-debug-info.patch
+Patch0:         build-with-debug-info.patch
 %endif
 
 # It obsoletes cadvisor but needs its source code (literally integrated)
@@ -359,7 +358,7 @@ Kubernetes services for node host
 %build
 export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
-export KUBE_GIT_VERSION=v0.20.0-152-g835eded2943dfc
+export KUBE_GIT_VERSION=v0.20.2-307-gef41ceb3e477ce
 
 hack/build-go.sh --use_go_build
 hack/build-go.sh --use_go_build cmd/kube-version-change
@@ -538,6 +537,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Thu Jul 02 2015 jchaloup <jchaloup@redhat.com> - 0.20.2-0.1.gitef41ceb
+- Bump to upstream ef41ceb3e477ceada84c5522f429f02ab0f5948e
+  related: #1211266
+
 * Tue Jun 30 2015 jchaloup <jchaloup@redhat.com> - 0.20.0-0.3.git835eded
 - Bump to upstream 835eded2943dfcf13a89518715e4be842a6a3ac0
 - Generate missing man pages

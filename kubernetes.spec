@@ -20,7 +20,7 @@
 %global repo		kubernetes
 # https://github.com/GoogleCloudPlatform/kubernetes
 %global import_path	%{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit		ef41ceb3e477ceada84c5522f429f02ab0f5948e
+%global commit		974377b3064ac59b6e5694bfa568d67128026171
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
@@ -30,7 +30,7 @@
 
 Name:		kubernetes
 Version:	0.20.2
-Release:	0.1.git%{shortcommit}%{?dist}
+Release:	0.2.git%{shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -162,6 +162,7 @@ Provides: golang(%{import_path}/pkg/kubelet/network/exec) = %{version}-%{release
 Provides: golang(%{import_path}/pkg/kubelet/prober) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/kubelet/rkt) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/kubelet/types) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/kubelet/util) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/labels) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/master) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/master/ports) = %{version}-%{release}
@@ -220,6 +221,8 @@ Provides: golang(%{import_path}/pkg/tools) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/tools/etcdtest) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/types) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/ui) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/ui/data/dashboard) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/ui/data/swagger) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/util) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/util/config) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/util/errors) = %{version}-%{release}
@@ -231,6 +234,7 @@ Provides: golang(%{import_path}/pkg/util/httpstream/spdy) = %{version}-%{release
 Provides: golang(%{import_path}/pkg/util/iptables) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/util/mount) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/util/node) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/util/operationmanager) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/util/proxy) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/util/slice) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/util/strategicpatch) = %{version}-%{release}
@@ -358,7 +362,7 @@ Kubernetes services for node host
 %build
 export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
-export KUBE_GIT_VERSION=v0.20.2-307-gef41ceb3e477ce
+export KUBE_GIT_VERSION=v0.20.2-322-g974377b3064ac5
 
 hack/build-go.sh --use_go_build
 hack/build-go.sh --use_go_build cmd/kube-version-change
@@ -537,6 +541,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Fri Jul 03 2015 jchaloup <jchaloup@redhat.com> - 0.20.2-0.2.git974377b
+- Bump to upstream 974377b3064ac59b6e5694bfa568d67128026171
+  related: #1211266
+
 * Thu Jul 02 2015 jchaloup <jchaloup@redhat.com> - 0.20.2-0.1.gitef41ceb
 - Bump to upstream ef41ceb3e477ceada84c5522f429f02ab0f5948e
   related: #1211266

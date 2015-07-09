@@ -329,6 +329,7 @@ BuildRequires: rsync
 BuildRequires: go-md2man
 
 Requires(pre): shadow-utils
+Requires: kubernetes-client = %{version}-%{release}
 
 # if node is installed with node, version and release must be the same
 Conflicts: kubernetes-node < %{version}-%{release}
@@ -352,6 +353,7 @@ BuildRequires: rsync
 BuildRequires: go-md2man
 
 Requires(pre): shadow-utils
+Requires: kubernetes-client = %{version}-%{release}
 
 # if master is installed with node, version and release must be the same
 Conflicts: kubernetes-master < %{version}-%{release}
@@ -359,6 +361,14 @@ Conflicts: kubernetes-master > %{version}-%{release}
 
 %description node
 Kubernetes services for node host
+
+%package client
+Summary: Kubernetes client tools
+
+BuildRequires: golang >= 1.2-7
+
+%description client
+Kubernetes client tools like kubectl
 
 %prep
 %autosetup -n %{name}-%{commit} -p1
@@ -458,14 +468,10 @@ fi
 %{_mandir}/man1/kube-apiserver.1*
 %{_mandir}/man1/kube-controller-manager.1*
 %{_mandir}/man1/kube-scheduler.1*
-%{_mandir}/man1/kubectl.1*
-%{_mandir}/man1/kubectl-*
 %attr(750, -, kube) %caps(cap_net_bind_service=ep) %{_bindir}/kube-apiserver
 %{_bindir}/kube-controller-manager
 %{_bindir}/kube-scheduler
 %{_bindir}/kube-version-change
-%{_bindir}/kubectl
-%{_datadir}/bash-completion/completions/kubectl
 %{_unitdir}/kube-apiserver.service
 %{_unitdir}/kube-controller-manager.service
 %{_unitdir}/kube-scheduler.service
@@ -480,13 +486,9 @@ fi
 %doc README.md LICENSE CONTRIB.md CONTRIBUTING.md DESIGN.md
 %{_mandir}/man1/kubelet.1*
 %{_mandir}/man1/kube-proxy.1*
-%{_mandir}/man1/kubectl.1*
-%{_mandir}/man1/kubectl-*
 %{_bindir}/kubelet
 %{_bindir}/kube-proxy
 %{_bindir}/kube-version-change
-%{_bindir}/kubectl
-%{_datadir}/bash-completion/completions/kubectl
 %{_unitdir}/kube-proxy.service
 %{_unitdir}/kubelet.service
 %dir %{_sharedstatedir}/kubelet
@@ -495,6 +497,13 @@ fi
 %config(noreplace) %{_sysconfdir}/%{name}/kubelet
 %config(noreplace) %{_sysconfdir}/%{name}/proxy
 %{_tmpfilesdir}/kubernetes.conf
+
+%files client
+%doc README.md LICENSE CONTRIB.md CONTRIBUTING.md DESIGN.md
+%{_mandir}/man1/kubectl.1*
+%{_mandir}/man1/kubectl-*
+%{_bindir}/kubectl
+%{_datadir}/bash-completion/completions/kubectl
 
 %files unit-test
 %{_sharedstatedir}/kubernetes-unit-test/
@@ -540,6 +549,8 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 - Bump to upstream 2d88675f2203d316d4bac312c7ccad12991b56c2
 - Change KUBE_ETCD_SERVERS to listen on 2379 ports instead of 4001
   resolves: #1243827
+- Add kubernetes-client to provide kubectl command
+  resolves: #1241469
 
 * Mon Jul 20 2015 jchaloup <jchaloup@redhat.com> - 1.0.0-0.8.gitb2dafda
 - Fix dependency and tests for go-1.5

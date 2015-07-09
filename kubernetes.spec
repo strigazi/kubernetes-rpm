@@ -20,7 +20,7 @@
 %global repo		kubernetes
 # https://github.com/GoogleCloudPlatform/kubernetes
 %global import_path	%{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit		77be29e3da71f0a136b6aa4048b2f0575c2598e4
+%global commit		41f89075396329cd46c58495c7d3f7e13adcaa96
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
@@ -29,13 +29,14 @@
 %global _checkshell	/bin/bash
 
 Name:		kubernetes
-Version:	0.20.2
-Release:	0.5.git%{shortcommit}%{?dist}
+Version:	0.21.1
+Release:	0.1.git%{shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
 ExclusiveArch:  x86_64
 Source0:        https://%{import_path}/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
+Source1:        genmanpages.sh
 %if 0%{?with_debug}
 Patch0:         build-with-debug-info.patch
 %endif
@@ -362,24 +363,15 @@ Kubernetes services for node host
 %build
 export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
-export KUBE_GIT_VERSION=v0.21.0-35-g77be29e3da71f0
+export KUBE_GIT_VERSION=v0.21.1-142-g41f89075396329
 
 hack/build-go.sh --use_go_build
 hack/build-go.sh --use_go_build cmd/kube-version-change
 
 # convert md to man
-pushd docs/man
-for md in *.md; do
-	# add header
-	sed -i "s/# NAME/% KUBERNETES(1) kubernetes User Manuals\n# NAME/" $md
-	# modify list of options
-	sed -i -r 's/(^\*[ ]*)(\*\*--[^*]*\*\*)(:)(.*)/\2\n\t\4\n/' $md
-	# modify footer
-	sed -i -r "s/^\[!\[Analytics\].*//" $md
-	# md does not contain section => taking 1
-	name="${md%.md}"
-	go-md2man -in $md -out man1/$name.1
-done
+pushd docs
+cp %{SOURCE1} genmanpages.sh
+bash genmanpages.sh
 popd
 
 %install
@@ -541,6 +533,11 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Thu Jul 09 2015 jchaloup <jchaloup@redhat.com> - 0.21.1-0.1.git41f8907
+- Update generating of man pages from md (add genmanpages.sh)
+- Bump to upstream 41f89075396329cd46c58495c7d3f7e13adcaa96
+  related: #1211266
+
 * Wed Jul 08 2015 jchaloup <jchaloup@redhat.com> - 0.20.2-0.5.git77be29e
 - Bump to upstream 77be29e3da71f0a136b6aa4048b2f0575c2598e4
   related: #1211266

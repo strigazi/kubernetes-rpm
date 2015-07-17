@@ -39,8 +39,9 @@ Source0:        https://%{import_path}/archive/%{commit}/%{repo}-%{shortcommit}.
 Source1:        genmanpages.sh
 Patch0:         Update-github.com-elazarl-go-bindata-assetfs-to-at-l.patch
 Patch1:         Fix-Persistent-Volumes-and-Persistent-Volume-Claims.patch
+Patch2:         Change-etcd-server-port.patch
 %if 0%{?with_debug}
-Patch2:         build-with-debug-info.patch
+Patch3:         build-with-debug-info.patch
 %endif
 
 # It obsoletes cadvisor but needs its source code (literally integrated)
@@ -537,7 +538,8 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %changelog
 * Mon Jul 20 2015 jchaloup <jchaloup@redhat.com> - 1.0.0-0.9.git2d88675
 - Bump to upstream 2d88675f2203d316d4bac312c7ccad12991b56c2
-  related: #1211266
+- Change KUBE_ETCD_SERVERS to listen on 2379 ports instead of 4001
+  resolves: #1243827
 
 * Mon Jul 20 2015 jchaloup <jchaloup@redhat.com> - 1.0.0-0.8.gitb2dafda
 - Fix dependency and tests for go-1.5

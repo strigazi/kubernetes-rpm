@@ -30,7 +30,7 @@
 
 Name:		kubernetes
 Version:	1.0.0
-Release:	0.6.git%{shortcommit}%{?dist}
+Release:	0.7.git%{shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -457,7 +457,7 @@ fi
 %{_mandir}/man1/kube-scheduler.1*
 %{_mandir}/man1/kubectl.1*
 %{_mandir}/man1/kubectl-*
-%caps(cap_net_bind_service=ep) %{_bindir}/kube-apiserver
+%attr(750, -, kube) %caps(cap_net_bind_service=ep) %{_bindir}/kube-apiserver
 %{_bindir}/kube-controller-manager
 %{_bindir}/kube-scheduler
 %{_bindir}/kube-version-change
@@ -533,6 +533,9 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Fri Jul 18 2015 Eric Paris <eparis@redhat.com> - 1.0.0-0.7.gitb2dafda
+- Update apiserver binary gid
+
 * Fri Jul 17 2015 jchaloup <jchaloup@redhat.com> - 1.0.0-0.6.gitb2dafda
 - Bump to upstream b2dafdaef5aceafad503ab56254b60f80da9e980
   related: #1211266

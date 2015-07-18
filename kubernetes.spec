@@ -533,7 +533,7 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
-* Fri Jul 18 2015 Eric Paris <eparis@redhat.com> - 1.0.0-0.7.gitb2dafda
+* Sat Jul 18 2015 Eric Paris <eparis@redhat.com> - 1.0.0-0.7.gitb2dafda
 - Update apiserver binary gid
 
 * Fri Jul 17 2015 jchaloup <jchaloup@redhat.com> - 1.0.0-0.6.gitb2dafda

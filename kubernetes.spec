@@ -1,7 +1,7 @@
 %if 0%{?fedora}
 %global with_devel 1
 %global with_bundled 1
-%global with_debug 1
+%global with_debug 0
 %else
 %global with_devel 0
 %global with_bundled 1
@@ -30,15 +30,17 @@
 
 Name:		kubernetes
 Version:	1.0.0
-Release:	0.7.git%{shortcommit}%{?dist}
+Release:	0.8.git%{shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
 ExclusiveArch:  x86_64
 Source0:        https://%{import_path}/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
 Source1:        genmanpages.sh
+Patch0:         Update-github.com-elazarl-go-bindata-assetfs-to-at-l.patch
+Patch1:         Fix-Persistent-Volumes-and-Persistent-Volume-Claims.patch
 %if 0%{?with_debug}
-Patch0:         build-with-debug-info.patch
+Patch2:         build-with-debug-info.patch
 %endif
 
 # It obsoletes cadvisor but needs its source code (literally integrated)
@@ -533,6 +535,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Mon Jul 20 2015 jchaloup <jchaloup@redhat.com> - 1.0.0-0.8.gitb2dafda
+- Fix dependency and tests for go-1.5
+- with_debug off as the builds ends with error "ELFRESERVE too small: ..."
+
 * Sat Jul 18 2015 Eric Paris <eparis@redhat.com> - 1.0.0-0.7.gitb2dafda
 - Update apiserver binary gid
 

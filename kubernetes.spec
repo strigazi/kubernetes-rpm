@@ -30,7 +30,7 @@
 
 Name:		kubernetes
 Version:	1.0.0
-Release:	0.10.git%{shortcommit}%{?dist}
+Release:	0.11.git%{shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -354,6 +354,7 @@ BuildRequires: rsync
 BuildRequires: go-md2man
 
 Requires(pre): shadow-utils
+Requires: socat
 Requires: kubernetes-client = %{version}-%{release}
 
 # if master is installed with node, version and release must be the same
@@ -546,6 +547,9 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Tue Jul 21 2015 jchaloup <jchaloup@redhat.com> - 1.0.0-0.11.gitfbc85e9
+- Add runtime dependency of kubernetes-node on socat (so kubectl port-forward works on AH)
+
 * Tue Jul 21 2015 jchaloup <jchaloup@redhat.com> - 1.0.0-0.10.gitfbc85e9
 - Update the build script for go1.5 as well
 - Bump to upstream fbc85e9838f25547be94fbffeeb92a756d908ca0

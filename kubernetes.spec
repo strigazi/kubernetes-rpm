@@ -20,7 +20,7 @@
 %global repo		kubernetes
 # https://github.com/GoogleCloudPlatform/kubernetes
 %global import_path	%{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit		2d88675f2203d316d4bac312c7ccad12991b56c2
+%global commit		fbc85e9838f25547be94fbffeeb92a756d908ca0
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
@@ -30,7 +30,7 @@
 
 Name:		kubernetes
 Version:	1.0.0
-Release:	0.9.git%{shortcommit}%{?dist}
+Release:	0.10.git%{shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -43,6 +43,7 @@ Patch2:         Change-etcd-server-port.patch
 %if 0%{?with_debug}
 Patch3:         build-with-debug-info.patch
 %endif
+Patch4:         use-the-correct-delimiter-for-X-option-of-ldflags.patch
 
 # It obsoletes cadvisor but needs its source code (literally integrated)
 Obsoletes:      cadvisor
@@ -376,7 +377,7 @@ Kubernetes client tools like kubectl
 %build
 export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
-export KUBE_GIT_VERSION=v1.0.0-481-g2d88675f2203d3
+export KUBE_GIT_VERSION=v1.0.0-521-gfbc85e9838f255
 
 hack/build-go.sh --use_go_build
 hack/build-go.sh --use_go_build cmd/kube-version-change
@@ -545,6 +546,11 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Tue Jul 21 2015 jchaloup <jchaloup@redhat.com> - 1.0.0-0.10.gitfbc85e9
+- Update the build script for go1.5 as well
+- Bump to upstream fbc85e9838f25547be94fbffeeb92a756d908ca0
+  related: #1243827
+
 * Mon Jul 20 2015 jchaloup <jchaloup@redhat.com> - 1.0.0-0.9.git2d88675
 - Bump to upstream 2d88675f2203d316d4bac312c7ccad12991b56c2
 - Change KUBE_ETCD_SERVERS to listen on 2379 ports instead of 4001

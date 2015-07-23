@@ -476,7 +476,7 @@ fi
 %{_mandir}/man1/kube-apiserver.1*
 %{_mandir}/man1/kube-controller-manager.1*
 %{_mandir}/man1/kube-scheduler.1*
-%attr(750, -, kube) %caps(cap_net_bind_service=ep) %{_bindir}/kube-apiserver
+%attr(754, -, kube) %caps(cap_net_bind_service=ep) %{_bindir}/kube-apiserver
 %{_bindir}/kube-controller-manager
 %{_bindir}/kube-scheduler
 %{_bindir}/kube-version-change

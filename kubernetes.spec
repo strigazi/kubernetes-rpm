@@ -20,7 +20,7 @@
 %global repo		kubernetes
 # https://github.com/GoogleCloudPlatform/kubernetes
 %global import_path	%{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit		fbc85e9838f25547be94fbffeeb92a756d908ca0
+%global commit		fbed3492bfa09e59b1c423fdd7c1ecad333a06ef
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
@@ -30,7 +30,7 @@
 
 Name:		kubernetes
 Version:	1.0.0
-Release:	0.11.git%{shortcommit}%{?dist}
+Release:	0.12.git%{shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -132,17 +132,23 @@ Provides: golang(%{import_path}/pkg/client/remotecommand) = %{version}-%{release
 Provides: golang(%{import_path}/pkg/client/testclient) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/clientauth) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/cloudprovider) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/cloudprovider/aws) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/cloudprovider/fake) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/cloudprovider/gce) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/cloudprovider/mesos) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/cloudprovider/nodecontroller) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/cloudprovider/openstack) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/cloudprovider/ovirt) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/cloudprovider/rackspace) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/cloudprovider/routecontroller) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/cloudprovider/servicecontroller) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/cloudprovider/vagrant) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/controller) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/controller/framework) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/conversion) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/conversion/queryparams) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/credentialprovider) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/credentialprovider/gcp) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/fieldpath) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/fields) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/healthz) = %{version}-%{release}
@@ -378,7 +384,7 @@ Kubernetes client tools like kubectl
 %build
 export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
-export KUBE_GIT_VERSION=v1.0.0-521-gfbc85e9838f255
+export KUBE_GIT_VERSION=v1.0.0-567-gfbed3492bfa09e
 
 hack/build-go.sh --use_go_build
 hack/build-go.sh --use_go_build cmd/kube-version-change
@@ -547,6 +553,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Thu Jul 23 2015 jchaloup <jchaloup@redhat.com> - 1.0.0-0.12.gitfbed349
+- Bump to upstream fbed3492bfa09e59b1c423fdd7c1ecad333a06ef
+  related: #1243827
+
 * Tue Jul 21 2015 jchaloup <jchaloup@redhat.com> - 1.0.0-0.11.gitfbc85e9
 - Add runtime dependency of kubernetes-node on socat (so kubectl port-forward works on AH)
 

@@ -20,7 +20,7 @@
 %global repo		kubernetes
 # https://github.com/GoogleCloudPlatform/kubernetes
 %global import_path	%{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit		fbed3492bfa09e59b1c423fdd7c1ecad333a06ef
+%global commit		291acd1a09ac836ec7524b060a19a6498d9878dd
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
@@ -30,14 +30,13 @@
 
 Name:		kubernetes
 Version:	1.0.0
-Release:	0.12.git%{shortcommit}%{?dist}
+Release:	0.13.git%{shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
 ExclusiveArch:  x86_64
 Source0:        https://%{import_path}/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
 Source1:        genmanpages.sh
-Patch0:         Update-github.com-elazarl-go-bindata-assetfs-to-at-l.patch
 Patch1:         Fix-Persistent-Volumes-and-Persistent-Volume-Claims.patch
 Patch2:         Change-etcd-server-port.patch
 %if 0%{?with_debug}
@@ -230,6 +229,7 @@ Provides: golang(%{import_path}/pkg/service) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/serviceaccount) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/tools) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/tools/etcdtest) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/tools/metrics) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/types) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/ui) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/ui/data/dashboard) = %{version}-%{release}
@@ -247,6 +247,7 @@ Provides: golang(%{import_path}/pkg/util/mount) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/util/node) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/util/operationmanager) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/util/proxy) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/util/rand) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/util/slice) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/util/strategicpatch) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/util/wait) = %{version}-%{release}
@@ -304,6 +305,7 @@ Provides: golang(%{import_path}/plugin/pkg/scheduler/api/validation) = %{version
 Provides: golang(%{import_path}/plugin/pkg/scheduler/factory) = %{version}-%{release}
 Provides: golang(%{import_path}/plugin/pkg/scheduler/metrics) = %{version}-%{release}
 Provides: golang(%{import_path}/test/e2e) = %{version}-%{release}
+Provides: golang(%{import_path}/test/e2e/ssh) = %{version}-%{release}
 Provides: golang(%{import_path}/test/integration) = %{version}-%{release}
 Provides: golang(%{import_path}/test/integration/framework) = %{version}-%{release}
 
@@ -384,7 +386,7 @@ Kubernetes client tools like kubectl
 %build
 export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
-export KUBE_GIT_VERSION=v1.0.0-567-gfbed3492bfa09e
+export KUBE_GIT_VERSION=v1.0.0-701-g8ea206b8fb071a
 
 hack/build-go.sh --use_go_build
 hack/build-go.sh --use_go_build cmd/kube-version-change
@@ -553,6 +555,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Fri Jul 24 2015 jchaloup <jchaloup@redhat.com> - 1.0.0-0.13.git291acd1
+- Bump to upstream 291acd1a09ac836ec7524b060a19a6498d9878dd
+  related: #1243827
+
 * Thu Jul 23 2015 jchaloup <jchaloup@redhat.com> - 1.0.0-0.12.gitfbed349
 - Bump to upstream fbed3492bfa09e59b1c423fdd7c1ecad333a06ef
   related: #1243827

@@ -20,7 +20,7 @@
 %global repo		kubernetes
 # https://github.com/GoogleCloudPlatform/kubernetes
 %global import_path	%{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit		291acd1a09ac836ec7524b060a19a6498d9878dd
+%global commit		5bd82ffe6da8f4e72e71b362635e558bfc412106
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
@@ -30,7 +30,7 @@
 
 Name:		kubernetes
 Version:	1.0.0
-Release:	0.13.git%{shortcommit}%{?dist}
+Release:	0.14.git%{shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -42,7 +42,7 @@ Patch2:         Change-etcd-server-port.patch
 %if 0%{?with_debug}
 Patch3:         build-with-debug-info.patch
 %endif
-Patch4:         use-the-correct-delimiter-for-X-option-of-ldflags.patch
+Patch4:         0001-golang-1.4-was-happy-with-X-key-val.patch
 
 # It obsoletes cadvisor but needs its source code (literally integrated)
 Obsoletes:      cadvisor
@@ -106,7 +106,6 @@ Provides: golang(%{import_path}/pkg/api/rest/resttest) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/api/testapi) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/api/testing) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/api/v1) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/api/v1beta3) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/api/validation) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/apiserver) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/apiserver/metrics) = %{version}-%{release}
@@ -305,7 +304,6 @@ Provides: golang(%{import_path}/plugin/pkg/scheduler/api/validation) = %{version
 Provides: golang(%{import_path}/plugin/pkg/scheduler/factory) = %{version}-%{release}
 Provides: golang(%{import_path}/plugin/pkg/scheduler/metrics) = %{version}-%{release}
 Provides: golang(%{import_path}/test/e2e) = %{version}-%{release}
-Provides: golang(%{import_path}/test/e2e/ssh) = %{version}-%{release}
 Provides: golang(%{import_path}/test/integration) = %{version}-%{release}
 Provides: golang(%{import_path}/test/integration/framework) = %{version}-%{release}
 
@@ -386,7 +384,7 @@ Kubernetes client tools like kubectl
 %build
 export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
-export KUBE_GIT_VERSION=v1.0.0-701-g8ea206b8fb071a
+export KUBE_GIT_VERSION=v1.0.0-829-g5bd82ffe6da8f4
 
 hack/build-go.sh --use_go_build
 hack/build-go.sh --use_go_build cmd/kube-version-change
@@ -555,6 +553,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Sat Jul 25 2015 jchaloup <jchaloup@redhat.com> - 1.0.0-0.14.git5bd82ff
+- Bump to upstream 5bd82ffe6da8f4e72e71b362635e558bfc412106
+  related: #1243827
+
 * Fri Jul 24 2015 jchaloup <jchaloup@redhat.com> - 1.0.0-0.13.git291acd1
 - Bump to upstream 291acd1a09ac836ec7524b060a19a6498d9878dd
   related: #1243827

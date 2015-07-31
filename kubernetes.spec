@@ -20,7 +20,7 @@
 %global repo		kubernetes
 # https://github.com/GoogleCloudPlatform/kubernetes
 %global import_path	%{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit		769230e735993bb0bf924279a40593c147c9a6ab
+%global commit		ff058a1afeb63474f7a35805941f3b07c27aae0f
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
@@ -30,7 +30,7 @@
 
 Name:		kubernetes
 Version:	1.0.0
-Release:	0.17.git%{shortcommit}%{?dist}
+Release:	0.18.git%{shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -42,6 +42,7 @@ Patch2:         Change-etcd-server-port.patch
 %if 0%{?with_debug}
 Patch3:         build-with-debug-info.patch
 %endif
+Patch4:         change-internal-to-inteernal.patch
 
 # It obsoletes cadvisor but needs its source code (literally integrated)
 Obsoletes:      cadvisor
@@ -88,9 +89,12 @@ Provides: golang(%{import_path}/contrib/mesos/pkg/scheduler/ha) = %{version}-%{r
 Provides: golang(%{import_path}/contrib/mesos/pkg/scheduler/meta) = %{version}-%{release}
 Provides: golang(%{import_path}/contrib/mesos/pkg/scheduler/metrics) = %{version}-%{release}
 Provides: golang(%{import_path}/contrib/mesos/pkg/scheduler/podtask) = %{version}-%{release}
+Provides: golang(%{import_path}/contrib/mesos/pkg/scheduler/resource) = %{version}-%{release}
 Provides: golang(%{import_path}/contrib/mesos/pkg/scheduler/service) = %{version}-%{release}
 Provides: golang(%{import_path}/contrib/mesos/pkg/scheduler/uid) = %{version}-%{release}
 Provides: golang(%{import_path}/contrib/mesos/pkg/service) = %{version}-%{release}
+Provides: golang(%{import_path}/contrib/submit-queue/github) = %{version}-%{release}
+Provides: golang(%{import_path}/contrib/submit-queue/jenkins) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/admission) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/api) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/api/endpoints) = %{version}-%{release}
@@ -142,6 +146,7 @@ Provides: golang(%{import_path}/pkg/cloudprovider/servicecontroller) = %{version
 Provides: golang(%{import_path}/pkg/cloudprovider/vagrant) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/controller) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/controller/framework) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/controller/replication) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/conversion) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/conversion/queryparams) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/credentialprovider) = %{version}-%{release}
@@ -225,6 +230,8 @@ Provides: golang(%{import_path}/pkg/runtime) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/securitycontext) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/service) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/serviceaccount) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/storage) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/storage/etcd) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/tools) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/tools/etcdtest) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/tools/metrics) = %{version}-%{release}
@@ -383,7 +390,7 @@ Kubernetes client tools like kubectl
 %build
 export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
-export KUBE_GIT_VERSION=v1.0.0-1003-g769230e735993b
+export KUBE_GIT_VERSION=v1.0.0-1083-gff058a1afeb634
 
 hack/build-go.sh --use_go_build
 hack/build-go.sh --use_go_build cmd/kube-version-change
@@ -555,6 +562,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Fri Jul 31 2015 jchaloup <jchaloup@redhat.com> - 1.0.0-0.18.gitff058a1
+- Bump to upstream ff058a1afeb63474f7a35805941f3b07c27aae0f
+  related: #1243827
+
 * Thu Jul 30 2015 jchaloup <jchaloup@redhat.com> - 1.0.0-0.17.git769230e
 - Bump to upstream 769230e735993bb0bf924279a40593c147c9a6ab
   related: #1243827

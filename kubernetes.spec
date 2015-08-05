@@ -20,7 +20,7 @@
 %global repo		kubernetes
 # https://github.com/GoogleCloudPlatform/kubernetes
 %global import_path	%{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit		6129d3d4eb80714286650818081a64ce2699afed
+%global commit		159ba489329e9f6ce422541e13f97e1166090ec8
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
@@ -30,7 +30,7 @@
 
 Name:		kubernetes
 Version:	1.1.0
-Release:	0.1.git%{shortcommit}%{?dist}
+Release:	0.2.git%{shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -139,16 +139,20 @@ Provides: golang(%{import_path}/pkg/cloudprovider/aws) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/cloudprovider/fake) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/cloudprovider/gce) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/cloudprovider/mesos) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/cloudprovider/nodecontroller) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/cloudprovider/openstack) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/cloudprovider/ovirt) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/cloudprovider/rackspace) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/cloudprovider/routecontroller) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/cloudprovider/servicecontroller) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/cloudprovider/vagrant) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/controller) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/controller/endpoint) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/controller/framework) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/controller/namespace) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/controller/node) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/controller/replication) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/controller/resourcequota) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/controller/route) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/controller/service) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/controller/serviceaccount) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/conversion) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/conversion/queryparams) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/credentialprovider) = %{version}-%{release}
@@ -184,7 +188,6 @@ Provides: golang(%{import_path}/pkg/kubelet/util) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/labels) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/master) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/master/ports) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/namespace) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/probe) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/probe/exec) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/probe/http) = %{version}-%{release}
@@ -230,11 +233,8 @@ Provides: golang(%{import_path}/pkg/registry/service/portallocator) = %{version}
 Provides: golang(%{import_path}/pkg/registry/service/portallocator/controller) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/serviceaccount) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/serviceaccount/etcd) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/resourcequota) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/runtime) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/securitycontext) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/service) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/serviceaccount) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/storage) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/storage/etcd) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/tools) = %{version}-%{release}
@@ -396,7 +396,7 @@ Kubernetes client tools like kubectl
 %build
 export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
-export KUBE_GIT_VERSION=v1.1.0-alpha.0-1141-g6129d3d4eb8071
+export KUBE_GIT_VERSION=v1.1.0-alpha.0-1275-g159ba489329e9f
 
 hack/build-go.sh --use_go_build
 hack/build-go.sh --use_go_build cmd/kube-version-change
@@ -568,6 +568,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Wed Aug 05 2015 jchaloup <jchaloup@redhat.com> - 1.1.0-0.2.git159ba48
+- Bump to upstream 159ba489329e9f6ce422541e13f97e1166090ec8
+  related: #1243827
+
 * Sat Aug 01 2015 jchaloup <jchaloup@redhat.com> - 1.1.0-0.1.git6129d3d
 - Bump to upstream 6129d3d4eb80714286650818081a64ce2699afed
   related: #1243827

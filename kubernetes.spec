@@ -19,8 +19,9 @@
 %global project		GoogleCloudPlatform
 %global repo		kubernetes
 # https://github.com/GoogleCloudPlatform/kubernetes
-%global import_path	%{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit		159ba489329e9f6ce422541e13f97e1166090ec8
+%global provider_prefix	%{provider}.%{provider_tld}/%{project}/%{repo}
+%global import_path     k8s.io/kubernetes
+%global commit		4c42e1302d3b351f3cb6074d32aa420bbd45e07d
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
@@ -30,12 +31,12 @@
 
 Name:		kubernetes
 Version:	1.1.0
-Release:	0.2.git%{shortcommit}%{?dist}
+Release:	0.3.git%{shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
 ExclusiveArch:  x86_64
-Source0:        https://%{import_path}/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
+Source0:        https://%{provider_prefix}/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
 Source1:        genmanpages.sh
 Patch1:         Fix-Persistent-Volumes-and-Persistent-Volume-Claims.patch
 Patch2:         Change-etcd-server-port.patch
@@ -396,7 +397,7 @@ Kubernetes client tools like kubectl
 %build
 export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
-export KUBE_GIT_VERSION=v1.1.0-alpha.0-1275-g159ba489329e9f
+export KUBE_GIT_VERSION=v1.1.0-alpha.0-1336-g4c42e1302d3b35
 
 hack/build-go.sh --use_go_build
 hack/build-go.sh --use_go_build cmd/kube-version-change
@@ -534,7 +535,7 @@ fi
 %if 0%{?with_devel}
 %files devel
 %doc README.md LICENSE CONTRIB.md CONTRIBUTING.md DESIGN.md
-%dir %{gopath}/src/%{provider}.%{provider_tld}/%{project}
+%dir %{gopath}/src/k8s.io
 %{gopath}/src/%{import_path}
 %endif
 
@@ -568,6 +569,11 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Thu Aug 06 2015 jchaloup <jchaloup@redhat.com> - 1.1.0-0.3.git4c42e13
+- Bump to upstream 4c42e1302d3b351f3cb6074d32aa420bbd45e07d
+- Change import path prefix to k8s.io/kubernetes
+  related: #1243827
+
 * Wed Aug 05 2015 jchaloup <jchaloup@redhat.com> - 1.1.0-0.2.git159ba48
 - Bump to upstream 159ba489329e9f6ce422541e13f97e1166090ec8
   related: #1243827

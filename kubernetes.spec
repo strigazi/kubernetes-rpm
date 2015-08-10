@@ -21,7 +21,7 @@
 # https://github.com/GoogleCloudPlatform/kubernetes
 %global provider_prefix	%{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     k8s.io/kubernetes
-%global commit		4c42e1302d3b351f3cb6074d32aa420bbd45e07d
+%global commit		2bfa9a1f98147cfdc2e9f4cf50e2c430518d91eb
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
@@ -31,7 +31,7 @@
 
 Name:		kubernetes
 Version:	1.1.0
-Release:	0.3.git%{shortcommit}%{?dist}
+Release:	0.4.git%{shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -183,6 +183,7 @@ Provides: golang(%{import_path}/pkg/kubelet/metrics) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/kubelet/network) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/kubelet/network/exec) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/kubelet/prober) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/kubelet/qos) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/kubelet/rkt) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/kubelet/types) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/kubelet/util) = %{version}-%{release}
@@ -195,6 +196,7 @@ Provides: golang(%{import_path}/pkg/probe/http) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/probe/tcp) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/proxy) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/proxy/config) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/proxy/userspace) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/componentstatus) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/controller) = %{version}-%{release}
@@ -257,7 +259,9 @@ Provides: golang(%{import_path}/pkg/util/iptables) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/util/jsonpath) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/util/mount) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/util/node) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/util/oom) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/util/operationmanager) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/util/procfs) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/util/proxy) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/util/rand) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/util/slice) = %{version}-%{release}
@@ -397,7 +401,7 @@ Kubernetes client tools like kubectl
 %build
 export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
-export KUBE_GIT_VERSION=v1.1.0-alpha.0-1336-g4c42e1302d3b35
+export KUBE_GIT_VERSION=v1.1.0-alpha.0-1464-g2bfa9a1f98147c
 
 hack/build-go.sh --use_go_build
 hack/build-go.sh --use_go_build cmd/kube-version-change
@@ -569,6 +573,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Mon Aug 10 2015 jchaloup <jchaloup@redhat.com> - 1.1.0-0.4.git2bfa9a1
+- Bump to upstream 2bfa9a1f98147cfdc2e9f4cf50e2c430518d91eb
+  related: #1243827
+
 * Thu Aug 06 2015 jchaloup <jchaloup@redhat.com> - 1.1.0-0.3.git4c42e13
 - Bump to upstream 4c42e1302d3b351f3cb6074d32aa420bbd45e07d
 - Change import path prefix to k8s.io/kubernetes

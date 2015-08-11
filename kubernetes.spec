@@ -21,7 +21,7 @@
 # https://github.com/GoogleCloudPlatform/kubernetes
 %global provider_prefix	%{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     k8s.io/kubernetes
-%global commit		2bfa9a1f98147cfdc2e9f4cf50e2c430518d91eb
+%global commit		e44c8e6661c931f7fd434911b0d3bca140e1df3a
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
@@ -31,7 +31,7 @@
 
 Name:		kubernetes
 Version:	1.1.0
-Release:	0.4.git%{shortcommit}%{?dist}
+Release:	0.5.git%{shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -203,12 +203,13 @@ Provides: golang(%{import_path}/pkg/registry/controller) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/controller/etcd) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/endpoint) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/endpoint/etcd) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/registry/etcd) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/event) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/registry/experimental/controller/etcd) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/generic) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/generic/etcd) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/generic/rest) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/limitrange) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/registry/limitrange/etcd) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/minion) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/minion/etcd) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/namespace) = %{version}-%{release}
@@ -229,6 +230,7 @@ Provides: golang(%{import_path}/pkg/registry/secret/etcd) = %{version}-%{release
 Provides: golang(%{import_path}/pkg/registry/service) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/service/allocator) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/service/allocator/etcd) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/registry/service/etcd) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/service/ipallocator) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/service/ipallocator/controller) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/service/ipallocator/etcd) = %{version}-%{release}
@@ -248,6 +250,7 @@ Provides: golang(%{import_path}/pkg/ui) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/ui/data/dashboard) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/ui/data/swagger) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/util) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/util/bandwidth) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/util/config) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/util/errors) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/util/exec) = %{version}-%{release}
@@ -401,7 +404,7 @@ Kubernetes client tools like kubectl
 %build
 export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
-export KUBE_GIT_VERSION=v1.1.0-alpha.0-1464-g2bfa9a1f98147c
+export KUBE_GIT_VERSION=v1.1.0-alpha.0-1588-ge44c8e6661c931
 
 hack/build-go.sh --use_go_build
 hack/build-go.sh --use_go_build cmd/kube-version-change
@@ -573,6 +576,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Tue Aug 11 2015 jchaloup <jchaloup@redhat.com> - 1.1.0-0.5.gite44c8e6
+- Bump to upstream e44c8e6661c931f7fd434911b0d3bca140e1df3a
+  related: #1211266
+
 * Mon Aug 10 2015 jchaloup <jchaloup@redhat.com> - 1.1.0-0.4.git2bfa9a1
 - Bump to upstream 2bfa9a1f98147cfdc2e9f4cf50e2c430518d91eb
   related: #1243827

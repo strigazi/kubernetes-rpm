@@ -21,7 +21,7 @@
 # https://github.com/GoogleCloudPlatform/kubernetes
 %global provider_prefix	%{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     k8s.io/kubernetes
-%global commit		e44c8e6661c931f7fd434911b0d3bca140e1df3a
+%global commit		c91950f01cb14ad47486dfcd2fdfb4be3ee7f36b
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
@@ -31,7 +31,7 @@
 
 Name:		kubernetes
 Version:	1.1.0
-Release:	0.5.git%{shortcommit}%{?dist}
+Release:	0.6.git%{shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -149,6 +149,7 @@ Provides: golang(%{import_path}/pkg/controller/endpoint) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/controller/framework) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/controller/namespace) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/controller/node) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/controller/persistentvolume) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/controller/replication) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/controller/resourcequota) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/controller/route) = %{version}-%{release}
@@ -287,7 +288,6 @@ Provides: golang(%{import_path}/pkg/volume/persistent_claim) = %{version}-%{rele
 Provides: golang(%{import_path}/pkg/volume/rbd) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/volume/secret) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/volume/util) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/volumeclaimbinder) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/watch) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/watch/json) = %{version}-%{release}
 Provides: golang(%{import_path}/plugin/cmd/kube-scheduler/app) = %{version}-%{release}
@@ -404,7 +404,7 @@ Kubernetes client tools like kubectl
 %build
 export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
-export KUBE_GIT_VERSION=v1.1.0-alpha.0-1588-ge44c8e6661c931
+export KUBE_GIT_VERSION=v1.1.0-alpha.0-1660-gfe5bebba29a3ee
 
 hack/build-go.sh --use_go_build
 hack/build-go.sh --use_go_build cmd/kube-version-change
@@ -576,6 +576,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Wed Aug 12 2015 jchaloup <jchaloup@redhat.com> - 1.1.0-0.6.gitc91950f
+- Bump to upstream c91950f01cb14ad47486dfcd2fdfb4be3ee7f36b
+  related: #1211266
+
 * Tue Aug 11 2015 jchaloup <jchaloup@redhat.com> - 1.1.0-0.5.gite44c8e6
 - Bump to upstream e44c8e6661c931f7fd434911b0d3bca140e1df3a
   related: #1211266

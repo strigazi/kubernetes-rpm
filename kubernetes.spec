@@ -21,7 +21,7 @@
 # https://github.com/GoogleCloudPlatform/kubernetes
 %global provider_prefix	%{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     k8s.io/kubernetes
-%global commit		968cbbee5d4964bd916ba379904c469abb53d623
+%global commit		8dcbebae5ef6a7191d9dfb65c68833c6852a21ad
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
@@ -31,7 +31,7 @@
 
 Name:		kubernetes
 Version:	1.1.0
-Release:	0.7.git%{shortcommit}%{?dist}
+Release:	0.8.git%{shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -254,7 +254,6 @@ Provides: golang(%{import_path}/pkg/tools/etcdtest) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/tools/metrics) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/types) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/ui) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/ui/data/dashboard) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/ui/data/swagger) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/util) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/util/bandwidth) = %{version}-%{release}
@@ -313,6 +312,7 @@ Provides: golang(%{import_path}/plugin/pkg/auth/authenticator/password) = %{vers
 Provides: golang(%{import_path}/plugin/pkg/auth/authenticator/password/allow) = %{version}-%{release}
 Provides: golang(%{import_path}/plugin/pkg/auth/authenticator/password/passwordfile) = %{version}-%{release}
 Provides: golang(%{import_path}/plugin/pkg/auth/authenticator/request/basicauth) = %{version}-%{release}
+Provides: golang(%{import_path}/plugin/pkg/auth/authenticator/request/keystone) = %{version}-%{release}
 Provides: golang(%{import_path}/plugin/pkg/auth/authenticator/request/union) = %{version}-%{release}
 Provides: golang(%{import_path}/plugin/pkg/auth/authenticator/request/x509) = %{version}-%{release}
 Provides: golang(%{import_path}/plugin/pkg/auth/authenticator/token/tokenfile) = %{version}-%{release}
@@ -410,7 +410,7 @@ Kubernetes client tools like kubectl
 %build
 export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
-export KUBE_GIT_VERSION=v1.1.0-alpha.0-1749-g968cbbee5d4964
+export KUBE_GIT_VERSION=v1.1.0-alpha.0-1795-g8dcbebae5ef6a7
 
 hack/build-go.sh --use_go_build
 hack/build-go.sh --use_go_build cmd/kube-version-change
@@ -582,6 +582,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Fri Aug 14 2015 jchaloup <jchaloup@redhat.com> - 1.1.0-0.8.git8dcbeba
+- Bump to upstream 8dcbebae5ef6a7191d9dfb65c68833c6852a21ad
+  related: #1211266
+
 * Thu Aug 13 2015 jchaloup <jchaloup@redhat.com> - 1.1.0-0.7.git968cbbe
 - Bump to upstream 968cbbee5d4964bd916ba379904c469abb53d623
   related: #1211266

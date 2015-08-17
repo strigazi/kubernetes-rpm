@@ -21,8 +21,12 @@
 # https://github.com/GoogleCloudPlatform/kubernetes
 %global provider_prefix	%{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     k8s.io/kubernetes
-%global commit		8dcbebae5ef6a7191d9dfb65c68833c6852a21ad
+%global commit		081d9c64d25c20ec16035036536511811118173d
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
+
+%global con_commit      bb44ddd48d365784343c488a6f3cae97620a780d
+%global con_shortcommit %(c=%{con_commit}; echo ${c:0:7})
+%global con_repo        contrib
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
 # does not work
@@ -31,13 +35,14 @@
 
 Name:		kubernetes
 Version:	1.1.0
-Release:	0.8.git%{shortcommit}%{?dist}
+Release:	0.9.git%{shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
 ExclusiveArch:  x86_64
 Source0:        https://%{provider_prefix}/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
-Source1:        genmanpages.sh
+Source1:        https://%{provider}.%{provider_tld}/%{project}/%{con_repo}/archive/%{con_commit}/%{con_repo}-%{con_shortcommit}.tar.gz
+Source2:        genmanpages.sh
 Patch1:         Fix-Persistent-Volumes-and-Persistent-Volume-Claims.patch
 Patch2:         Change-etcd-server-port.patch
 %if 0%{?with_debug}
@@ -405,12 +410,22 @@ BuildRequires: golang >= 1.2-7
 Kubernetes client tools like kubectl
 
 %prep
-%autosetup -n %{name}-%{commit} -p1
+%setup -q -n %{con_repo}-%{con_commit} -T -b 1
+%setup -q -n %{repo}-%{commit}
+# move content of contrib back to kubernetes
+mv ../%{con_repo}-%{con_commit}/init contrib/init
+
+%patch1 -p1
+%patch2 -p1
+%if 0%{?with_debug}
+%patch3 -p1
+%endif
+%patch4 -p1
 
 %build
 export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
-export KUBE_GIT_VERSION=v1.1.0-alpha.0-1795-g8dcbebae5ef6a7
+export KUBE_GIT_VERSION=v1.1.0-alpha.0-1846-g081d9c64d25c20
 
 hack/build-go.sh --use_go_build
 hack/build-go.sh --use_go_build cmd/kube-version-change
@@ -420,7 +435,7 @@ pushd docs
 pushd admin
 cp kube-apiserver.md kube-controller-manager.md kube-proxy.md kube-scheduler.md kubelet.md ..
 popd
-cp %{SOURCE1} genmanpages.sh
+cp %{SOURCE2} genmanpages.sh
 bash genmanpages.sh
 popd
 
@@ -582,6 +597,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Mon Aug 17 2015 jchaloup <jchaloup@redhat.com> - 1.1.0-0.9.git081d9c6
+- Bump to upstream 081d9c64d25c20ec16035036536511811118173d
+  related: #1211266
+
 * Fri Aug 14 2015 jchaloup <jchaloup@redhat.com> - 1.1.0-0.8.git8dcbeba
 - Bump to upstream 8dcbebae5ef6a7191d9dfb65c68833c6852a21ad
   related: #1211266

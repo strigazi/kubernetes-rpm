@@ -16,12 +16,12 @@
 %endif
 %global provider	github
 %global provider_tld	com
-%global project		GoogleCloudPlatform
+%global project		kubernetes
 %global repo		kubernetes
-# https://github.com/GoogleCloudPlatform/kubernetes
+# https://github.com/kubernetes/kubernetes
 %global provider_prefix	%{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     k8s.io/kubernetes
-%global commit		280b66c9012c21e253acd4e730f8684c39ca08ec
+%global commit		919c7e94e23d2dcd5bdd96896e0a7990f9ae3338
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 %global con_commit      bb44ddd48d365784343c488a6f3cae97620a780d
@@ -35,7 +35,7 @@
 
 Name:		kubernetes
 Version:	1.1.0
-Release:	0.10.git%{shortcommit}%{?dist}
+Release:	0.11.git%{shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -425,7 +425,7 @@ mv ../%{con_repo}-%{con_commit}/init contrib/init
 %build
 export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
-export KUBE_GIT_VERSION=v1.1.0-alpha.0-1909-g280b66c9012c21
+export KUBE_GIT_VERSION=v1.1.0-alpha.0-1917-g919c7e94e23d2d
 
 hack/build-go.sh --use_go_build
 hack/build-go.sh --use_go_build cmd/kube-version-change
@@ -597,6 +597,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Tue Aug 18 2015 jchaloup <jchaloup@redhat.com> - 1.1.0-0.11.git919c7e9
+- Bump to upstream 919c7e94e23d2dcd5bdd96896e0a7990f9ae3338
+  related: #1211266
+
 * Tue Aug 18 2015 jchaloup <jchaloup@redhat.com> - 1.1.0-0.10.git280b66c
 - Bump to upstream 280b66c9012c21e253acd4e730f8684c39ca08ec
   related: #1211266

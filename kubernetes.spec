@@ -21,7 +21,7 @@
 # https://github.com/kubernetes/kubernetes
 %global provider_prefix	%{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     k8s.io/kubernetes
-%global commit		44fa48e5af44d3e988fa943d96a2de732d8cc666
+%global commit		b6f18c7ce08714c8d4f6019463879a164a41750e
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 %global con_commit      e0ace92f5954ad3bae3a1d4fefe2ec702e621669
@@ -35,7 +35,7 @@
 
 Name:		kubernetes
 Version:	1.1.0
-Release:	0.13.git%{shortcommit}%{?dist}
+Release:	0.14.git%{shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -210,6 +210,8 @@ Provides: golang(%{import_path}/pkg/registry) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/componentstatus) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/controller) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/controller/etcd) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/registry/daemon) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/registry/daemon/etcd) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/endpoint) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/endpoint/etcd) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/event) = %{version}-%{release}
@@ -425,7 +427,7 @@ mv ../%{con_repo}-%{con_commit}/init contrib/init
 %build
 export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
-export KUBE_GIT_VERSION=v1.1.0-alpha.0-2083-g44fa48e5af44d3
+export KUBE_GIT_VERSION=v1.1.0-alpha.0-2175-gb6f18c7ce08714
 
 hack/build-go.sh --use_go_build
 hack/build-go.sh --use_go_build cmd/kube-version-change
@@ -597,6 +599,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Fri Aug 21 2015 jchaloup <jchaloup@redhat.com> - 1.1.0-0.14.gitb6f18c7
+- Bump to upstream b6f18c7ce08714c8d4f6019463879a164a41750e
+  related: #1211266
+
 * Thu Aug 20 2015 jchaloup <jchaloup@redhat.com> - 1.1.0-0.13.git44fa48e
 - Bump to upstream 44fa48e5af44d3e988fa943d96a2de732d8cc666
   related: #1211266

@@ -21,7 +21,7 @@
 # https://github.com/kubernetes/kubernetes
 %global provider_prefix	%{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     k8s.io/kubernetes
-%global commit		a945785409d5b68f3a2721d2209300edb5abf1ce
+%global commit		00e34429e0242323ed34347cf0ab65b3d62b21f7
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 %global con_commit      1eb392f6d4155bf8e85e1b180562b64db1b32c3d
@@ -35,7 +35,7 @@
 
 Name:		kubernetes
 Version:	1.1.0
-Release:	0.16.git%{shortcommit}%{?dist}
+Release:	0.17.git%{shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -430,7 +430,7 @@ mv ../%{con_repo}-%{con_commit}/init contrib/init
 %build
 export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
-export KUBE_GIT_VERSION=v1.1.0-alpha.0-2288-ga945785409d5b6
+export KUBE_GIT_VERSION=v1.1.0-alpha.0-2345-g00e34429e02423
 
 hack/build-go.sh --use_go_build
 hack/build-go.sh --use_go_build cmd/kube-version-change
@@ -602,6 +602,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Wed Aug 26 2015 jchaloup <jchaloup@redhat.com> - 1.1.0-0.17.git00e3442
+- Bump to upstream 00e34429e0242323ed34347cf0ab65b3d62b21f7
+  related: #1211266
+
 * Tue Aug 25 2015 jchaloup <jchaloup@redhat.com> - 1.1.0-0.16.gita945785
 - Bump to upstream a945785409d5b68f3a2721d2209300edb5abf1ce
   related: #1211266

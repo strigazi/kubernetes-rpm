@@ -21,12 +21,17 @@
 # https://github.com/kubernetes/kubernetes
 %global provider_prefix	%{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     k8s.io/kubernetes
-%global commit		ab7384943748312f5e9294f42d42ed3983c7c96c
+%global commit		66a644b275ede9ddb98eb3f76e8d1840cafc2147
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
-%global con_commit      f97cc8ab063ccf65f603cad55fae8d9dd0e31b1e
-%global con_shortcommit %(c=%{con_commit}; echo ${c:0:7})
-%global con_repo        contrib
+%global con_provider         github
+%global con_provider_tld     com
+%global con_project          kubernetes
+%global con_repo             contrib
+%global con_provider_prefix  %{con_provider}.%{con_provider_tld}/%{con_project}/%{con_repo}
+%global con_commit           65bce9b406805acda0ee1b476d6a8b2d6c7dfb7b
+%global con_shortcommit      %(c=%{con_commit}; echo ${c:0:7})
+
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
 # does not work
@@ -35,7 +40,7 @@
 
 Name:		kubernetes
 Version:	1.1.0
-Release:	0.18.git%{shortcommit}%{?dist}
+Release:	0.19.git%{shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -430,7 +435,7 @@ mv ../%{con_repo}-%{con_commit}/init contrib/init
 %build
 export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
-export KUBE_GIT_VERSION=v1.1.0-alpha.0-2399-gab738494374831
+export KUBE_GIT_VERSION=v1.1.0-alpha.1-42-g66a644b275ede9
 
 hack/build-go.sh --use_go_build
 hack/build-go.sh --use_go_build cmd/kube-version-change
@@ -602,6 +607,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Mon Aug 31 2015 jchaloup <jchaloup@redhat.com> - 1.1.0-0.19.git66a644b
+- Bump to upstream 66a644b275ede9ddb98eb3f76e8d1840cafc2147
+  related: #1211266
+
 * Thu Aug 27 2015 jchaloup <jchaloup@redhat.com> - 1.1.0-0.18.gitab73849
 - Bump to upstream ab7384943748312f5e9294f42d42ed3983c7c96c
   related: #1211266

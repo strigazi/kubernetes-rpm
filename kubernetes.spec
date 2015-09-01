@@ -21,7 +21,7 @@
 # https://github.com/kubernetes/kubernetes
 %global provider_prefix	%{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     k8s.io/kubernetes
-%global commit		66a644b275ede9ddb98eb3f76e8d1840cafc2147
+%global commit		2f9652c7f1d4b8f333c0b5c8c1270db83b913436
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 %global con_provider         github
@@ -29,7 +29,7 @@
 %global con_project          kubernetes
 %global con_repo             contrib
 %global con_provider_prefix  %{con_provider}.%{con_provider_tld}/%{con_project}/%{con_repo}
-%global con_commit           65bce9b406805acda0ee1b476d6a8b2d6c7dfb7b
+%global con_commit           e5c406e199dc7c2430b0020dd044bac55d998133
 %global con_shortcommit      %(c=%{con_commit}; echo ${c:0:7})
 
 
@@ -40,7 +40,7 @@
 
 Name:		kubernetes
 Version:	1.1.0
-Release:	0.19.git%{shortcommit}%{?dist}
+Release:	0.20.git%{shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -217,6 +217,8 @@ Provides: golang(%{import_path}/pkg/registry/controller) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/controller/etcd) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/daemon) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/daemon/etcd) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/registry/deployment) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/registry/deployment/etcd) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/endpoint) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/endpoint/etcd) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/event) = %{version}-%{release}
@@ -435,7 +437,7 @@ mv ../%{con_repo}-%{con_commit}/init contrib/init
 %build
 export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
-export KUBE_GIT_VERSION=v1.1.0-alpha.1-42-g66a644b275ede9
+export KUBE_GIT_VERSION=v1.1.0-alpha.1-52-g2f9652c7f1d4b8
 
 hack/build-go.sh --use_go_build
 hack/build-go.sh --use_go_build cmd/kube-version-change
@@ -607,6 +609,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Tue Sep 01 2015 jchaloup <jchaloup@redhat.com> - 1.1.0-0.20.git2f9652c
+- Bump to upstream 2f9652c7f1d4b8f333c0b5c8c1270db83b913436
+  related: #1211266
+
 * Mon Aug 31 2015 jchaloup <jchaloup@redhat.com> - 1.1.0-0.19.git66a644b
 - Bump to upstream 66a644b275ede9ddb98eb3f76e8d1840cafc2147
   related: #1211266

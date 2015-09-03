@@ -21,7 +21,7 @@
 # https://github.com/kubernetes/kubernetes
 %global provider_prefix	%{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     k8s.io/kubernetes
-%global commit		b4a3698faed81410468eccf9f328ca6df3d0cca3
+%global commit		b6f2f396baec5105ff928cf61903c2c368259b21
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 %global con_provider         github
@@ -29,7 +29,7 @@
 %global con_project          kubernetes
 %global con_repo             contrib
 %global con_provider_prefix  %{con_provider}.%{con_provider_tld}/%{con_project}/%{con_repo}
-%global con_commit           51df0906ceb1de4d74020ea3ed18b35182ace9cb
+%global con_commit           103eef61dc7d11ea2310da993994d056082d6ce2
 %global con_shortcommit      %(c=%{con_commit}; echo ${c:0:7})
 
 
@@ -40,7 +40,7 @@
 
 Name:		kubernetes
 Version:	1.1.0
-Release:	0.21.git%{shortcommit}%{?dist}
+Release:	0.22.git%{shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -261,6 +261,8 @@ Provides: golang(%{import_path}/pkg/registry/serviceaccount) = %{version}-%{rele
 Provides: golang(%{import_path}/pkg/registry/serviceaccount/etcd) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/thirdpartyresource) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/thirdpartyresource/etcd) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/registry/thirdpartyresourcedata) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/registry/thirdpartyresourcedata/etcd) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/runtime) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/securitycontext) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/storage) = %{version}-%{release}
@@ -299,7 +301,9 @@ Provides: golang(%{import_path}/pkg/version) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/version/verflag) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/volume) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/volume/aws_ebs) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/volume/cephfs) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/volume/cinder) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/volume/downwardapi) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/volume/empty_dir) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/volume/gce_pd) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/volume/git_repo) = %{version}-%{release}
@@ -317,6 +321,7 @@ Provides: golang(%{import_path}/plugin/cmd/kube-scheduler/app) = %{version}-%{re
 Provides: golang(%{import_path}/plugin/pkg/admission/admit) = %{version}-%{release}
 Provides: golang(%{import_path}/plugin/pkg/admission/deny) = %{version}-%{release}
 Provides: golang(%{import_path}/plugin/pkg/admission/exec/denyprivileged) = %{version}-%{release}
+Provides: golang(%{import_path}/plugin/pkg/admission/initialresources) = %{version}-%{release}
 Provides: golang(%{import_path}/plugin/pkg/admission/limitranger) = %{version}-%{release}
 Provides: golang(%{import_path}/plugin/pkg/admission/namespace/autoprovision) = %{version}-%{release}
 Provides: golang(%{import_path}/plugin/pkg/admission/namespace/exists) = %{version}-%{release}
@@ -439,7 +444,7 @@ mv ../%{con_repo}-%{con_commit}/init contrib/init
 %build
 export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
-export KUBE_GIT_VERSION=v1.1.0-alpha.1-138-g72fe5a9b9bcafc
+export KUBE_GIT_VERSION=v1.1.0-alpha.1-214-gb6f2f396baec51
 
 hack/build-go.sh --use_go_build
 hack/build-go.sh --use_go_build cmd/kube-version-change
@@ -611,6 +616,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Thu Sep 03 2015 jchaloup <jchaloup@redhat.com> - 1.1.0-0.22.gitb6f2f39
+- Bump to upstream b6f2f396baec5105ff928cf61903c2c368259b21
+  related: #1211266
+
 * Wed Sep 02 2015 jchaloup <jchaloup@redhat.com> - 1.1.0-0.21.gitb4a3698
 - Bump to upstream b4a3698faed81410468eccf9f328ca6df3d0cca3
   related: #1211266

@@ -21,7 +21,7 @@
 # https://github.com/kubernetes/kubernetes
 %global provider_prefix	%{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     k8s.io/kubernetes
-%global commit		b6f2f396baec5105ff928cf61903c2c368259b21
+%global commit		e724a5210adf717f62a72162621ace1e08730c75
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 %global con_provider         github
@@ -40,7 +40,7 @@
 
 Name:		kubernetes
 Version:	1.1.0
-Release:	0.22.git%{shortcommit}%{?dist}
+Release:	0.23.git%{shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -88,6 +88,7 @@ Provides: golang(%{import_path}/contrib/mesos/pkg/executor/service) = %{version}
 Provides: golang(%{import_path}/contrib/mesos/pkg/hyperkube) = %{version}-%{release}
 Provides: golang(%{import_path}/contrib/mesos/pkg/minion) = %{version}-%{release}
 Provides: golang(%{import_path}/contrib/mesos/pkg/minion/config) = %{version}-%{release}
+Provides: golang(%{import_path}/contrib/mesos/pkg/minion/tasks) = %{version}-%{release}
 Provides: golang(%{import_path}/contrib/mesos/pkg/offers) = %{version}-%{release}
 Provides: golang(%{import_path}/contrib/mesos/pkg/offers/metrics) = %{version}-%{release}
 Provides: golang(%{import_path}/contrib/mesos/pkg/proc) = %{version}-%{release}
@@ -444,7 +445,7 @@ mv ../%{con_repo}-%{con_commit}/init contrib/init
 %build
 export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
-export KUBE_GIT_VERSION=v1.1.0-alpha.1-214-gb6f2f396baec51
+export KUBE_GIT_VERSION=v1.1.0-alpha.1-282-ge724a5210adf71
 
 hack/build-go.sh --use_go_build
 hack/build-go.sh --use_go_build cmd/kube-version-change
@@ -616,6 +617,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Fri Sep 04 2015 jchaloup <jchaloup@redhat.com> - 1.1.0-0.23.gite724a52
+- Bump to upstream e724a5210adf717f62a72162621ace1e08730c75
+  related: #1211266
+
 * Thu Sep 03 2015 jchaloup <jchaloup@redhat.com> - 1.1.0-0.22.gitb6f2f39
 - Bump to upstream b6f2f396baec5105ff928cf61903c2c368259b21
   related: #1211266

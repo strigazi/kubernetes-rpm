@@ -21,7 +21,7 @@
 # https://github.com/kubernetes/kubernetes
 %global provider_prefix	%{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     k8s.io/kubernetes
-%global commit		e724a5210adf717f62a72162621ace1e08730c75
+%global commit		2e2def36a904fe9a197da5fc70e433e2e884442f
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 %global con_provider         github
@@ -29,7 +29,7 @@
 %global con_project          kubernetes
 %global con_repo             contrib
 %global con_provider_prefix  %{con_provider}.%{con_provider_tld}/%{con_project}/%{con_repo}
-%global con_commit           103eef61dc7d11ea2310da993994d056082d6ce2
+%global con_commit           316ffad0861797422cc1343043e431f63df95ce5
 %global con_shortcommit      %(c=%{con_commit}; echo ${c:0:7})
 
 
@@ -40,7 +40,7 @@
 
 Name:		kubernetes
 Version:	1.1.0
-Release:	0.23.git%{shortcommit}%{?dist}
+Release:	0.24.git%{shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -120,6 +120,7 @@ Provides: golang(%{import_path}/pkg/api/rest) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/api/rest/resttest) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/api/testapi) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/api/testing) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/api/util) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/api/v1) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/api/validation) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/apiserver) = %{version}-%{release}
@@ -128,6 +129,7 @@ Provides: golang(%{import_path}/pkg/auth/authenticator) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/auth/authenticator/bearertoken) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/auth/authorizer) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/auth/authorizer/abac) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/auth/authorizer/union) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/auth/handlers) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/auth/user) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/capabilities) = %{version}-%{release}
@@ -156,6 +158,7 @@ Provides: golang(%{import_path}/pkg/cloudprovider/providers/rackspace) = %{versi
 Provides: golang(%{import_path}/pkg/cloudprovider/providers/vagrant) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/controller) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/controller/autoscaler) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/controller/autoscaler/metrics) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/controller/endpoint) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/controller/framework) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/controller/namespace) = %{version}-%{release}
@@ -445,7 +448,7 @@ mv ../%{con_repo}-%{con_commit}/init contrib/init
 %build
 export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
-export KUBE_GIT_VERSION=v1.1.0-alpha.1-282-ge724a5210adf71
+export KUBE_GIT_VERSION=v1.1.0-alpha.1-362-g2e2def36a904fe
 
 hack/build-go.sh --use_go_build
 hack/build-go.sh --use_go_build cmd/kube-version-change
@@ -617,6 +620,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Sat Sep 05 2015 jchaloup <jchaloup@redhat.com> - 1.1.0-0.24.git2e2def3
+- Bump to upstream 2e2def36a904fe9a197da5fc70e433e2e884442f
+  related: #1211266
+
 * Fri Sep 04 2015 jchaloup <jchaloup@redhat.com> - 1.1.0-0.23.gite724a52
 - Bump to upstream e724a5210adf717f62a72162621ace1e08730c75
   related: #1211266

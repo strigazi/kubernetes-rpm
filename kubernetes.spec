@@ -29,7 +29,7 @@
 %global con_project          kubernetes
 %global con_repo             contrib
 %global con_provider_prefix  %{con_provider}.%{con_provider_tld}/%{con_project}/%{con_repo}
-%global con_commit           316ffad0861797422cc1343043e431f63df95ce5
+%global con_commit           85598359757940c425b70515c2f9d538eb0d3fed
 %global con_shortcommit      %(c=%{con_commit}; echo ${c:0:7})
 
 

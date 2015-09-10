@@ -21,7 +21,7 @@
 # https://github.com/kubernetes/kubernetes
 %global provider_prefix	%{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     k8s.io/kubernetes
-%global commit		0f4fa4ed25ae9a9d1824fe55aeefb4d4ebfecdfd
+%global commit		f867ba3ba13e3dad422efd21c74f52b9762de37e
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 %global con_provider         github
@@ -29,7 +29,7 @@
 %global con_project          kubernetes
 %global con_repo             contrib
 %global con_provider_prefix  %{con_provider}.%{con_provider_tld}/%{con_project}/%{con_repo}
-%global con_commit           85598359757940c425b70515c2f9d538eb0d3fed
+%global con_commit           a44246b88716d8c41f02598567b04293bf4000ce
 %global con_shortcommit      %(c=%{con_commit}; echo ${c:0:7})
 
 
@@ -40,7 +40,7 @@
 
 Name:		kubernetes
 Version:	1.1.0
-Release:	0.27.git%{shortcommit}%{?dist}
+Release:	0.28.git%{shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -235,10 +235,10 @@ Provides: golang(%{import_path}/pkg/registry/horizontalpodautoscaler) = %{versio
 Provides: golang(%{import_path}/pkg/registry/horizontalpodautoscaler/etcd) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/limitrange) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/limitrange/etcd) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/registry/minion) = %{version}-%{release}
-Provides: golang(%{import_path}/pkg/registry/minion/etcd) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/namespace) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/namespace/etcd) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/registry/node) = %{version}-%{release}
+Provides: golang(%{import_path}/pkg/registry/node/etcd) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/persistentvolume) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/persistentvolume/etcd) = %{version}-%{release}
 Provides: golang(%{import_path}/pkg/registry/persistentvolumeclaim) = %{version}-%{release}
@@ -448,7 +448,7 @@ mv ../%{con_repo}-%{con_commit}/init contrib/init
 %build
 export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
-export KUBE_GIT_VERSION=v1.1.0-alpha.1-442-g0f4fa4ed25ae9a
+export KUBE_GIT_VERSION=v1.1.0-alpha.1-496-gf867ba3ba13e3d
 
 hack/build-go.sh --use_go_build
 hack/build-go.sh --use_go_build cmd/kube-version-change
@@ -620,6 +620,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Thu Sep 10 2015 jchaloup <jchaloup@redhat.com> - 1.1.0-0.28.gitf867ba3
+- Bump to upstream f867ba3ba13e3dad422efd21c74f52b9762de37e
+  related: #1211266
+
 * Wed Sep 09 2015 jchaloup <jchaloup@redhat.com> - 1.1.0-0.27.git0f4fa4e
 - Bump to upstream 0f4fa4ed25ae9a9d1824fe55aeefb4d4ebfecdfd
   related: #1211266

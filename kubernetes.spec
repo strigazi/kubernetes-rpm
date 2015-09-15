@@ -44,6 +44,7 @@ Patch2:         Change-etcd-server-port.patch
 Patch3:         build-with-debug-info.patch
 %endif
 Patch4:         change-internal-to-inteernal.patch
+Patch5:         Update-github.com-elazarl-go-bindata-assetfs-to-at-l.patch
 
 # It obsoletes cadvisor but needs its source code (literally integrated)
 Obsoletes:      cadvisor
@@ -386,6 +387,7 @@ Kubernetes client tools like kubectl
 %patch3 -p1
 %endif
 %patch4 -p1
+%patch5 -p1
 
 %build
 export KUBE_GIT_TREE_STATE="clean"

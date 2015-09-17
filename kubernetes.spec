@@ -630,7 +630,7 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
-* Thu Sep 17 2015 jchaloup <jchaloup@redhat.com> - 1.1.0-0.32.git400e685
+* Thu Sep 17 2015 jchaloup <jchaloup@redhat.com> - 1.1.0-0.32.alpha1.git400e685
 - Bump to upstream 400e6856b082ecf4b295568acda68d630fc000f1
   related: #1211266
 

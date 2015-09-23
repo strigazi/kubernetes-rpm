@@ -14,24 +14,28 @@
 %else
 %global debug_package   %{nil}
 %endif
-%global provider	github
-%global provider_tld	com
-%global project		kubernetes
-%global repo		kubernetes
-# https://github.com/kubernetes/kubernetes
+%global provider        github
+%global provider_tld    com
+%global project	        openshift
+%global repo            origin
+# https://github.com/openshift/origin
 %global provider_prefix	%{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     k8s.io/kubernetes
-%global commit		09cf38e9a80327e2d41654db277d00f19e2c84d0
+%global commit		2695cdcd29a8f11ef60278758e11f4817daf3c7c
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
-%global con_provider         github
-%global con_provider_tld     com
-%global con_project          kubernetes
-%global con_repo             contrib
-%global con_provider_prefix  %{con_provider}.%{con_provider_tld}/%{con_project}/%{con_repo}
-%global con_commit           1159b3d1823538f121a07c450fc5d93057226ffa
-%global con_shortcommit      %(c=%{con_commit}; echo ${c:0:7})
+%global openshift_ip    github.com/openshift/origin
 
+%global k8s_provider        github
+%global k8s_provider_tld    com
+%global k8s_project         kubernetes
+%global k8s_repo            kubernetes
+# https://github.com/kubernetes/kubernetes
+%global k8s_provider_prefix %{k8s_provider}.%{k8s_provider_tld}/%{k8s_project}/%{k8s_repo}
+%global k8s_commit      44c91b1a397e0580d403eb9e9cecd1dac3da0b25
+%global k8s_shortcommit %(c=%{k8s_commit}; echo ${c:0:7})
+%global k8s_src_dir     Godeps/_workspace/src/k8s.io/kubernetes/
+%global k8s_src_dir_sed Godeps\\/_workspace\\/src\\/k8s\\.io\\/kubernetes\\/
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
 # does not work
@@ -40,19 +44,23 @@
 
 Name:		kubernetes
 Version:	1.1.0
-Release:	0.33.alpha1.git%{shortcommit}%{?dist}
+Release:	0.34.alpha1.git%{shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
 ExclusiveArch:  x86_64
 Source0:        https://%{provider_prefix}/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
-Source1:        https://%{provider}.%{provider_tld}/%{project}/%{con_repo}/archive/%{con_commit}/%{con_repo}-%{con_shortcommit}.tar.gz
+Source1:        https://%{k8s_provider_prefix}/archive/%{k8s_commit}/%{k8s_repo}-%{k8s_shortcommit}.tar.gz
+
 Source2:        genmanpages.sh
 Patch2:         Change-etcd-server-port.patch
 %if 0%{?with_debug}
 Patch3:         build-with-debug-info.patch
 %endif
-Patch4:         change-internal-to-inteernal.patch
+
+Patch4:         internal-to-inteernal.patch
+Patch5:         0001-internal-inteernal.patch
+Patch6:         append-missing-flags-to-cobra-flags.patch
 
 # It obsoletes cadvisor but needs its source code (literally integrated)
 Obsoletes:      cadvisor
@@ -68,7 +76,7 @@ Requires: kubernetes-node = %{version}-%{release}
 %if 0%{?with_devel}
 %package devel
 Summary:       %{summary}
-BuildRequires: golang >= 1.2.1-3
+BuildArch:      noarch
 
 Provides: golang(%{import_path}/cmd/genutils) = %{version}-%{release}
 Provides: golang(%{import_path}/cmd/kube-apiserver/app) = %{version}-%{release}
@@ -451,26 +459,51 @@ BuildRequires: golang >= 1.2-7
 Kubernetes client tools like kubectl
 
 %prep
-%setup -q -n %{con_repo}-%{con_commit} -T -b 1
+%setup -q -n %{k8s_repo}-%{k8s_commit} -T -b 1
 %setup -q -n %{repo}-%{commit}
-# move content of contrib back to kubernetes
-mv ../%{con_repo}-%{con_commit}/init contrib/init
+
+# copy contrib folder to origin
+cp -r ../%{k8s_repo}-%{k8s_commit}/contrib contrib
+# copy docs/admin and docs/man to origin
+cp -r ../%{k8s_repo}-%{k8s_commit}/docs/admin docs/admin
+cp -r ../%{k8s_repo}-%{k8s_commit}/docs/man docs/man
+# copy cmd/kube-version change to origin
+cp -r ../%{k8s_repo}-%{k8s_commit}/cmd/kube-version-change/ cmd
 
 %patch2 -p1
-%if 0%{?with_debug}
-%patch3 -p1
-%endif
-#%patch4 -p1
+
+%patch4 -p1
+%patch5 -p1
+%patch6 -p1
 
 %build
-export KUBE_GIT_TREE_STATE="clean"
-export KUBE_GIT_COMMIT=%{commit}
-export KUBE_GIT_VERSION=v1.1.0-alpha.1-1141-g09cf38e9a80327
+# Don't judge me for this ... it's so bad.
+mkdir _build
 
-hack/build-go.sh --use_go_build
-# remove import_known_versions.go
-rm -rf cmd/kube-version-change/import_known_versions.go
-hack/build-go.sh --use_go_build cmd/kube-version-change
+# Horrid hack because golang loves to just bundle everything
+pushd _build
+    mkdir -p src/github.com/openshift
+    ln -s $(dirs +1 -l) src/%{openshift_ip}
+popd
+
+# Gaming the GOPATH to include the third party bundled libs at build
+# time. This is bad and I feel bad.
+mkdir _thirdpartyhacks
+pushd _thirdpartyhacks
+    ln -s \
+        $(dirs +1 -l)/Godeps/_workspace/src/ \
+            src
+popd
+export GOPATH=$(pwd)/_build:$(pwd)/_thirdpartyhacks:%{buildroot}%{gopath}:%{gopath}
+
+%{!?ldflags:
+%global ldflags -X github.com/openshift/origin/pkg/version.majorFromGit 0 -X github.com/openshift/origin/pkg/version.minorFromGit 0+ -X github.com/openshift/origin/pkg/version.versionFromGit v0.0.1 -X github.com/openshift/origin/pkg/version.commitFromGit 86b5e46 -X k8s.io/kubernetes/pkg/version.gitCommit 6241a21 -X k8s.io/kubernetes/pkg/version.gitVersion v0.11.0-330-g6241a21
+}
+
+go install -ldflags "%{ldflags}" %{openshift_ip}/cmd/openshift
+
+export GOPATH=$(pwd)/Godeps/_workspace:$(pwd)/_build:%{buildroot}%{gopath}:%{gopath}
+go install -ldflags "%{ldflags}" %{openshift_ip}/cmd/kube-version-change
 
 # convert md to man
 pushd docs
@@ -482,21 +515,29 @@ bash genmanpages.sh
 popd
 
 %install
-. hack/lib/init.sh
-kube::golang::setup_env
 
-output_path="${KUBE_OUTPUT_BINPATH}/$(kube::golang::current_platform)"
+install -d %{buildroot}%{_bindir}
 
-binaries=(kube-apiserver kube-controller-manager kube-scheduler kube-proxy kubelet kubectl kube-version-change)
-install -m 755 -d %{buildroot}%{_bindir}
-for bin in "${binaries[@]}"; do
-  echo "+++ INSTALLING ${bin}"
-  install -p -m 755 -t %{buildroot}%{_bindir} ${output_path}/${bin}
+echo "+++ INSTALLING ${bin}"
+install -p -m 755 _build/bin/openshift %{buildroot}%{_bindir}/openshift
+# kube-apiserver can not be symlink when %%attr is used
+install -p -m 755 _build/bin/openshift %{buildroot}%{_bindir}/kube-apiserver
+
+for cmd in kubectl kubelet kube-proxy kube-controller-manager kube-scheduler; do
+    ln -s %{_bindir}/openshift %{buildroot}%{_bindir}/$cmd
 done
+
+# TODO: kube-version-change missing
+install -p -m 755 _build/bin/kube-version-change %{buildroot}%{_bindir}/kube-version-change
+
+
+# k8s has its own contrib as well (for kubectl completion)
 
 # install the bash completion
 install -d -m 0755 %{buildroot}%{_datadir}/bash-completion/completions/
 install -t %{buildroot}%{_datadir}/bash-completion/completions/ contrib/completions/bash/kubectl
+
+# !!!!Adding contrib directory to tarball
 
 # install config files
 install -d -m 0755 %{buildroot}%{_sysconfdir}/%{name}
@@ -509,6 +550,7 @@ install -m 0644 -t %{buildroot}%{_unitdir} contrib/init/systemd/*.service
 # install manpages
 install -d %{buildroot}%{_mandir}/man1
 install -p -m 644 docs/man/man1/* %{buildroot}%{_mandir}/man1
+# from k8s tarball copied docs/man/man1/*.1
 
 # install the place the kubelet defaults to put volumes
 install -d %{buildroot}%{_sharedstatedir}/kubelet
@@ -517,25 +559,23 @@ install -d %{buildroot}%{_sharedstatedir}/kubelet
 install -d -m 0755 %{buildroot}%{_tmpfilesdir}
 install -p -m 0644 -t %{buildroot}/%{_tmpfilesdir} contrib/init/systemd/tmpfiles.d/kubernetes.conf
 
-%if 0%{?with_debug}
-# remove porter as it is built inside docker container without options for debug info
-rm -rf contrib/for-tests/porter
+# source codes for building projects
+%if 0%{?with_devel}
+install -d -p %{buildroot}/%{gopath}/src/%{import_path}/
+echo "%%dir %%{gopath}/src/%%{import_path}/." >> devel.file-list
+# find all *.go but no *_test.go files and generate devel.file-list
+for file in $(find ./%{k8s_src_dir} -iname "*.go" \! -iname "*_test.go") ; do
+    ifile=$(echo $file | sed "s/%{k8s_src_dir_sed}//g")
+    echo "%%dir %%{gopath}/src/%%{import_path}/$(dirname $ifile)" >> devel.file-list
+    install -d -p %{buildroot}/%{gopath}/src/%{import_path}/$(dirname $ifile)
+    cp -pav $file %{buildroot}/%{gopath}/src/%{import_path}/$ifile
+    echo "%%{gopath}/src/%%{import_path}/$ifile" >> devel.file-list
+done
 %endif
 
 %if 0%{?with_devel}
-# install devel source codes
-install -d %{buildroot}/%{gopath}/src/%{import_path}
-for d in build cluster cmd contrib examples hack pkg plugin test; do
-    cp -rpav $d %{buildroot}/%{gopath}/src/%{import_path}/
-done
+sort -u -o devel.file-list devel.file-list
 %endif
-
-# place files for unit-test rpm
-install -d -m 0755 %{buildroot}%{_sharedstatedir}/kubernetes-unit-test/
-cp -pav README.md %{buildroot}%{_sharedstatedir}/kubernetes-unit-test/.
-for d in _output Godeps api cmd docs examples hack pkg plugin third_party test; do
-  cp -a $d %{buildroot}%{_sharedstatedir}/kubernetes-unit-test/
-done
 
 %check
 # Fedora, RHEL7 and CentOS are tested via unit-test subpackage
@@ -554,14 +594,19 @@ hack/test-integration.sh --use_go_build
 %endif
 fi
 
+#define license tag if not already defined
+%{!?_licensedir:%global license %doc}
+
 %files
 # empty as it depends on master and node
 
 %files master
-%doc README.md LICENSE CONTRIB.md CONTRIBUTING.md DESIGN.md
+%license LICENSE
+%doc *.md
 %{_mandir}/man1/kube-apiserver.1*
 %{_mandir}/man1/kube-controller-manager.1*
 %{_mandir}/man1/kube-scheduler.1*
+%{_bindir}/openshift
 %attr(754, -, kube) %caps(cap_net_bind_service=ep) %{_bindir}/kube-apiserver
 %{_bindir}/kube-controller-manager
 %{_bindir}/kube-scheduler
@@ -577,9 +622,11 @@ fi
 %{_tmpfilesdir}/kubernetes.conf
 
 %files node
-%doc README.md LICENSE CONTRIB.md CONTRIBUTING.md DESIGN.md
+%license LICENSE
+%doc *.md
 %{_mandir}/man1/kubelet.1*
 %{_mandir}/man1/kube-proxy.1*
+%{_bindir}/openshift
 %{_bindir}/kubelet
 %{_bindir}/kube-proxy
 %{_bindir}/kube-version-change
@@ -593,20 +640,18 @@ fi
 %{_tmpfilesdir}/kubernetes.conf
 
 %files client
-%doc README.md LICENSE CONTRIB.md CONTRIBUTING.md DESIGN.md
+%license LICENSE
+%doc *.md
 %{_mandir}/man1/kubectl.1*
 %{_mandir}/man1/kubectl-*
+%{_bindir}/openshift
 %{_bindir}/kubectl
 %{_datadir}/bash-completion/completions/kubectl
 
-%files unit-test
-%{_sharedstatedir}/kubernetes-unit-test/
-
 %if 0%{?with_devel}
-%files devel
-%doc README.md LICENSE CONTRIB.md CONTRIBUTING.md DESIGN.md
+%files devel -f devel.file-list
+%doc *.md
 %dir %{gopath}/src/k8s.io
-%{gopath}/src/%{import_path}
 %endif
 
 %pre master
@@ -639,6 +684,11 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Tue Sep 29 2015 jchaloup <jchaloup@redhat.com> - 1.1.0-0.34.alpha1.git2695cdc
+- Built k8s from o4n tarball
+- Bump to upstream 2695cdcd29a8f11ef60278758e11f4817daf3c7c
+  related: #1211266
+
 * Tue Sep 22 2015 jchaloup <jchaloup@redhat.com> - 1.1.0-0.33.alpha1.git09cf38e
 - Bump to upstream 09cf38e9a80327e2d41654db277d00f19e2c84d0
   related: #1211266

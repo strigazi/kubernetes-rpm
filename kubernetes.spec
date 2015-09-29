@@ -49,7 +49,7 @@
 
 Name:		kubernetes
 Version:	1.1.0
-Release:	0.35.alpha1.git%{shortcommit}%{?dist}
+Release:	0.35.alpha0.git%{shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}

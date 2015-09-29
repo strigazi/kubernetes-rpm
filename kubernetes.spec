@@ -37,6 +37,11 @@
 %global k8s_src_dir     Godeps/_workspace/src/k8s.io/kubernetes/
 %global k8s_src_dir_sed Godeps\\/_workspace\\/src\\/k8s\\.io\\/kubernetes\\/
 
+%global O4N_GIT_MAJOR_VERSION 1
+%global O4N_GIT_MINOR_VERSION 0+
+%global O4N_GIT_VERSION       v1.0.6
+%global K8S_GIT_VERSION       v1.1.0-alpha.0-1605-g44c91b1
+
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
 # does not work
 %global _buildshell	/bin/bash
@@ -44,7 +49,7 @@
 
 Name:		kubernetes
 Version:	1.1.0
-Release:	0.34.alpha1.git%{shortcommit}%{?dist}
+Release:	0.35.alpha1.git%{shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -468,7 +473,7 @@ cp -r ../%{k8s_repo}-%{k8s_commit}/contrib contrib
 cp -r ../%{k8s_repo}-%{k8s_commit}/docs/admin docs/admin
 cp -r ../%{k8s_repo}-%{k8s_commit}/docs/man docs/man
 # copy cmd/kube-version change to origin
-cp -r ../%{k8s_repo}-%{k8s_commit}/cmd/kube-version-change/ cmd
+cp -r ../%{k8s_repo}-%{k8s_commit}/cmd/kube-version-change cmd/.
 
 %patch2 -p1
 
@@ -497,7 +502,7 @@ popd
 export GOPATH=$(pwd)/_build:$(pwd)/_thirdpartyhacks:%{buildroot}%{gopath}:%{gopath}
 
 %{!?ldflags:
-%global ldflags -X github.com/openshift/origin/pkg/version.majorFromGit 0 -X github.com/openshift/origin/pkg/version.minorFromGit 0+ -X github.com/openshift/origin/pkg/version.versionFromGit v0.0.1 -X github.com/openshift/origin/pkg/version.commitFromGit 86b5e46 -X k8s.io/kubernetes/pkg/version.gitCommit 6241a21 -X k8s.io/kubernetes/pkg/version.gitVersion v0.11.0-330-g6241a21
+%global ldflags -X github.com/openshift/origin/pkg/version.majorFromGit %{O4N_GIT_MAJOR_VERSION} -X github.com/openshift/origin/pkg/version.minorFromGit %{O4N_GIT_MINOR_VERSION} -X github.com/openshift/origin/pkg/version.versionFromGit %{O4N_GIT_VERSION} -X github.com/openshift/origin/pkg/version.commitFromGit %{shortcommit} -X k8s.io/kubernetes/pkg/version.gitCommit %{k8s_shortcommit} -X k8s.io/kubernetes/pkg/version.gitVersion %{K8S_GIT_VERSION}
 }
 
 go install -ldflags "%{ldflags}" %{openshift_ip}/cmd/openshift
@@ -684,6 +689,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Tue Sep 29 2015 jchaloup <jchaloup@redhat.com> - 1.1.0-0.35.alpha1.git2695cdc
+- Update git version of k8s and o4n, add macros
+  related: #1211266
+
 * Tue Sep 29 2015 jchaloup <jchaloup@redhat.com> - 1.1.0-0.34.alpha1.git2695cdc
 - Built k8s from o4n tarball
 - Bump to upstream 2695cdcd29a8f11ef60278758e11f4817daf3c7c

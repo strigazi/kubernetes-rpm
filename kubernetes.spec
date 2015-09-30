@@ -58,7 +58,7 @@
 
 Name:		kubernetes
 Version:	1.1.0
-Release:	0.36.alpha1.git%{shortcommit}%{?dist}
+Release:	0.37.alpha1.git%{shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -76,6 +76,9 @@ Patch3:         build-with-debug-info.patch
 Patch4:         internal-to-inteernal.patch
 Patch5:         0001-internal-inteernal.patch
 Patch6:         append-missing-flags-to-cobra-flags.patch
+
+# k8s uses default cluster if not specified, o4n does not
+Patch7:         do-not-unset-default-cluster.patch
 
 # It obsoletes cadvisor but needs its source code (literally integrated)
 Obsoletes:      cadvisor
@@ -449,6 +452,8 @@ rm -rf cmd/kube-version-change/import_known_versions.go
 %patch5 -p1
 # cobra options
 %patch6 -p1
+# do not unset default cluster
+%patch7 -p1
 
 %build
 # Don't judge me for this ... it's so bad.
@@ -658,6 +663,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Wed Sep 30 2015 jchaloup <jchaloup@redhat.com> - 1.1.0-0.37.alpha1.git5f38cb0
+- Do not unset default cluster, otherwise k8s ends with error when no cluster set
+  related: #1211266
+
 * Wed Sep 30 2015 jchaloup <jchaloup@redhat.com> - 1.1.0-0.36.alpha0.git5f38cb0
 - Bump to o4n 5f38cb0e98c9e854cafba9c7f98dafd51e955ad8
   related: #1211266

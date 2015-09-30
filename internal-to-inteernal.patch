@@ -1,9 +1,21 @@
-From 315276f5b20e16eda5ef6105f6338334799dd007 Mon Sep 17 00:00:00 2001
+From af5af041018cd0c8b89fde3f8684fe00290b386d Mon Sep 17 00:00:00 2001
 From: Jan Chaloupka <jchaloup@redhat.com>
-Date: Wed, 23 Sep 2015 16:08:52 +0200
+Date: Wed, 30 Sep 2015 09:57:57 +0200
 Subject: [PATCH] internal to inteernal
 
 ---
+ .../src/github.com/gonum/blas/native/dgemm.go      |   2 +-
+ .../github.com/gonum/blas/native/level1double.go   |   2 +-
+ .../gonum/blas/native/level1double_ddot.go         |   2 +-
+ .../github.com/gonum/blas/native/level1single.go   |   2 +-
+ .../gonum/blas/native/level1single_dsdot.go        |   2 +-
+ .../gonum/blas/native/level1single_sdot.go         |   2 +-
+ .../gonum/blas/native/level1single_sdsdot.go       |   2 +-
+ .../github.com/gonum/blas/native/level2double.go   |   2 +-
+ .../github.com/gonum/blas/native/level2single.go   |   2 +-
+ .../github.com/gonum/blas/native/level3double.go   |   2 +-
+ .../github.com/gonum/blas/native/level3single.go   |   2 +-
+ .../src/github.com/gonum/blas/native/sgemm.go      |   2 +-
  .../src/github.com/gonum/graph/inteernal/linear.go |  73 ++++
  .../src/github.com/gonum/graph/inteernal/set.go    | 211 +++++++++++
  .../github.com/gonum/graph/inteernal/set_test.go   | 413 +++++++++++++++++++++
@@ -28,8 +40,47 @@ Subject: [PATCH] internal to inteernal
  .../src/github.com/gonum/graph/topo/topo_test.go   |   2 +-
  .../github.com/gonum/graph/traverse/traverse.go    |   2 +-
  .../gonum/graph/traverse/traverse_test.go          |   2 +-
+ .../src/github.com/gonum/inteernal/asm/caxpy.go    |  22 ++
+ .../src/github.com/gonum/inteernal/asm/cdotc.go    |  23 ++
+ .../src/github.com/gonum/inteernal/asm/cdotu.go    |  23 ++
+ .../src/github.com/gonum/inteernal/asm/complex     |  58 +++
+ .../src/github.com/gonum/inteernal/asm/conj.go     |   7 +
+ .../src/github.com/gonum/inteernal/asm/daxpy.go    |  22 ++
+ .../github.com/gonum/inteernal/asm/daxpy_amd64.go  |  12 +
+ .../github.com/gonum/inteernal/asm/daxpy_amd64.s   | 140 +++++++
+ .../src/github.com/gonum/inteernal/asm/ddot.go     |  23 ++
+ .../github.com/gonum/inteernal/asm/ddot_amd64.go   |  10 +
+ .../github.com/gonum/inteernal/asm/ddot_amd64.s    | 140 +++++++
+ .../src/github.com/gonum/inteernal/asm/dsdot.go    |  23 ++
+ .../src/github.com/gonum/inteernal/asm/generate.go |   8 +
+ .../src/github.com/gonum/inteernal/asm/saxpy.go    |  22 ++
+ .../src/github.com/gonum/inteernal/asm/sdot.go     |  23 ++
+ .../gonum/inteernal/asm/single_precision           |  30 ++
+ .../src/github.com/gonum/inteernal/asm/zaxpy.go    |  22 ++
+ .../src/github.com/gonum/inteernal/asm/zdotc.go    |  25 ++
+ .../src/github.com/gonum/inteernal/asm/zdotu.go    |  23 ++
+ .../src/github.com/gonum/internal/asm/caxpy.go     |  22 --
+ .../src/github.com/gonum/internal/asm/cdotc.go     |  23 --
+ .../src/github.com/gonum/internal/asm/cdotu.go     |  23 --
+ .../src/github.com/gonum/internal/asm/complex      |  58 ---
+ .../src/github.com/gonum/internal/asm/conj.go      |   7 -
+ .../src/github.com/gonum/internal/asm/daxpy.go     |  22 --
+ .../github.com/gonum/internal/asm/daxpy_amd64.go   |  12 -
+ .../github.com/gonum/internal/asm/daxpy_amd64.s    | 140 -------
+ .../src/github.com/gonum/internal/asm/ddot.go      |  23 --
+ .../github.com/gonum/internal/asm/ddot_amd64.go    |  10 -
+ .../src/github.com/gonum/internal/asm/ddot_amd64.s | 140 -------
+ .../src/github.com/gonum/internal/asm/dsdot.go     |  23 --
+ .../src/github.com/gonum/internal/asm/generate.go  |   8 -
+ .../src/github.com/gonum/internal/asm/saxpy.go     |  22 --
+ .../src/github.com/gonum/internal/asm/sdot.go      |  23 --
+ .../github.com/gonum/internal/asm/single_precision |  30 --
+ .../src/github.com/gonum/internal/asm/zaxpy.go     |  22 --
+ .../src/github.com/gonum/internal/asm/zdotc.go     |  25 --
+ .../src/github.com/gonum/internal/asm/zdotu.go     |  23 --
+ .../src/github.com/gonum/matrix/mat64/inner.go     |   2 +-
  pkg/cmd/cli/describe/chaindescriber.go             |   2 +-
- 25 files changed, 742 insertions(+), 742 deletions(-)
+ 76 files changed, 1411 insertions(+), 1411 deletions(-)
  create mode 100644 Godeps/_workspace/src/github.com/gonum/graph/inteernal/linear.go
  create mode 100644 Godeps/_workspace/src/github.com/gonum/graph/inteernal/set.go
  create mode 100644 Godeps/_workspace/src/github.com/gonum/graph/inteernal/set_test.go
@@ -38,7 +89,201 @@ Subject: [PATCH] internal to inteernal
  delete mode 100644 Godeps/_workspace/src/github.com/gonum/graph/internal/set.go
  delete mode 100644 Godeps/_workspace/src/github.com/gonum/graph/internal/set_test.go
  delete mode 100644 Godeps/_workspace/src/github.com/gonum/graph/internal/sort.go
+ create mode 100644 Godeps/_workspace/src/github.com/gonum/inteernal/asm/caxpy.go
+ create mode 100644 Godeps/_workspace/src/github.com/gonum/inteernal/asm/cdotc.go
+ create mode 100644 Godeps/_workspace/src/github.com/gonum/inteernal/asm/cdotu.go
+ create mode 100644 Godeps/_workspace/src/github.com/gonum/inteernal/asm/complex
+ create mode 100644 Godeps/_workspace/src/github.com/gonum/inteernal/asm/conj.go
+ create mode 100644 Godeps/_workspace/src/github.com/gonum/inteernal/asm/daxpy.go
+ create mode 100644 Godeps/_workspace/src/github.com/gonum/inteernal/asm/daxpy_amd64.go
+ create mode 100644 Godeps/_workspace/src/github.com/gonum/inteernal/asm/daxpy_amd64.s
+ create mode 100644 Godeps/_workspace/src/github.com/gonum/inteernal/asm/ddot.go
+ create mode 100644 Godeps/_workspace/src/github.com/gonum/inteernal/asm/ddot_amd64.go
+ create mode 100644 Godeps/_workspace/src/github.com/gonum/inteernal/asm/ddot_amd64.s
+ create mode 100644 Godeps/_workspace/src/github.com/gonum/inteernal/asm/dsdot.go
+ create mode 100644 Godeps/_workspace/src/github.com/gonum/inteernal/asm/generate.go
+ create mode 100644 Godeps/_workspace/src/github.com/gonum/inteernal/asm/saxpy.go
+ create mode 100644 Godeps/_workspace/src/github.com/gonum/inteernal/asm/sdot.go
+ create mode 100644 Godeps/_workspace/src/github.com/gonum/inteernal/asm/single_precision
+ create mode 100644 Godeps/_workspace/src/github.com/gonum/inteernal/asm/zaxpy.go
+ create mode 100644 Godeps/_workspace/src/github.com/gonum/inteernal/asm/zdotc.go
+ create mode 100644 Godeps/_workspace/src/github.com/gonum/inteernal/asm/zdotu.go
+ delete mode 100644 Godeps/_workspace/src/github.com/gonum/internal/asm/caxpy.go
+ delete mode 100644 Godeps/_workspace/src/github.com/gonum/internal/asm/cdotc.go
+ delete mode 100644 Godeps/_workspace/src/github.com/gonum/internal/asm/cdotu.go
+ delete mode 100644 Godeps/_workspace/src/github.com/gonum/internal/asm/complex
+ delete mode 100644 Godeps/_workspace/src/github.com/gonum/internal/asm/conj.go
+ delete mode 100644 Godeps/_workspace/src/github.com/gonum/internal/asm/daxpy.go
+ delete mode 100644 Godeps/_workspace/src/github.com/gonum/internal/asm/daxpy_amd64.go
+ delete mode 100644 Godeps/_workspace/src/github.com/gonum/internal/asm/daxpy_amd64.s
+ delete mode 100644 Godeps/_workspace/src/github.com/gonum/internal/asm/ddot.go
+ delete mode 100644 Godeps/_workspace/src/github.com/gonum/internal/asm/ddot_amd64.go
+ delete mode 100644 Godeps/_workspace/src/github.com/gonum/internal/asm/ddot_amd64.s
+ delete mode 100644 Godeps/_workspace/src/github.com/gonum/internal/asm/dsdot.go
+ delete mode 100644 Godeps/_workspace/src/github.com/gonum/internal/asm/generate.go
+ delete mode 100644 Godeps/_workspace/src/github.com/gonum/internal/asm/saxpy.go
+ delete mode 100644 Godeps/_workspace/src/github.com/gonum/internal/asm/sdot.go
+ delete mode 100644 Godeps/_workspace/src/github.com/gonum/internal/asm/single_precision
+ delete mode 100644 Godeps/_workspace/src/github.com/gonum/internal/asm/zaxpy.go
+ delete mode 100644 Godeps/_workspace/src/github.com/gonum/internal/asm/zdotc.go
+ delete mode 100644 Godeps/_workspace/src/github.com/gonum/internal/asm/zdotu.go
 
+diff --git a/Godeps/_workspace/src/github.com/gonum/blas/native/dgemm.go b/Godeps/_workspace/src/github.com/gonum/blas/native/dgemm.go
+index 850f62c..8dc9920 100644
+--- a/Godeps/_workspace/src/github.com/gonum/blas/native/dgemm.go
++++ b/Godeps/_workspace/src/github.com/gonum/blas/native/dgemm.go
+@@ -10,7 +10,7 @@ import (
+ 	"sync"
+ 
+ 	"github.com/gonum/blas"
+-	"github.com/gonum/internal/asm"
++	"github.com/gonum/inteernal/asm"
+ )
+ 
+ // Dgemm computes
+diff --git a/Godeps/_workspace/src/github.com/gonum/blas/native/level1double.go b/Godeps/_workspace/src/github.com/gonum/blas/native/level1double.go
+index 0d77243..65f2972 100644
+--- a/Godeps/_workspace/src/github.com/gonum/blas/native/level1double.go
++++ b/Godeps/_workspace/src/github.com/gonum/blas/native/level1double.go
+@@ -8,7 +8,7 @@ import (
+ 	"math"
+ 
+ 	"github.com/gonum/blas"
+-	"github.com/gonum/internal/asm"
++	"github.com/gonum/inteernal/asm"
+ )
+ 
+ var _ blas.Float64Level1 = Implementation{}
+diff --git a/Godeps/_workspace/src/github.com/gonum/blas/native/level1double_ddot.go b/Godeps/_workspace/src/github.com/gonum/blas/native/level1double_ddot.go
+index 7af4e04..84a16ed 100644
+--- a/Godeps/_workspace/src/github.com/gonum/blas/native/level1double_ddot.go
++++ b/Godeps/_workspace/src/github.com/gonum/blas/native/level1double_ddot.go
+@@ -5,7 +5,7 @@
+ package native
+ 
+ import (
+-	"github.com/gonum/internal/asm"
++	"github.com/gonum/inteernal/asm"
+ )
+ 
+ // Ddot computes the dot product of the two vectors
+diff --git a/Godeps/_workspace/src/github.com/gonum/blas/native/level1single.go b/Godeps/_workspace/src/github.com/gonum/blas/native/level1single.go
+index 6bcba83..ca82629 100644
+--- a/Godeps/_workspace/src/github.com/gonum/blas/native/level1single.go
++++ b/Godeps/_workspace/src/github.com/gonum/blas/native/level1single.go
+@@ -10,7 +10,7 @@ import (
+ 	math "github.com/gonum/blas/native/internal/math32"
+ 
+ 	"github.com/gonum/blas"
+-	"github.com/gonum/internal/asm"
++	"github.com/gonum/inteernal/asm"
+ )
+ 
+ var _ blas.Float32Level1 = Implementation{}
+diff --git a/Godeps/_workspace/src/github.com/gonum/blas/native/level1single_dsdot.go b/Godeps/_workspace/src/github.com/gonum/blas/native/level1single_dsdot.go
+index 4665a01..a438155 100644
+--- a/Godeps/_workspace/src/github.com/gonum/blas/native/level1single_dsdot.go
++++ b/Godeps/_workspace/src/github.com/gonum/blas/native/level1single_dsdot.go
+@@ -7,7 +7,7 @@
+ package native
+ 
+ import (
+-	"github.com/gonum/internal/asm"
++	"github.com/gonum/inteernal/asm"
+ )
+ 
+ // Dsdot computes the dot product of the two vectors
+diff --git a/Godeps/_workspace/src/github.com/gonum/blas/native/level1single_sdot.go b/Godeps/_workspace/src/github.com/gonum/blas/native/level1single_sdot.go
+index 1e5b565..7d96b74 100644
+--- a/Godeps/_workspace/src/github.com/gonum/blas/native/level1single_sdot.go
++++ b/Godeps/_workspace/src/github.com/gonum/blas/native/level1single_sdot.go
+@@ -7,7 +7,7 @@
+ package native
+ 
+ import (
+-	"github.com/gonum/internal/asm"
++	"github.com/gonum/inteernal/asm"
+ )
+ 
+ // Sdot computes the dot product of the two vectors
+diff --git a/Godeps/_workspace/src/github.com/gonum/blas/native/level1single_sdsdot.go b/Godeps/_workspace/src/github.com/gonum/blas/native/level1single_sdsdot.go
+index d58be3d..79543d4 100644
+--- a/Godeps/_workspace/src/github.com/gonum/blas/native/level1single_sdsdot.go
++++ b/Godeps/_workspace/src/github.com/gonum/blas/native/level1single_sdsdot.go
+@@ -7,7 +7,7 @@
+ package native
+ 
+ import (
+-	"github.com/gonum/internal/asm"
++	"github.com/gonum/inteernal/asm"
+ )
+ 
+ // Sdsdot computes the dot product of the two vectors plus a constant
+diff --git a/Godeps/_workspace/src/github.com/gonum/blas/native/level2double.go b/Godeps/_workspace/src/github.com/gonum/blas/native/level2double.go
+index 6d59559..af62cd1 100644
+--- a/Godeps/_workspace/src/github.com/gonum/blas/native/level2double.go
++++ b/Godeps/_workspace/src/github.com/gonum/blas/native/level2double.go
+@@ -6,7 +6,7 @@ package native
+ 
+ import (
+ 	"github.com/gonum/blas"
+-	"github.com/gonum/internal/asm"
++	"github.com/gonum/inteernal/asm"
+ )
+ 
+ var _ blas.Float64Level2 = Implementation{}
+diff --git a/Godeps/_workspace/src/github.com/gonum/blas/native/level2single.go b/Godeps/_workspace/src/github.com/gonum/blas/native/level2single.go
+index b213ad6..6720c0e 100644
+--- a/Godeps/_workspace/src/github.com/gonum/blas/native/level2single.go
++++ b/Godeps/_workspace/src/github.com/gonum/blas/native/level2single.go
+@@ -8,7 +8,7 @@ package native
+ 
+ import (
+ 	"github.com/gonum/blas"
+-	"github.com/gonum/internal/asm"
++	"github.com/gonum/inteernal/asm"
+ )
+ 
+ var _ blas.Float32Level2 = Implementation{}
+diff --git a/Godeps/_workspace/src/github.com/gonum/blas/native/level3double.go b/Godeps/_workspace/src/github.com/gonum/blas/native/level3double.go
+index 5a19652..47d5d15 100644
+--- a/Godeps/_workspace/src/github.com/gonum/blas/native/level3double.go
++++ b/Godeps/_workspace/src/github.com/gonum/blas/native/level3double.go
+@@ -6,7 +6,7 @@ package native
+ 
+ import (
+ 	"github.com/gonum/blas"
+-	"github.com/gonum/internal/asm"
++	"github.com/gonum/inteernal/asm"
+ )
+ 
+ var _ blas.Float64Level3 = Implementation{}
+diff --git a/Godeps/_workspace/src/github.com/gonum/blas/native/level3single.go b/Godeps/_workspace/src/github.com/gonum/blas/native/level3single.go
+index 6bc9a56..82212a0 100644
+--- a/Godeps/_workspace/src/github.com/gonum/blas/native/level3single.go
++++ b/Godeps/_workspace/src/github.com/gonum/blas/native/level3single.go
+@@ -8,7 +8,7 @@ package native
+ 
+ import (
+ 	"github.com/gonum/blas"
+-	"github.com/gonum/internal/asm"
++	"github.com/gonum/inteernal/asm"
+ )
+ 
+ var _ blas.Float32Level3 = Implementation{}
+diff --git a/Godeps/_workspace/src/github.com/gonum/blas/native/sgemm.go b/Godeps/_workspace/src/github.com/gonum/blas/native/sgemm.go
+index 047d4e5..0387945 100644
+--- a/Godeps/_workspace/src/github.com/gonum/blas/native/sgemm.go
++++ b/Godeps/_workspace/src/github.com/gonum/blas/native/sgemm.go
+@@ -12,7 +12,7 @@ import (
+ 	"sync"
+ 
+ 	"github.com/gonum/blas"
+-	"github.com/gonum/internal/asm"
++	"github.com/gonum/inteernal/asm"
+ )
+ 
+ // Sgemm computes
 diff --git a/Godeps/_workspace/src/github.com/gonum/graph/inteernal/linear.go b/Godeps/_workspace/src/github.com/gonum/graph/inteernal/linear.go
 new file mode 100644
 index 0000000..3d64de9
@@ -1745,8 +1990,1563 @@ index c5a4e2a..b771b46 100644
  	"github.com/gonum/graph/traverse"
  )
  
+diff --git a/Godeps/_workspace/src/github.com/gonum/inteernal/asm/caxpy.go b/Godeps/_workspace/src/github.com/gonum/inteernal/asm/caxpy.go
+new file mode 100644
+index 0000000..80d802a
+--- /dev/null
++++ b/Godeps/_workspace/src/github.com/gonum/inteernal/asm/caxpy.go
+@@ -0,0 +1,22 @@
++// Generated code do not edit. Run `go generate`.
++
++// Copyright ©2015 The gonum Authors. All rights reserved.
++// Use of this source code is governed by a BSD-style
++// license that can be found in the LICENSE file.
++
++package asm
++
++// The extra z parameter is needed because of floats.AddScaledTo
++func CaxpyUnitary(alpha complex64, x, y, z []complex64) {
++	for i, v := range x {
++		z[i] = alpha*v + y[i]
++	}
++}
++
++func CaxpyInc(alpha complex64, x, y []complex64, n, incX, incY, ix, iy uintptr) {
++	for i := 0; i < int(n); i++ {
++		y[iy] += alpha * x[ix]
++		ix += incX
++		iy += incY
++	}
++}
+diff --git a/Godeps/_workspace/src/github.com/gonum/inteernal/asm/cdotc.go b/Godeps/_workspace/src/github.com/gonum/inteernal/asm/cdotc.go
+new file mode 100644
+index 0000000..ed999e5
+--- /dev/null
++++ b/Godeps/_workspace/src/github.com/gonum/inteernal/asm/cdotc.go
+@@ -0,0 +1,23 @@
++// Generated code do not edit. Run `go generate`.
++
++// Copyright ©2015 The gonum Authors. All rights reserved.
++// Use of this source code is governed by a BSD-style
++// license that can be found in the LICENSE file.
++
++package asm
++
++func CdotcUnitary(x, y []complex64) (sum complex64) {
++	for i, v := range x {
++		sum += y[i] * conj(v)
++	}
++	return
++}
++
++func CdotcInc(x, y []complex64, n, incX, incY, ix, iy uintptr) (sum complex64) {
++	for i := 0; i < int(n); i++ {
++		sum += y[iy] * conj(x[ix])
++		ix += incX
++		iy += incY
++	}
++	return
++}
+diff --git a/Godeps/_workspace/src/github.com/gonum/inteernal/asm/cdotu.go b/Godeps/_workspace/src/github.com/gonum/inteernal/asm/cdotu.go
+new file mode 100644
+index 0000000..3392ee2
+--- /dev/null
++++ b/Godeps/_workspace/src/github.com/gonum/inteernal/asm/cdotu.go
+@@ -0,0 +1,23 @@
++// Generated code do not edit. Run `go generate`.
++
++// Copyright ©2015 The gonum Authors. All rights reserved.
++// Use of this source code is governed by a BSD-style
++// license that can be found in the LICENSE file.
++
++package asm
++
++func CdotuUnitary(x, y []complex64) (sum complex64) {
++	for i, v := range x {
++		sum += y[i] * v
++	}
++	return
++}
++
++func CdotuInc(x, y []complex64, n, incX, incY, ix, iy uintptr) (sum complex64) {
++	for i := 0; i < int(n); i++ {
++		sum += y[iy] * x[ix]
++		ix += incX
++		iy += incY
++	}
++	return
++}
+diff --git a/Godeps/_workspace/src/github.com/gonum/inteernal/asm/complex b/Godeps/_workspace/src/github.com/gonum/inteernal/asm/complex
+new file mode 100644
+index 0000000..b26e4e6
+--- /dev/null
++++ b/Godeps/_workspace/src/github.com/gonum/inteernal/asm/complex
+@@ -0,0 +1,58 @@
++#!/usr/bin/env bash
++
++# Copyright ©2015 The gonum Authors. All rights reserved.
++# Use of this source code is governed by a BSD-style
++# license that can be found in the LICENSE file.
++
++echo Generating zdotu.go
++echo -e '// Generated code do not edit. Run `go generate`.\n' > zdotu.go
++cat ddot.go \
++| grep -v '//+build' \
++| gofmt -r 'float64 -> complex128' \
++| sed 's/Ddot/Zdotu/' \
++>> zdotu.go
++
++echo Generating zdotc.go
++echo -e '// Generated code do not edit. Run `go generate`.\n' > zdotc.go
++cat ddot.go \
++| grep -v '//+build' \
++| gofmt -r 'float64 -> complex128' \
++| gofmt -r 'y[i] * v -> y[i] * cmplx.Conj(v)' \
++| sed 's/Ddot/Zdotc/' \
++| goimports \
++>> zdotc.go
++
++echo Generating zaxpy.go
++echo -e '// Generated code do not edit. Run `go generate`.\n' > zaxpy.go
++cat daxpy.go \
++| grep -v '//+build' \
++| gofmt -r 'float64 -> complex128' \
++| sed 's/Daxpy/Zaxpy/' \
++>> zaxpy.go
++
++echo Generating cdotu.go
++echo -e '// Generated code do not edit. Run `go generate`.\n' > cdotu.go
++cat ddot.go \
++| grep -v '//+build' \
++| gofmt -r 'float64 -> complex64' \
++| sed 's/Ddot/Cdotu/' \
++>> cdotu.go
++
++echo Generating cdotc.go
++echo -e '// Generated code do not edit. Run `go generate`.\n' > cdotc.go
++cat ddot.go \
++| grep -v '//+build' \
++| gofmt -r 'float64 -> complex64' \
++| gofmt -r 'y[i] * v -> y[i] * conj(v)' \
++| sed 's/Ddot/Cdotc/' \
++| goimports \
++>> cdotc.go
++
++echo Generating caxpy.go
++echo -e '// Generated code do not edit. Run `go generate`.\n' > caxpy.go
++cat daxpy.go \
++| grep -v '//+build' \
++| gofmt -r 'float64 -> complex64' \
++| sed 's/Daxpy/Caxpy/' \
++>> caxpy.go
++
+diff --git a/Godeps/_workspace/src/github.com/gonum/inteernal/asm/conj.go b/Godeps/_workspace/src/github.com/gonum/inteernal/asm/conj.go
+new file mode 100644
+index 0000000..1cadb2a
+--- /dev/null
++++ b/Godeps/_workspace/src/github.com/gonum/inteernal/asm/conj.go
+@@ -0,0 +1,7 @@
++// Copyright ©2015 The gonum Authors. All rights reserved.
++// Use of this source code is governed by a BSD-style
++// license that can be found in the LICENSE file.
++
++package asm
++
++func conj(c complex64) complex64 { return complex(real(c), -imag(c)) }
+diff --git a/Godeps/_workspace/src/github.com/gonum/inteernal/asm/daxpy.go b/Godeps/_workspace/src/github.com/gonum/inteernal/asm/daxpy.go
+new file mode 100644
+index 0000000..24979fc
+--- /dev/null
++++ b/Godeps/_workspace/src/github.com/gonum/inteernal/asm/daxpy.go
+@@ -0,0 +1,22 @@
++// Copyright ©2015 The gonum Authors. All rights reserved.
++// Use of this source code is governed by a BSD-style
++// license that can be found in the LICENSE file.
++
++//+build !amd64 noasm
++
++package asm
++
++// The extra z parameter is needed because of floats.AddScaledTo
++func DaxpyUnitary(alpha float64, x, y, z []float64) {
++	for i, v := range x {
++		z[i] = alpha*v + y[i]
++	}
++}
++
++func DaxpyInc(alpha float64, x, y []float64, n, incX, incY, ix, iy uintptr) {
++	for i := 0; i < int(n); i++ {
++		y[iy] += alpha * x[ix]
++		ix += incX
++		iy += incY
++	}
++}
+diff --git a/Godeps/_workspace/src/github.com/gonum/inteernal/asm/daxpy_amd64.go b/Godeps/_workspace/src/github.com/gonum/inteernal/asm/daxpy_amd64.go
+new file mode 100644
+index 0000000..d1aeacf
+--- /dev/null
++++ b/Godeps/_workspace/src/github.com/gonum/inteernal/asm/daxpy_amd64.go
+@@ -0,0 +1,12 @@
++// Copyright ©2015 The gonum Authors. All rights reserved.
++// Use of this source code is governed by a BSD-style
++// license that can be found in the LICENSE file.
++
++//+build !noasm
++
++package asm
++
++// The extra z parameter is needed because of floats.AddScaledTo
++func DaxpyUnitary(alpha float64, x, y, z []float64)
++
++func DaxpyInc(alpha float64, x, y []float64, n, incX, incY, ix, iy uintptr)
+diff --git a/Godeps/_workspace/src/github.com/gonum/inteernal/asm/daxpy_amd64.s b/Godeps/_workspace/src/github.com/gonum/inteernal/asm/daxpy_amd64.s
+new file mode 100644
+index 0000000..18f2d3c
+--- /dev/null
++++ b/Godeps/_workspace/src/github.com/gonum/inteernal/asm/daxpy_amd64.s
+@@ -0,0 +1,140 @@
++// Copyright ©2015 The gonum Authors. All rights reserved.
++// Use of this source code is governed by a BSD-style
++// license that can be found in the LICENSE file.
++//
++// Some of the loop unrolling code is copied from:
++// http://golang.org/src/math/big/arith_amd64.s
++// which is distributed under these terms:
++//
++// Copyright (c) 2012 The Go Authors. All rights reserved.
++// 
++// Redistribution and use in source and binary forms, with or without
++// modification, are permitted provided that the following conditions are
++// met:
++// 
++//    * Redistributions of source code must retain the above copyright
++// notice, this list of conditions and the following disclaimer.
++//    * Redistributions in binary form must reproduce the above
++// copyright notice, this list of conditions and the following disclaimer
++// in the documentation and/or other materials provided with the
++// distribution.
++//    * Neither the name of Google Inc. nor the names of its
++// contributors may be used to endorse or promote products derived from
++// this software without specific prior written permission.
++// 
++// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
++// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
++// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
++// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
++// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
++// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
++// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
++// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
++// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
++// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
++// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
++
++//+build !noasm
++
++// TODO(fhs): use textflag.h after we drop Go 1.3 support
++//#include "textflag.h"
++// Don't insert stack check preamble.
++#define NOSPLIT	4
++
++
++// func DaxpyUnitary(alpha float64, x, y, z []float64)
++// This function assumes len(y) >= len(x).
++TEXT ·DaxpyUnitary(SB),NOSPLIT,$0
++	MOVHPD alpha+0(FP), X7
++	MOVLPD alpha+0(FP), X7
++	MOVQ x_len+16(FP), DI	// n = len(x)
++	MOVQ x+8(FP), R8
++	MOVQ y+32(FP), R9
++	MOVQ z+56(FP), R10
++	
++	MOVQ $0, SI				// i = 0
++	SUBQ $2, DI				// n -= 2
++	JL V1					// if n < 0 goto V1
++
++U1:	// n >= 0
++	// y[i] += alpha * x[i] unrolled 2x.
++	MOVUPD 0(R8)(SI*8), X0
++	MOVUPD 0(R9)(SI*8), X1
++	MULPD X7, X0
++	ADDPD X0, X1
++	MOVUPD X1, 0(R10)(SI*8)
++	
++	ADDQ $2, SI				// i += 2
++	SUBQ $2, DI				// n -= 2
++	JGE U1					// if n >= 0 goto U1
++
++V1:
++	ADDQ $2, DI				// n += 2
++	JLE E1					// if n <= 0 goto E1
++	
++	// y[i] += alpha * x[i] for last iteration if n is odd.
++	MOVSD 0(R8)(SI*8), X0
++	MOVSD 0(R9)(SI*8), X1
++	MULSD X7, X0
++	ADDSD X0, X1
++	MOVSD X1, 0(R10)(SI*8)
++
++E1:
++	RET
++
++
++// func DaxpyInc(alpha float64, x, y []float64, n, incX, incY, ix, iy uintptr)
++TEXT ·DaxpyInc(SB),NOSPLIT,$0
++	MOVHPD alpha+0(FP), X7
++	MOVLPD alpha+0(FP), X7
++	MOVQ x+8(FP), R8
++	MOVQ y+32(FP), R9
++	MOVQ n+56(FP), CX
++	MOVQ incX+64(FP), R11
++	MOVQ incY+72(FP), R12
++	MOVQ ix+80(FP), SI
++	MOVQ iy+88(FP), DI
++
++	MOVQ SI, AX				// nextX = ix
++	MOVQ DI, BX				// nextY = iy
++	ADDQ R11, AX			// nextX += incX
++	ADDQ R12, BX			// nextY += incX
++	SHLQ $1, R11			// indX *= 2
++	SHLQ $1, R12			// indY *= 2
++	
++	SUBQ $2, CX				// n -= 2
++	JL V2					// if n < 0 goto V2
++
++U2:	// n >= 0
++	// y[i] += alpha * x[i] unrolled 2x.
++	MOVHPD 0(R8)(SI*8), X0
++	MOVHPD 0(R9)(DI*8), X1
++	MOVLPD 0(R8)(AX*8), X0
++	MOVLPD 0(R9)(BX*8), X1
++	
++	MULPD X7, X0
++	ADDPD X0, X1
++	MOVHPD X1, 0(R9)(DI*8)
++	MOVLPD X1, 0(R9)(BX*8)
++
++	ADDQ R11, SI			// ix += incX
++	ADDQ R12, DI			// iy += incY
++	ADDQ R11, AX			// nextX += incX
++	ADDQ R12, BX			// nextY += incY
++
++	SUBQ $2, CX				// n -= 2
++	JGE U2					// if n >= 0 goto U2
++
++V2:
++	ADDQ $2, CX				// n += 2
++	JLE E2					// if n <= 0 goto E2
++	
++	// y[i] += alpha * x[i] for the last iteration if n is odd.
++	MOVSD 0(R8)(SI*8), X0
++	MOVSD 0(R9)(DI*8), X1
++	MULSD X7, X0
++	ADDSD X0, X1
++	MOVSD X1, 0(R9)(DI*8)
++
++E2:
++	RET
+diff --git a/Godeps/_workspace/src/github.com/gonum/inteernal/asm/ddot.go b/Godeps/_workspace/src/github.com/gonum/inteernal/asm/ddot.go
+new file mode 100644
+index 0000000..7e69957
+--- /dev/null
++++ b/Godeps/_workspace/src/github.com/gonum/inteernal/asm/ddot.go
+@@ -0,0 +1,23 @@
++// Copyright ©2015 The gonum Authors. All rights reserved.
++// Use of this source code is governed by a BSD-style
++// license that can be found in the LICENSE file.
++
++//+build !amd64 noasm
++
++package asm
++
++func DdotUnitary(x, y []float64) (sum float64) {
++	for i, v := range x {
++		sum += y[i] * v
++	}
++	return
++}
++
++func DdotInc(x, y []float64, n, incX, incY, ix, iy uintptr) (sum float64) {
++	for i := 0; i < int(n); i++ {
++		sum += y[iy] * x[ix]
++		ix += incX
++		iy += incY
++	}
++	return
++}
+diff --git a/Godeps/_workspace/src/github.com/gonum/inteernal/asm/ddot_amd64.go b/Godeps/_workspace/src/github.com/gonum/inteernal/asm/ddot_amd64.go
+new file mode 100644
+index 0000000..7fa634a
+--- /dev/null
++++ b/Godeps/_workspace/src/github.com/gonum/inteernal/asm/ddot_amd64.go
+@@ -0,0 +1,10 @@
++// Copyright ©2015 The gonum Authors. All rights reserved.
++// Use of this source code is governed by a BSD-style
++// license that can be found in the LICENSE file.
++
++//+build !noasm
++
++package asm
++
++func DdotUnitary(x, y []float64) (sum float64)
++func DdotInc(x, y []float64, n, incX, incY, ix, iy uintptr) (sum float64)
+diff --git a/Godeps/_workspace/src/github.com/gonum/inteernal/asm/ddot_amd64.s b/Godeps/_workspace/src/github.com/gonum/inteernal/asm/ddot_amd64.s
+new file mode 100644
+index 0000000..a898bbb
+--- /dev/null
++++ b/Godeps/_workspace/src/github.com/gonum/inteernal/asm/ddot_amd64.s
+@@ -0,0 +1,140 @@
++// Copyright ©2015 The gonum Authors. All rights reserved.
++// Use of this source code is governed by a BSD-style
++// license that can be found in the LICENSE file.
++//
++// Some of the loop unrolling code is copied from:
++// http://golang.org/src/math/big/arith_amd64.s
++// which is distributed under these terms:
++//
++// Copyright (c) 2012 The Go Authors. All rights reserved.
++// 
++// Redistribution and use in source and binary forms, with or without
++// modification, are permitted provided that the following conditions are
++// met:
++// 
++//    * Redistributions of source code must retain the above copyright
++// notice, this list of conditions and the following disclaimer.
++//    * Redistributions in binary form must reproduce the above
++// copyright notice, this list of conditions and the following disclaimer
++// in the documentation and/or other materials provided with the
++// distribution.
++//    * Neither the name of Google Inc. nor the names of its
++// contributors may be used to endorse or promote products derived from
++// this software without specific prior written permission.
++// 
++// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
++// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
++// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
++// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
++// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
++// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
++// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
++// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
++// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
++// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
++// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
++
++//+build !noasm
++
++// TODO(fhs): use textflag.h after we drop Go 1.3 support
++//#include "textflag.h"
++// Don't insert stack check preamble.
++#define NOSPLIT	4
++
++
++// func DdotUnitary(x, y []float64) (sum float64)
++// This function assumes len(y) >= len(x).
++TEXT ·DdotUnitary(SB),NOSPLIT,$0
++	MOVQ x_len+8(FP), DI	// n = len(x)
++	MOVQ x+0(FP), R8
++	MOVQ y+24(FP), R9
++	
++	MOVQ $0, SI				// i = 0
++	MOVSD $(0.0), X7		// sum = 0
++	
++	SUBQ $2, DI				// n -= 2
++	JL V1					// if n < 0 goto V1
++
++U1:	// n >= 0
++	// sum += x[i] * y[i] unrolled 2x.
++	MOVUPD 0(R8)(SI*8), X0
++	MOVUPD 0(R9)(SI*8), X1
++	MULPD X1, X0
++	ADDPD X0, X7
++	
++	ADDQ $2, SI				// i += 2
++	SUBQ $2, DI				// n -= 2
++	JGE U1					// if n >= 0 goto U1
++
++V1:	// n > 0
++	ADDQ $2, DI				// n += 2
++	JLE E1					// if n <= 0 goto E1
++	
++	// sum += x[i] * y[i] for last iteration if n is odd.
++	MOVSD 0(R8)(SI*8), X0
++	MOVSD 0(R9)(SI*8), X1
++	MULSD X1, X0
++	ADDSD X0, X7
++
++E1:
++	// Add the two sums together.
++	MOVSD X7, X0
++	UNPCKHPD X7, X7
++	ADDSD X0, X7
++	MOVSD X7, sum+48(FP)	// return final sum
++	RET
++
++
++// func DdotInc(x, y []float64, n, incX, incY, ix, iy uintptr) (sum float64)
++TEXT ·DdotInc(SB),NOSPLIT,$0
++	MOVQ x+0(FP), R8
++	MOVQ y+24(FP), R9
++	MOVQ n+48(FP), CX
++	MOVQ incX+56(FP), R11
++	MOVQ incY+64(FP), R12
++	MOVQ ix+72(FP), R13
++	MOVQ iy+80(FP), R14
++	
++	MOVSD $(0.0), X7		// sum = 0
++	LEAQ (R8)(R13*8), SI	// p = &x[ix]
++	LEAQ (R9)(R14*8), DI	// q = &y[ix]
++	SHLQ $3, R11			// incX *= sizeof(float64)
++	SHLQ $3, R12			// indY *= sizeof(float64)
++	
++	SUBQ $2, CX				// n -= 2
++	JL V2					// if n < 0 goto V2
++
++U2:	// n >= 0
++	// sum += *p * *q unrolled 2x.
++	MOVHPD (SI), X0
++	MOVHPD (DI), X1
++	ADDQ R11, SI			// p += incX
++	ADDQ R12, DI			// q += incY
++	MOVLPD (SI), X0
++	MOVLPD (DI), X1
++	ADDQ R11, SI			// p += incX
++	ADDQ R12, DI			// q += incY
++	
++	MULPD X1, X0
++	ADDPD X0, X7
++
++	SUBQ $2, CX				// n -= 2
++	JGE U2					// if n >= 0 goto U2
++
++V2:
++	ADDQ $2, CX				// n += 2
++	JLE E2					// if n <= 0 goto E2
++	
++	// sum += *p * *q for the last iteration if n is odd.
++	MOVSD (SI), X0
++	MULSD (DI), X0
++	ADDSD X0, X7
++
++E2:
++	// Add the two sums together.
++	MOVSD X7, X0
++	UNPCKHPD X7, X7
++	ADDSD X0, X7
++	MOVSD X7, sum+88(FP)	// return final sum
++	RET
++  
+\ No newline at end of file
+diff --git a/Godeps/_workspace/src/github.com/gonum/inteernal/asm/dsdot.go b/Godeps/_workspace/src/github.com/gonum/inteernal/asm/dsdot.go
+new file mode 100644
+index 0000000..8450689
+--- /dev/null
++++ b/Godeps/_workspace/src/github.com/gonum/inteernal/asm/dsdot.go
+@@ -0,0 +1,23 @@
++// Generated code do not edit. Run `go generate`.
++
++// Copyright ©2015 The gonum Authors. All rights reserved.
++// Use of this source code is governed by a BSD-style
++// license that can be found in the LICENSE file.
++
++package asm
++
++func DsdotUnitary(x, y []float32) (sum float64) {
++	for i, v := range x {
++		sum += float64(y[i]) * float64(v)
++	}
++	return
++}
++
++func DsdotInc(x, y []float32, n, incX, incY, ix, iy uintptr) (sum float64) {
++	for i := 0; i < int(n); i++ {
++		sum += float64(y[iy]) * float64(x[ix])
++		ix += incX
++		iy += incY
++	}
++	return
++}
+diff --git a/Godeps/_workspace/src/github.com/gonum/inteernal/asm/generate.go b/Godeps/_workspace/src/github.com/gonum/inteernal/asm/generate.go
+new file mode 100644
+index 0000000..e252140
+--- /dev/null
++++ b/Godeps/_workspace/src/github.com/gonum/inteernal/asm/generate.go
+@@ -0,0 +1,8 @@
++// Copyright ©2015 The gonum Authors. All rights reserved.
++// Use of this source code is governed by a BSD-style
++// license that can be found in the LICENSE file.
++
++//go:generate ./single_precision
++//go:generate ./complex
++
++package asm
+diff --git a/Godeps/_workspace/src/github.com/gonum/inteernal/asm/saxpy.go b/Godeps/_workspace/src/github.com/gonum/inteernal/asm/saxpy.go
+new file mode 100644
+index 0000000..3ef767f
+--- /dev/null
++++ b/Godeps/_workspace/src/github.com/gonum/inteernal/asm/saxpy.go
+@@ -0,0 +1,22 @@
++// Generated code do not edit. Run `go generate`.
++
++// Copyright ©2015 The gonum Authors. All rights reserved.
++// Use of this source code is governed by a BSD-style
++// license that can be found in the LICENSE file.
++
++package asm
++
++// The extra z parameter is needed because of floats.AddScaledTo
++func SaxpyUnitary(alpha float32, x, y, z []float32) {
++	for i, v := range x {
++		z[i] = alpha*v + y[i]
++	}
++}
++
++func SaxpyInc(alpha float32, x, y []float32, n, incX, incY, ix, iy uintptr) {
++	for i := 0; i < int(n); i++ {
++		y[iy] += alpha * x[ix]
++		ix += incX
++		iy += incY
++	}
++}
+diff --git a/Godeps/_workspace/src/github.com/gonum/inteernal/asm/sdot.go b/Godeps/_workspace/src/github.com/gonum/inteernal/asm/sdot.go
+new file mode 100644
+index 0000000..0cef5de
+--- /dev/null
++++ b/Godeps/_workspace/src/github.com/gonum/inteernal/asm/sdot.go
+@@ -0,0 +1,23 @@
++// Generated code do not edit. Run `go generate`.
++
++// Copyright ©2015 The gonum Authors. All rights reserved.
++// Use of this source code is governed by a BSD-style
++// license that can be found in the LICENSE file.
++
++package asm
++
++func SdotUnitary(x, y []float32) (sum float32) {
++	for i, v := range x {
++		sum += y[i] * v
++	}
++	return
++}
++
++func SdotInc(x, y []float32, n, incX, incY, ix, iy uintptr) (sum float32) {
++	for i := 0; i < int(n); i++ {
++		sum += y[iy] * x[ix]
++		ix += incX
++		iy += incY
++	}
++	return
++}
+diff --git a/Godeps/_workspace/src/github.com/gonum/inteernal/asm/single_precision b/Godeps/_workspace/src/github.com/gonum/inteernal/asm/single_precision
+new file mode 100644
+index 0000000..a937a97
+--- /dev/null
++++ b/Godeps/_workspace/src/github.com/gonum/inteernal/asm/single_precision
+@@ -0,0 +1,30 @@
++#!/usr/bin/env bash
++
++# Copyright ©2015 The gonum Authors. All rights reserved.
++# Use of this source code is governed by a BSD-style
++# license that can be found in the LICENSE file.
++
++echo Generating dsdot.go
++echo -e '// Generated code do not edit. Run `go generate`.\n' > dsdot.go
++cat ddot.go \
++| grep -v '//+build' \
++| gofmt -r '[]float64 -> []float32' \
++| gofmt -r 'a * b -> float64(a) * float64(b)' \
++| sed 's/Ddot/Dsdot/' \
++>> dsdot.go
++
++echo Generating sdot.go
++echo -e '// Generated code do not edit. Run `go generate`.\n' > sdot.go
++cat ddot.go \
++| grep -v '//+build' \
++| gofmt -r 'float64 -> float32' \
++| sed 's/Ddot/Sdot/' \
++>> sdot.go
++
++echo Generating saxpy.go
++echo -e '// Generated code do not edit. Run `go generate`.\n' > saxpy.go
++cat daxpy.go \
++| grep -v '//+build' \
++| gofmt -r 'float64 -> float32' \
++| sed 's/Daxpy/Saxpy/' \
++>> saxpy.go
+diff --git a/Godeps/_workspace/src/github.com/gonum/inteernal/asm/zaxpy.go b/Godeps/_workspace/src/github.com/gonum/inteernal/asm/zaxpy.go
+new file mode 100644
+index 0000000..9478f25
+--- /dev/null
++++ b/Godeps/_workspace/src/github.com/gonum/inteernal/asm/zaxpy.go
+@@ -0,0 +1,22 @@
++// Generated code do not edit. Run `go generate`.
++
++// Copyright ©2015 The gonum Authors. All rights reserved.
++// Use of this source code is governed by a BSD-style
++// license that can be found in the LICENSE file.
++
++package asm
++
++// The extra z parameter is needed because of floats.AddScaledTo
++func ZaxpyUnitary(alpha complex128, x, y, z []complex128) {
++	for i, v := range x {
++		z[i] = alpha*v + y[i]
++	}
++}
++
++func ZaxpyInc(alpha complex128, x, y []complex128, n, incX, incY, ix, iy uintptr) {
++	for i := 0; i < int(n); i++ {
++		y[iy] += alpha * x[ix]
++		ix += incX
++		iy += incY
++	}
++}
+diff --git a/Godeps/_workspace/src/github.com/gonum/inteernal/asm/zdotc.go b/Godeps/_workspace/src/github.com/gonum/inteernal/asm/zdotc.go
+new file mode 100644
+index 0000000..7b8febc
+--- /dev/null
++++ b/Godeps/_workspace/src/github.com/gonum/inteernal/asm/zdotc.go
+@@ -0,0 +1,25 @@
++// Generated code do not edit. Run `go generate`.
++
++// Copyright ©2015 The gonum Authors. All rights reserved.
++// Use of this source code is governed by a BSD-style
++// license that can be found in the LICENSE file.
++
++package asm
++
++import "math/cmplx"
++
++func ZdotcUnitary(x, y []complex128) (sum complex128) {
++	for i, v := range x {
++		sum += y[i] * cmplx.Conj(v)
++	}
++	return
++}
++
++func ZdotcInc(x, y []complex128, n, incX, incY, ix, iy uintptr) (sum complex128) {
++	for i := 0; i < int(n); i++ {
++		sum += y[iy] * cmplx.Conj(x[ix])
++		ix += incX
++		iy += incY
++	}
++	return
++}
+diff --git a/Godeps/_workspace/src/github.com/gonum/inteernal/asm/zdotu.go b/Godeps/_workspace/src/github.com/gonum/inteernal/asm/zdotu.go
+new file mode 100644
+index 0000000..82c1fe2
+--- /dev/null
++++ b/Godeps/_workspace/src/github.com/gonum/inteernal/asm/zdotu.go
+@@ -0,0 +1,23 @@
++// Generated code do not edit. Run `go generate`.
++
++// Copyright ©2015 The gonum Authors. All rights reserved.
++// Use of this source code is governed by a BSD-style
++// license that can be found in the LICENSE file.
++
++package asm
++
++func ZdotuUnitary(x, y []complex128) (sum complex128) {
++	for i, v := range x {
++		sum += y[i] * v
++	}
++	return
++}
++
++func ZdotuInc(x, y []complex128, n, incX, incY, ix, iy uintptr) (sum complex128) {
++	for i := 0; i < int(n); i++ {
++		sum += y[iy] * x[ix]
++		ix += incX
++		iy += incY
++	}
++	return
++}
+diff --git a/Godeps/_workspace/src/github.com/gonum/internal/asm/caxpy.go b/Godeps/_workspace/src/github.com/gonum/internal/asm/caxpy.go
+deleted file mode 100644
+index 80d802a..0000000
+--- a/Godeps/_workspace/src/github.com/gonum/internal/asm/caxpy.go
++++ /dev/null
+@@ -1,22 +0,0 @@
+-// Generated code do not edit. Run `go generate`.
+-
+-// Copyright ©2015 The gonum Authors. All rights reserved.
+-// Use of this source code is governed by a BSD-style
+-// license that can be found in the LICENSE file.
+-
+-package asm
+-
+-// The extra z parameter is needed because of floats.AddScaledTo
+-func CaxpyUnitary(alpha complex64, x, y, z []complex64) {
+-	for i, v := range x {
+-		z[i] = alpha*v + y[i]
+-	}
+-}
+-
+-func CaxpyInc(alpha complex64, x, y []complex64, n, incX, incY, ix, iy uintptr) {
+-	for i := 0; i < int(n); i++ {
+-		y[iy] += alpha * x[ix]
+-		ix += incX
+-		iy += incY
+-	}
+-}
+diff --git a/Godeps/_workspace/src/github.com/gonum/internal/asm/cdotc.go b/Godeps/_workspace/src/github.com/gonum/internal/asm/cdotc.go
+deleted file mode 100644
+index ed999e5..0000000
+--- a/Godeps/_workspace/src/github.com/gonum/internal/asm/cdotc.go
++++ /dev/null
+@@ -1,23 +0,0 @@
+-// Generated code do not edit. Run `go generate`.
+-
+-// Copyright ©2015 The gonum Authors. All rights reserved.
+-// Use of this source code is governed by a BSD-style
+-// license that can be found in the LICENSE file.
+-
+-package asm
+-
+-func CdotcUnitary(x, y []complex64) (sum complex64) {
+-	for i, v := range x {
+-		sum += y[i] * conj(v)
+-	}
+-	return
+-}
+-
+-func CdotcInc(x, y []complex64, n, incX, incY, ix, iy uintptr) (sum complex64) {
+-	for i := 0; i < int(n); i++ {
+-		sum += y[iy] * conj(x[ix])
+-		ix += incX
+-		iy += incY
+-	}
+-	return
+-}
+diff --git a/Godeps/_workspace/src/github.com/gonum/internal/asm/cdotu.go b/Godeps/_workspace/src/github.com/gonum/internal/asm/cdotu.go
+deleted file mode 100644
+index 3392ee2..0000000
+--- a/Godeps/_workspace/src/github.com/gonum/internal/asm/cdotu.go
++++ /dev/null
+@@ -1,23 +0,0 @@
+-// Generated code do not edit. Run `go generate`.
+-
+-// Copyright ©2015 The gonum Authors. All rights reserved.
+-// Use of this source code is governed by a BSD-style
+-// license that can be found in the LICENSE file.
+-
+-package asm
+-
+-func CdotuUnitary(x, y []complex64) (sum complex64) {
+-	for i, v := range x {
+-		sum += y[i] * v
+-	}
+-	return
+-}
+-
+-func CdotuInc(x, y []complex64, n, incX, incY, ix, iy uintptr) (sum complex64) {
+-	for i := 0; i < int(n); i++ {
+-		sum += y[iy] * x[ix]
+-		ix += incX
+-		iy += incY
+-	}
+-	return
+-}
+diff --git a/Godeps/_workspace/src/github.com/gonum/internal/asm/complex b/Godeps/_workspace/src/github.com/gonum/internal/asm/complex
+deleted file mode 100644
+index b26e4e6..0000000
+--- a/Godeps/_workspace/src/github.com/gonum/internal/asm/complex
++++ /dev/null
+@@ -1,58 +0,0 @@
+-#!/usr/bin/env bash
+-
+-# Copyright ©2015 The gonum Authors. All rights reserved.
+-# Use of this source code is governed by a BSD-style
+-# license that can be found in the LICENSE file.
+-
+-echo Generating zdotu.go
+-echo -e '// Generated code do not edit. Run `go generate`.\n' > zdotu.go
+-cat ddot.go \
+-| grep -v '//+build' \
+-| gofmt -r 'float64 -> complex128' \
+-| sed 's/Ddot/Zdotu/' \
+->> zdotu.go
+-
+-echo Generating zdotc.go
+-echo -e '// Generated code do not edit. Run `go generate`.\n' > zdotc.go
+-cat ddot.go \
+-| grep -v '//+build' \
+-| gofmt -r 'float64 -> complex128' \
+-| gofmt -r 'y[i] * v -> y[i] * cmplx.Conj(v)' \
+-| sed 's/Ddot/Zdotc/' \
+-| goimports \
+->> zdotc.go
+-
+-echo Generating zaxpy.go
+-echo -e '// Generated code do not edit. Run `go generate`.\n' > zaxpy.go
+-cat daxpy.go \
+-| grep -v '//+build' \
+-| gofmt -r 'float64 -> complex128' \
+-| sed 's/Daxpy/Zaxpy/' \
+->> zaxpy.go
+-
+-echo Generating cdotu.go
+-echo -e '// Generated code do not edit. Run `go generate`.\n' > cdotu.go
+-cat ddot.go \
+-| grep -v '//+build' \
+-| gofmt -r 'float64 -> complex64' \
+-| sed 's/Ddot/Cdotu/' \
+->> cdotu.go
+-
+-echo Generating cdotc.go
+-echo -e '// Generated code do not edit. Run `go generate`.\n' > cdotc.go
+-cat ddot.go \
+-| grep -v '//+build' \
+-| gofmt -r 'float64 -> complex64' \
+-| gofmt -r 'y[i] * v -> y[i] * conj(v)' \
+-| sed 's/Ddot/Cdotc/' \
+-| goimports \
+->> cdotc.go
+-
+-echo Generating caxpy.go
+-echo -e '// Generated code do not edit. Run `go generate`.\n' > caxpy.go
+-cat daxpy.go \
+-| grep -v '//+build' \
+-| gofmt -r 'float64 -> complex64' \
+-| sed 's/Daxpy/Caxpy/' \
+->> caxpy.go
+-
+diff --git a/Godeps/_workspace/src/github.com/gonum/internal/asm/conj.go b/Godeps/_workspace/src/github.com/gonum/internal/asm/conj.go
+deleted file mode 100644
+index 1cadb2a..0000000
+--- a/Godeps/_workspace/src/github.com/gonum/internal/asm/conj.go
++++ /dev/null
+@@ -1,7 +0,0 @@
+-// Copyright ©2015 The gonum Authors. All rights reserved.
+-// Use of this source code is governed by a BSD-style
+-// license that can be found in the LICENSE file.
+-
+-package asm
+-
+-func conj(c complex64) complex64 { return complex(real(c), -imag(c)) }
+diff --git a/Godeps/_workspace/src/github.com/gonum/internal/asm/daxpy.go b/Godeps/_workspace/src/github.com/gonum/internal/asm/daxpy.go
+deleted file mode 100644
+index 24979fc..0000000
+--- a/Godeps/_workspace/src/github.com/gonum/internal/asm/daxpy.go
++++ /dev/null
+@@ -1,22 +0,0 @@
+-// Copyright ©2015 The gonum Authors. All rights reserved.
+-// Use of this source code is governed by a BSD-style
+-// license that can be found in the LICENSE file.
+-
+-//+build !amd64 noasm
+-
+-package asm
+-
+-// The extra z parameter is needed because of floats.AddScaledTo
+-func DaxpyUnitary(alpha float64, x, y, z []float64) {
+-	for i, v := range x {
+-		z[i] = alpha*v + y[i]
+-	}
+-}
+-
+-func DaxpyInc(alpha float64, x, y []float64, n, incX, incY, ix, iy uintptr) {
+-	for i := 0; i < int(n); i++ {
+-		y[iy] += alpha * x[ix]
+-		ix += incX
+-		iy += incY
+-	}
+-}
+diff --git a/Godeps/_workspace/src/github.com/gonum/internal/asm/daxpy_amd64.go b/Godeps/_workspace/src/github.com/gonum/internal/asm/daxpy_amd64.go
+deleted file mode 100644
+index d1aeacf..0000000
+--- a/Godeps/_workspace/src/github.com/gonum/internal/asm/daxpy_amd64.go
++++ /dev/null
+@@ -1,12 +0,0 @@
+-// Copyright ©2015 The gonum Authors. All rights reserved.
+-// Use of this source code is governed by a BSD-style
+-// license that can be found in the LICENSE file.
+-
+-//+build !noasm
+-
+-package asm
+-
+-// The extra z parameter is needed because of floats.AddScaledTo
+-func DaxpyUnitary(alpha float64, x, y, z []float64)
+-
+-func DaxpyInc(alpha float64, x, y []float64, n, incX, incY, ix, iy uintptr)
+diff --git a/Godeps/_workspace/src/github.com/gonum/internal/asm/daxpy_amd64.s b/Godeps/_workspace/src/github.com/gonum/internal/asm/daxpy_amd64.s
+deleted file mode 100644
+index 18f2d3c..0000000
+--- a/Godeps/_workspace/src/github.com/gonum/internal/asm/daxpy_amd64.s
++++ /dev/null
+@@ -1,140 +0,0 @@
+-// Copyright ©2015 The gonum Authors. All rights reserved.
+-// Use of this source code is governed by a BSD-style
+-// license that can be found in the LICENSE file.
+-//
+-// Some of the loop unrolling code is copied from:
+-// http://golang.org/src/math/big/arith_amd64.s
+-// which is distributed under these terms:
+-//
+-// Copyright (c) 2012 The Go Authors. All rights reserved.
+-// 
+-// Redistribution and use in source and binary forms, with or without
+-// modification, are permitted provided that the following conditions are
+-// met:
+-// 
+-//    * Redistributions of source code must retain the above copyright
+-// notice, this list of conditions and the following disclaimer.
+-//    * Redistributions in binary form must reproduce the above
+-// copyright notice, this list of conditions and the following disclaimer
+-// in the documentation and/or other materials provided with the
+-// distribution.
+-//    * Neither the name of Google Inc. nor the names of its
+-// contributors may be used to endorse or promote products derived from
+-// this software without specific prior written permission.
+-// 
+-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+-// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+-// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+-// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+-// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+-// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+-// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+-// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+-// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+-// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+-// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-
+-//+build !noasm
+-
+-// TODO(fhs): use textflag.h after we drop Go 1.3 support
+-//#include "textflag.h"
+-// Don't insert stack check preamble.
+-#define NOSPLIT	4
+-
+-
+-// func DaxpyUnitary(alpha float64, x, y, z []float64)
+-// This function assumes len(y) >= len(x).
+-TEXT ·DaxpyUnitary(SB),NOSPLIT,$0
+-	MOVHPD alpha+0(FP), X7
+-	MOVLPD alpha+0(FP), X7
+-	MOVQ x_len+16(FP), DI	// n = len(x)
+-	MOVQ x+8(FP), R8
+-	MOVQ y+32(FP), R9
+-	MOVQ z+56(FP), R10
+-	
+-	MOVQ $0, SI				// i = 0
+-	SUBQ $2, DI				// n -= 2
+-	JL V1					// if n < 0 goto V1
+-
+-U1:	// n >= 0
+-	// y[i] += alpha * x[i] unrolled 2x.
+-	MOVUPD 0(R8)(SI*8), X0
+-	MOVUPD 0(R9)(SI*8), X1
+-	MULPD X7, X0
+-	ADDPD X0, X1
+-	MOVUPD X1, 0(R10)(SI*8)
+-	
+-	ADDQ $2, SI				// i += 2
+-	SUBQ $2, DI				// n -= 2
+-	JGE U1					// if n >= 0 goto U1
+-
+-V1:
+-	ADDQ $2, DI				// n += 2
+-	JLE E1					// if n <= 0 goto E1
+-	
+-	// y[i] += alpha * x[i] for last iteration if n is odd.
+-	MOVSD 0(R8)(SI*8), X0
+-	MOVSD 0(R9)(SI*8), X1
+-	MULSD X7, X0
+-	ADDSD X0, X1
+-	MOVSD X1, 0(R10)(SI*8)
+-
+-E1:
+-	RET
+-
+-
+-// func DaxpyInc(alpha float64, x, y []float64, n, incX, incY, ix, iy uintptr)
+-TEXT ·DaxpyInc(SB),NOSPLIT,$0
+-	MOVHPD alpha+0(FP), X7
+-	MOVLPD alpha+0(FP), X7
+-	MOVQ x+8(FP), R8
+-	MOVQ y+32(FP), R9
+-	MOVQ n+56(FP), CX
+-	MOVQ incX+64(FP), R11
+-	MOVQ incY+72(FP), R12
+-	MOVQ ix+80(FP), SI
+-	MOVQ iy+88(FP), DI
+-
+-	MOVQ SI, AX				// nextX = ix
+-	MOVQ DI, BX				// nextY = iy
+-	ADDQ R11, AX			// nextX += incX
+-	ADDQ R12, BX			// nextY += incX
+-	SHLQ $1, R11			// indX *= 2
+-	SHLQ $1, R12			// indY *= 2
+-	
+-	SUBQ $2, CX				// n -= 2
+-	JL V2					// if n < 0 goto V2
+-
+-U2:	// n >= 0
+-	// y[i] += alpha * x[i] unrolled 2x.
+-	MOVHPD 0(R8)(SI*8), X0
+-	MOVHPD 0(R9)(DI*8), X1
+-	MOVLPD 0(R8)(AX*8), X0
+-	MOVLPD 0(R9)(BX*8), X1
+-	
+-	MULPD X7, X0
+-	ADDPD X0, X1
+-	MOVHPD X1, 0(R9)(DI*8)
+-	MOVLPD X1, 0(R9)(BX*8)
+-
+-	ADDQ R11, SI			// ix += incX
+-	ADDQ R12, DI			// iy += incY
+-	ADDQ R11, AX			// nextX += incX
+-	ADDQ R12, BX			// nextY += incY
+-
+-	SUBQ $2, CX				// n -= 2
+-	JGE U2					// if n >= 0 goto U2
+-
+-V2:
+-	ADDQ $2, CX				// n += 2
+-	JLE E2					// if n <= 0 goto E2
+-	
+-	// y[i] += alpha * x[i] for the last iteration if n is odd.
+-	MOVSD 0(R8)(SI*8), X0
+-	MOVSD 0(R9)(DI*8), X1
+-	MULSD X7, X0
+-	ADDSD X0, X1
+-	MOVSD X1, 0(R9)(DI*8)
+-
+-E2:
+-	RET
+diff --git a/Godeps/_workspace/src/github.com/gonum/internal/asm/ddot.go b/Godeps/_workspace/src/github.com/gonum/internal/asm/ddot.go
+deleted file mode 100644
+index 7e69957..0000000
+--- a/Godeps/_workspace/src/github.com/gonum/internal/asm/ddot.go
++++ /dev/null
+@@ -1,23 +0,0 @@
+-// Copyright ©2015 The gonum Authors. All rights reserved.
+-// Use of this source code is governed by a BSD-style
+-// license that can be found in the LICENSE file.
+-
+-//+build !amd64 noasm
+-
+-package asm
+-
+-func DdotUnitary(x, y []float64) (sum float64) {
+-	for i, v := range x {
+-		sum += y[i] * v
+-	}
+-	return
+-}
+-
+-func DdotInc(x, y []float64, n, incX, incY, ix, iy uintptr) (sum float64) {
+-	for i := 0; i < int(n); i++ {
+-		sum += y[iy] * x[ix]
+-		ix += incX
+-		iy += incY
+-	}
+-	return
+-}
+diff --git a/Godeps/_workspace/src/github.com/gonum/internal/asm/ddot_amd64.go b/Godeps/_workspace/src/github.com/gonum/internal/asm/ddot_amd64.go
+deleted file mode 100644
+index 7fa634a..0000000
+--- a/Godeps/_workspace/src/github.com/gonum/internal/asm/ddot_amd64.go
++++ /dev/null
+@@ -1,10 +0,0 @@
+-// Copyright ©2015 The gonum Authors. All rights reserved.
+-// Use of this source code is governed by a BSD-style
+-// license that can be found in the LICENSE file.
+-
+-//+build !noasm
+-
+-package asm
+-
+-func DdotUnitary(x, y []float64) (sum float64)
+-func DdotInc(x, y []float64, n, incX, incY, ix, iy uintptr) (sum float64)
+diff --git a/Godeps/_workspace/src/github.com/gonum/internal/asm/ddot_amd64.s b/Godeps/_workspace/src/github.com/gonum/internal/asm/ddot_amd64.s
+deleted file mode 100644
+index a898bbb..0000000
+--- a/Godeps/_workspace/src/github.com/gonum/internal/asm/ddot_amd64.s
++++ /dev/null
+@@ -1,140 +0,0 @@
+-// Copyright ©2015 The gonum Authors. All rights reserved.
+-// Use of this source code is governed by a BSD-style
+-// license that can be found in the LICENSE file.
+-//
+-// Some of the loop unrolling code is copied from:
+-// http://golang.org/src/math/big/arith_amd64.s
+-// which is distributed under these terms:
+-//
+-// Copyright (c) 2012 The Go Authors. All rights reserved.
+-// 
+-// Redistribution and use in source and binary forms, with or without
+-// modification, are permitted provided that the following conditions are
+-// met:
+-// 
+-//    * Redistributions of source code must retain the above copyright
+-// notice, this list of conditions and the following disclaimer.
+-//    * Redistributions in binary form must reproduce the above
+-// copyright notice, this list of conditions and the following disclaimer
+-// in the documentation and/or other materials provided with the
+-// distribution.
+-//    * Neither the name of Google Inc. nor the names of its
+-// contributors may be used to endorse or promote products derived from
+-// this software without specific prior written permission.
+-// 
+-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+-// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+-// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+-// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+-// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+-// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+-// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+-// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+-// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+-// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+-// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-
+-//+build !noasm
+-
+-// TODO(fhs): use textflag.h after we drop Go 1.3 support
+-//#include "textflag.h"
+-// Don't insert stack check preamble.
+-#define NOSPLIT	4
+-
+-
+-// func DdotUnitary(x, y []float64) (sum float64)
+-// This function assumes len(y) >= len(x).
+-TEXT ·DdotUnitary(SB),NOSPLIT,$0
+-	MOVQ x_len+8(FP), DI	// n = len(x)
+-	MOVQ x+0(FP), R8
+-	MOVQ y+24(FP), R9
+-	
+-	MOVQ $0, SI				// i = 0
+-	MOVSD $(0.0), X7		// sum = 0
+-	
+-	SUBQ $2, DI				// n -= 2
+-	JL V1					// if n < 0 goto V1
+-
+-U1:	// n >= 0
+-	// sum += x[i] * y[i] unrolled 2x.
+-	MOVUPD 0(R8)(SI*8), X0
+-	MOVUPD 0(R9)(SI*8), X1
+-	MULPD X1, X0
+-	ADDPD X0, X7
+-	
+-	ADDQ $2, SI				// i += 2
+-	SUBQ $2, DI				// n -= 2
+-	JGE U1					// if n >= 0 goto U1
+-
+-V1:	// n > 0
+-	ADDQ $2, DI				// n += 2
+-	JLE E1					// if n <= 0 goto E1
+-	
+-	// sum += x[i] * y[i] for last iteration if n is odd.
+-	MOVSD 0(R8)(SI*8), X0
+-	MOVSD 0(R9)(SI*8), X1
+-	MULSD X1, X0
+-	ADDSD X0, X7
+-
+-E1:
+-	// Add the two sums together.
+-	MOVSD X7, X0
+-	UNPCKHPD X7, X7
+-	ADDSD X0, X7
+-	MOVSD X7, sum+48(FP)	// return final sum
+-	RET
+-
+-
+-// func DdotInc(x, y []float64, n, incX, incY, ix, iy uintptr) (sum float64)
+-TEXT ·DdotInc(SB),NOSPLIT,$0
+-	MOVQ x+0(FP), R8
+-	MOVQ y+24(FP), R9
+-	MOVQ n+48(FP), CX
+-	MOVQ incX+56(FP), R11
+-	MOVQ incY+64(FP), R12
+-	MOVQ ix+72(FP), R13
+-	MOVQ iy+80(FP), R14
+-	
+-	MOVSD $(0.0), X7		// sum = 0
+-	LEAQ (R8)(R13*8), SI	// p = &x[ix]
+-	LEAQ (R9)(R14*8), DI	// q = &y[ix]
+-	SHLQ $3, R11			// incX *= sizeof(float64)
+-	SHLQ $3, R12			// indY *= sizeof(float64)
+-	
+-	SUBQ $2, CX				// n -= 2
+-	JL V2					// if n < 0 goto V2
+-
+-U2:	// n >= 0
+-	// sum += *p * *q unrolled 2x.
+-	MOVHPD (SI), X0
+-	MOVHPD (DI), X1
+-	ADDQ R11, SI			// p += incX
+-	ADDQ R12, DI			// q += incY
+-	MOVLPD (SI), X0
+-	MOVLPD (DI), X1
+-	ADDQ R11, SI			// p += incX
+-	ADDQ R12, DI			// q += incY
+-	
+-	MULPD X1, X0
+-	ADDPD X0, X7
+-
+-	SUBQ $2, CX				// n -= 2
+-	JGE U2					// if n >= 0 goto U2
+-
+-V2:
+-	ADDQ $2, CX				// n += 2
+-	JLE E2					// if n <= 0 goto E2
+-	
+-	// sum += *p * *q for the last iteration if n is odd.
+-	MOVSD (SI), X0
+-	MULSD (DI), X0
+-	ADDSD X0, X7
+-
+-E2:
+-	// Add the two sums together.
+-	MOVSD X7, X0
+-	UNPCKHPD X7, X7
+-	ADDSD X0, X7
+-	MOVSD X7, sum+88(FP)	// return final sum
+-	RET
+-  
+\ No newline at end of file
+diff --git a/Godeps/_workspace/src/github.com/gonum/internal/asm/dsdot.go b/Godeps/_workspace/src/github.com/gonum/internal/asm/dsdot.go
+deleted file mode 100644
+index 8450689..0000000
+--- a/Godeps/_workspace/src/github.com/gonum/internal/asm/dsdot.go
++++ /dev/null
+@@ -1,23 +0,0 @@
+-// Generated code do not edit. Run `go generate`.
+-
+-// Copyright ©2015 The gonum Authors. All rights reserved.
+-// Use of this source code is governed by a BSD-style
+-// license that can be found in the LICENSE file.
+-
+-package asm
+-
+-func DsdotUnitary(x, y []float32) (sum float64) {
+-	for i, v := range x {
+-		sum += float64(y[i]) * float64(v)
+-	}
+-	return
+-}
+-
+-func DsdotInc(x, y []float32, n, incX, incY, ix, iy uintptr) (sum float64) {
+-	for i := 0; i < int(n); i++ {
+-		sum += float64(y[iy]) * float64(x[ix])
+-		ix += incX
+-		iy += incY
+-	}
+-	return
+-}
+diff --git a/Godeps/_workspace/src/github.com/gonum/internal/asm/generate.go b/Godeps/_workspace/src/github.com/gonum/internal/asm/generate.go
+deleted file mode 100644
+index e252140..0000000
+--- a/Godeps/_workspace/src/github.com/gonum/internal/asm/generate.go
++++ /dev/null
+@@ -1,8 +0,0 @@
+-// Copyright ©2015 The gonum Authors. All rights reserved.
+-// Use of this source code is governed by a BSD-style
+-// license that can be found in the LICENSE file.
+-
+-//go:generate ./single_precision
+-//go:generate ./complex
+-
+-package asm
+diff --git a/Godeps/_workspace/src/github.com/gonum/internal/asm/saxpy.go b/Godeps/_workspace/src/github.com/gonum/internal/asm/saxpy.go
+deleted file mode 100644
+index 3ef767f..0000000
+--- a/Godeps/_workspace/src/github.com/gonum/internal/asm/saxpy.go
++++ /dev/null
+@@ -1,22 +0,0 @@
+-// Generated code do not edit. Run `go generate`.
+-
+-// Copyright ©2015 The gonum Authors. All rights reserved.
+-// Use of this source code is governed by a BSD-style
+-// license that can be found in the LICENSE file.
+-
+-package asm
+-
+-// The extra z parameter is needed because of floats.AddScaledTo
+-func SaxpyUnitary(alpha float32, x, y, z []float32) {
+-	for i, v := range x {
+-		z[i] = alpha*v + y[i]
+-	}
+-}
+-
+-func SaxpyInc(alpha float32, x, y []float32, n, incX, incY, ix, iy uintptr) {
+-	for i := 0; i < int(n); i++ {
+-		y[iy] += alpha * x[ix]
+-		ix += incX
+-		iy += incY
+-	}
+-}
+diff --git a/Godeps/_workspace/src/github.com/gonum/internal/asm/sdot.go b/Godeps/_workspace/src/github.com/gonum/internal/asm/sdot.go
+deleted file mode 100644
+index 0cef5de..0000000
+--- a/Godeps/_workspace/src/github.com/gonum/internal/asm/sdot.go
++++ /dev/null
+@@ -1,23 +0,0 @@
+-// Generated code do not edit. Run `go generate`.
+-
+-// Copyright ©2015 The gonum Authors. All rights reserved.
+-// Use of this source code is governed by a BSD-style
+-// license that can be found in the LICENSE file.
+-
+-package asm
+-
+-func SdotUnitary(x, y []float32) (sum float32) {
+-	for i, v := range x {
+-		sum += y[i] * v
+-	}
+-	return
+-}
+-
+-func SdotInc(x, y []float32, n, incX, incY, ix, iy uintptr) (sum float32) {
+-	for i := 0; i < int(n); i++ {
+-		sum += y[iy] * x[ix]
+-		ix += incX
+-		iy += incY
+-	}
+-	return
+-}
+diff --git a/Godeps/_workspace/src/github.com/gonum/internal/asm/single_precision b/Godeps/_workspace/src/github.com/gonum/internal/asm/single_precision
+deleted file mode 100644
+index a937a97..0000000
+--- a/Godeps/_workspace/src/github.com/gonum/internal/asm/single_precision
++++ /dev/null
+@@ -1,30 +0,0 @@
+-#!/usr/bin/env bash
+-
+-# Copyright ©2015 The gonum Authors. All rights reserved.
+-# Use of this source code is governed by a BSD-style
+-# license that can be found in the LICENSE file.
+-
+-echo Generating dsdot.go
+-echo -e '// Generated code do not edit. Run `go generate`.\n' > dsdot.go
+-cat ddot.go \
+-| grep -v '//+build' \
+-| gofmt -r '[]float64 -> []float32' \
+-| gofmt -r 'a * b -> float64(a) * float64(b)' \
+-| sed 's/Ddot/Dsdot/' \
+->> dsdot.go
+-
+-echo Generating sdot.go
+-echo -e '// Generated code do not edit. Run `go generate`.\n' > sdot.go
+-cat ddot.go \
+-| grep -v '//+build' \
+-| gofmt -r 'float64 -> float32' \
+-| sed 's/Ddot/Sdot/' \
+->> sdot.go
+-
+-echo Generating saxpy.go
+-echo -e '// Generated code do not edit. Run `go generate`.\n' > saxpy.go
+-cat daxpy.go \
+-| grep -v '//+build' \
+-| gofmt -r 'float64 -> float32' \
+-| sed 's/Daxpy/Saxpy/' \
+->> saxpy.go
+diff --git a/Godeps/_workspace/src/github.com/gonum/internal/asm/zaxpy.go b/Godeps/_workspace/src/github.com/gonum/internal/asm/zaxpy.go
+deleted file mode 100644
+index 9478f25..0000000
+--- a/Godeps/_workspace/src/github.com/gonum/internal/asm/zaxpy.go
++++ /dev/null
+@@ -1,22 +0,0 @@
+-// Generated code do not edit. Run `go generate`.
+-
+-// Copyright ©2015 The gonum Authors. All rights reserved.
+-// Use of this source code is governed by a BSD-style
+-// license that can be found in the LICENSE file.
+-
+-package asm
+-
+-// The extra z parameter is needed because of floats.AddScaledTo
+-func ZaxpyUnitary(alpha complex128, x, y, z []complex128) {
+-	for i, v := range x {
+-		z[i] = alpha*v + y[i]
+-	}
+-}
+-
+-func ZaxpyInc(alpha complex128, x, y []complex128, n, incX, incY, ix, iy uintptr) {
+-	for i := 0; i < int(n); i++ {
+-		y[iy] += alpha * x[ix]
+-		ix += incX
+-		iy += incY
+-	}
+-}
+diff --git a/Godeps/_workspace/src/github.com/gonum/internal/asm/zdotc.go b/Godeps/_workspace/src/github.com/gonum/internal/asm/zdotc.go
+deleted file mode 100644
+index 7b8febc..0000000
+--- a/Godeps/_workspace/src/github.com/gonum/internal/asm/zdotc.go
++++ /dev/null
+@@ -1,25 +0,0 @@
+-// Generated code do not edit. Run `go generate`.
+-
+-// Copyright ©2015 The gonum Authors. All rights reserved.
+-// Use of this source code is governed by a BSD-style
+-// license that can be found in the LICENSE file.
+-
+-package asm
+-
+-import "math/cmplx"
+-
+-func ZdotcUnitary(x, y []complex128) (sum complex128) {
+-	for i, v := range x {
+-		sum += y[i] * cmplx.Conj(v)
+-	}
+-	return
+-}
+-
+-func ZdotcInc(x, y []complex128, n, incX, incY, ix, iy uintptr) (sum complex128) {
+-	for i := 0; i < int(n); i++ {
+-		sum += y[iy] * cmplx.Conj(x[ix])
+-		ix += incX
+-		iy += incY
+-	}
+-	return
+-}
+diff --git a/Godeps/_workspace/src/github.com/gonum/internal/asm/zdotu.go b/Godeps/_workspace/src/github.com/gonum/internal/asm/zdotu.go
+deleted file mode 100644
+index 82c1fe2..0000000
+--- a/Godeps/_workspace/src/github.com/gonum/internal/asm/zdotu.go
++++ /dev/null
+@@ -1,23 +0,0 @@
+-// Generated code do not edit. Run `go generate`.
+-
+-// Copyright ©2015 The gonum Authors. All rights reserved.
+-// Use of this source code is governed by a BSD-style
+-// license that can be found in the LICENSE file.
+-
+-package asm
+-
+-func ZdotuUnitary(x, y []complex128) (sum complex128) {
+-	for i, v := range x {
+-		sum += y[i] * v
+-	}
+-	return
+-}
+-
+-func ZdotuInc(x, y []complex128, n, incX, incY, ix, iy uintptr) (sum complex128) {
+-	for i := 0; i < int(n); i++ {
+-		sum += y[iy] * x[ix]
+-		ix += incX
+-		iy += incY
+-	}
+-	return
+-}
+diff --git a/Godeps/_workspace/src/github.com/gonum/matrix/mat64/inner.go b/Godeps/_workspace/src/github.com/gonum/matrix/mat64/inner.go
+index 77616ba..1610a83 100644
+--- a/Godeps/_workspace/src/github.com/gonum/matrix/mat64/inner.go
++++ b/Godeps/_workspace/src/github.com/gonum/matrix/mat64/inner.go
+@@ -6,7 +6,7 @@ package mat64
+ 
+ import (
+ 	"github.com/gonum/blas"
+-	"github.com/gonum/internal/asm"
++	"github.com/gonum/inteernal/asm"
+ )
+ 
+ // Inner computes the generalized inner product
 diff --git a/pkg/cmd/cli/describe/chaindescriber.go b/pkg/cmd/cli/describe/chaindescriber.go
-index 92b1328..4715e6b 100644
+index 2ca7c6e..2d2b6c8 100644
 --- a/pkg/cmd/cli/describe/chaindescriber.go
 +++ b/pkg/cmd/cli/describe/chaindescriber.go
 @@ -8,7 +8,7 @@ import (
@@ -1757,7 +3557,7 @@ index 92b1328..4715e6b 100644
 +	"github.com/gonum/graph/inteernal"
  	"github.com/gonum/graph/path"
  	kapi "k8s.io/kubernetes/pkg/api"
- 	kutil "k8s.io/kubernetes/pkg/util"
+ 	utilerrors "k8s.io/kubernetes/pkg/util/errors"
 -- 
 1.9.3
 

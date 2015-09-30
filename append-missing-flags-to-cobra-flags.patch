@@ -1,6 +1,6 @@
-From 776e6afbb9177ab9760c02ab657337d1e765a697 Mon Sep 17 00:00:00 2001
+From 1d06ed36e31a615381ef7e730b3206fe42796d47 Mon Sep 17 00:00:00 2001
 From: Jan Chaloupka <jchaloup@redhat.com>
-Date: Thu, 24 Sep 2015 15:56:58 +0200
+Date: Wed, 30 Sep 2015 11:21:05 +0200
 Subject: [PATCH] append missing flags to cobra flags
 
 ---
@@ -12,7 +12,7 @@ Subject: [PATCH] append missing flags to cobra flags
  5 files changed, 10 insertions(+), 10 deletions(-)
 
 diff --git a/pkg/cmd/server/start/kubernetes/apiserver.go b/pkg/cmd/server/start/kubernetes/apiserver.go
-index 21a38d5..71daaf8 100644
+index 21a38d5..9c15160 100644
 --- a/pkg/cmd/server/start/kubernetes/apiserver.go
 +++ b/pkg/cmd/server/start/kubernetes/apiserver.go
 @@ -1,6 +1,7 @@
@@ -29,12 +29,12 @@ index 21a38d5..71daaf8 100644
  	flags := cmd.Flags()
 -	//TODO: uncomment after picking up a newer cobra
 -	//pflag.AddFlagSetToPFlagSet(flag, flags)
-+	util.AddFlagSetToPFlagSet(flag.CommandLine, flags)
++	flags.AddGoFlagSet(flag.CommandLine)
  	s.AddFlags(flags)
  
  	return cmd
 diff --git a/pkg/cmd/server/start/kubernetes/controllers.go b/pkg/cmd/server/start/kubernetes/controllers.go
-index c92567d..ff9b3cf 100644
+index c92567d..b13f0ad 100644
 --- a/pkg/cmd/server/start/kubernetes/controllers.go
 +++ b/pkg/cmd/server/start/kubernetes/controllers.go
 @@ -1,6 +1,7 @@
@@ -51,12 +51,12 @@ index c92567d..ff9b3cf 100644
  	flags := cmd.Flags()
 -	//TODO: uncomment after picking up a newer cobra
 -	//pflag.AddFlagSetToPFlagSet(flag, flags)
-+	util.AddFlagSetToPFlagSet(flag.CommandLine, flags)
++	flags.AddGoFlagSet(flag.CommandLine)
  	s.AddFlags(flags)
  
  	return cmd
 diff --git a/pkg/cmd/server/start/kubernetes/kubelet.go b/pkg/cmd/server/start/kubernetes/kubelet.go
-index 03a7227..6df47bb 100644
+index 03a7227..90d9e42 100644
 --- a/pkg/cmd/server/start/kubernetes/kubelet.go
 +++ b/pkg/cmd/server/start/kubernetes/kubelet.go
 @@ -1,6 +1,7 @@
@@ -73,12 +73,12 @@ index 03a7227..6df47bb 100644
  	flags := cmd.Flags()
 -	//TODO: uncomment after picking up a newer cobra
 -	//pflag.AddFlagSetToPFlagSet(flag, flags)
-+	util.AddFlagSetToPFlagSet(flag.CommandLine, flags)
++	flags.AddGoFlagSet(flag.CommandLine)
  	s.AddFlags(flags)
  
  	return cmd
 diff --git a/pkg/cmd/server/start/kubernetes/proxy.go b/pkg/cmd/server/start/kubernetes/proxy.go
-index 9893382..923a455 100644
+index 9893382..d0f96fd 100644
 --- a/pkg/cmd/server/start/kubernetes/proxy.go
 +++ b/pkg/cmd/server/start/kubernetes/proxy.go
 @@ -1,6 +1,7 @@
@@ -95,12 +95,12 @@ index 9893382..923a455 100644
  	flags := cmd.Flags()
 -	//TODO: uncomment after picking up a newer cobra
 -	//pflag.AddFlagSetToPFlagSet(flag, flags)
-+	util.AddFlagSetToPFlagSet(flag.CommandLine, flags)
++	flags.AddGoFlagSet(flag.CommandLine)
  	s.AddFlags(flags)
  
  	return cmd
 diff --git a/pkg/cmd/server/start/kubernetes/scheduler.go b/pkg/cmd/server/start/kubernetes/scheduler.go
-index 0c23e48..f33735b 100644
+index 0c23e48..3842e87 100644
 --- a/pkg/cmd/server/start/kubernetes/scheduler.go
 +++ b/pkg/cmd/server/start/kubernetes/scheduler.go
 @@ -1,6 +1,7 @@
@@ -117,7 +117,7 @@ index 0c23e48..f33735b 100644
  	flags := cmd.Flags()
 -	//TODO: uncomment after picking up a newer cobra
 -	//pflag.AddFlagSetToPFlagSet(flag, flags)
-+	util.AddFlagSetToPFlagSet(flag.CommandLine, flags)
++	flags.AddGoFlagSet(flag.CommandLine)
  	s.AddFlags(flags)
  
  	return cmd

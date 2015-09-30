@@ -447,9 +447,12 @@ rm -rf cmd/kube-version-change/import_known_versions.go
 
 %patch2 -p1
 
+# Only for go >= 1.5
+%if 0%{?fedora}
 # internal -> inteernal
 %patch4 -p1
 %patch5 -p1
+%endif
 # cobra options
 %patch6 -p1
 # do not unset default cluster

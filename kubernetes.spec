@@ -58,7 +58,7 @@
 
 Name:		kubernetes
 Version:	1.1.0
-Release:	0.37.alpha1.git%{shortcommit}%{?dist}
+Release:	0.38.alpha1.git%{shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -556,6 +556,18 @@ done
 sort -u -o devel.file-list devel.file-list
 %endif
 
+# place files for unit-test rpm
+install -d -m 0755 %{buildroot}%{_sharedstatedir}/kubernetes-unit-test/
+# k8s is built in o4n so only it contains _output directory
+# cp -a _output %{buildroot}%{_sharedstatedir}/kubernetes-unit-test/
+# the rest of the directories is in k8s tarball
+pushd ../%{k8s_repo}-%{k8s_commit}
+cp -pav README.md %{buildroot}%{_sharedstatedir}/kubernetes-unit-test/.
+for d in Godeps api cmd docs examples hack pkg plugin third_party test; do
+  cp -a $d %{buildroot}%{_sharedstatedir}/kubernetes-unit-test/
+done
+popd
+
 %check
 # Fedora, RHEL7 and CentOS are tested via unit-test subpackage
 if [ 1 != 1 ]; then
@@ -627,6 +639,9 @@ fi
 %{_bindir}/kubectl
 %{_datadir}/bash-completion/completions/kubectl
 
+%files unit-test
+%{_sharedstatedir}/kubernetes-unit-test/
+
 %if 0%{?with_devel}
 %files devel -f devel.file-list
 %doc *.md
@@ -663,6 +678,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Fri Oct 02 2015 jchaloup <jchaloup@redhat.com> - 1.1.0-0.38.alpha1.git5f38cb0
+- Restore unit-test subpackage (not yet tested)
+  related: #1211266
+
 * Wed Sep 30 2015 jchaloup <jchaloup@redhat.com> - 1.1.0-0.37.alpha1.git5f38cb0
 - Do not unset default cluster, otherwise k8s ends with error when no cluster set
   related: #1211266

@@ -58,7 +58,7 @@
 
 Name:		kubernetes
 Version:	1.1.0
-Release:	0.38.alpha1.git%{shortcommit}%{?dist}
+Release:	0.39.alpha1.git%{shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -678,6 +678,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Fri Oct 09 2015 jchaloup <jchaloup@redhat.com> - 1.1.0-0.39.alpha1.git5f38cb0
+- Add normalization of flags 
+  related: #1211266
+
 * Fri Oct 02 2015 jchaloup <jchaloup@redhat.com> - 1.1.0-0.38.alpha1.git5f38cb0
 - Restore unit-test subpackage (not yet tested)
   related: #1211266

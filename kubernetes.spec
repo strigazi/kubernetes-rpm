@@ -58,7 +58,7 @@
 
 Name:		kubernetes
 Version:	1.1.0
-Release:	0.39.alpha1.git%{shortcommit}%{?dist}
+Release:	0.40.alpha1.git%{shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -79,6 +79,9 @@ Patch6:         append-missing-flags-to-cobra-flags.patch
 
 # k8s uses default cluster if not specified, o4n does not
 Patch7:         do-not-unset-default-cluster.patch
+
+Patch8:         add-missing-short-option-for-server.patch
+Patch9:         hack-test-cmd-for-o4n.patch
 
 # It obsoletes cadvisor but needs its source code (literally integrated)
 Obsoletes:      cadvisor
@@ -431,6 +434,8 @@ Kubernetes client tools like kubectl
 
 %prep
 %setup -q -n %{k8s_repo}-%{k8s_commit} -T -b 1
+%patch9 -p1
+
 %setup -q -n %{con_repo}-%{con_commit} -T -b 2
 %setup -q -n %{repo}-%{commit}
 
@@ -454,6 +459,8 @@ rm -rf cmd/kube-version-change/import_known_versions.go
 %patch6 -p1
 # do not unset default cluster
 %patch7 -p1
+
+%patch8 -p1
 
 %build
 # Don't judge me for this ... it's so bad.
@@ -558,12 +565,9 @@ sort -u -o devel.file-list devel.file-list
 
 # place files for unit-test rpm
 install -d -m 0755 %{buildroot}%{_sharedstatedir}/kubernetes-unit-test/
-# k8s is built in o4n so only it contains _output directory
-# cp -a _output %{buildroot}%{_sharedstatedir}/kubernetes-unit-test/
-# the rest of the directories is in k8s tarball
 pushd ../%{k8s_repo}-%{k8s_commit}
-cp -pav README.md %{buildroot}%{_sharedstatedir}/kubernetes-unit-test/.
-for d in Godeps api cmd docs examples hack pkg plugin third_party test; do
+# only files for hack/test-cmd.sh atm
+for d in docs examples hack; do
   cp -a $d %{buildroot}%{_sharedstatedir}/kubernetes-unit-test/
 done
 popd
@@ -678,6 +682,11 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Fri Oct 09 2015 jchaloup <jchaloup@redhat.com> - 1.1.0-0.40.alpha1.git5f38cb0
+- Add missing short option for --server of kubectl
+- Update unit-test-subpackage (only test-cmd.sh atm)
+  related: #1211266
+
 * Fri Oct 09 2015 jchaloup <jchaloup@redhat.com> - 1.1.0-0.39.alpha1.git5f38cb0
 - Add normalization of flags 
   related: #1211266

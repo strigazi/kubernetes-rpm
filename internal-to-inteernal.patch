@@ -1,6 +1,6 @@
-From af5af041018cd0c8b89fde3f8684fe00290b386d Mon Sep 17 00:00:00 2001
+From 613cb303ac0d22786e9c4d153e993c6c8adcd2bb Mon Sep 17 00:00:00 2001
 From: Jan Chaloupka <jchaloup@redhat.com>
-Date: Wed, 30 Sep 2015 09:57:57 +0200
+Date: Wed, 14 Oct 2015 12:37:01 +0200
 Subject: [PATCH] internal to inteernal
 
 ---
@@ -79,8 +79,7 @@ Subject: [PATCH] internal to inteernal
  .../src/github.com/gonum/internal/asm/zdotc.go     |  25 --
  .../src/github.com/gonum/internal/asm/zdotu.go     |  23 --
  .../src/github.com/gonum/matrix/mat64/inner.go     |   2 +-
- pkg/cmd/cli/describe/chaindescriber.go             |   2 +-
- 76 files changed, 1411 insertions(+), 1411 deletions(-)
+ 75 files changed, 1410 insertions(+), 1410 deletions(-)
  create mode 100644 Godeps/_workspace/src/github.com/gonum/graph/inteernal/linear.go
  create mode 100644 Godeps/_workspace/src/github.com/gonum/graph/inteernal/set.go
  create mode 100644 Godeps/_workspace/src/github.com/gonum/graph/inteernal/set_test.go
@@ -3545,19 +3544,6 @@ index 77616ba..1610a83 100644
  )
  
  // Inner computes the generalized inner product
-diff --git a/pkg/cmd/cli/describe/chaindescriber.go b/pkg/cmd/cli/describe/chaindescriber.go
-index 2ca7c6e..2d2b6c8 100644
---- a/pkg/cmd/cli/describe/chaindescriber.go
-+++ b/pkg/cmd/cli/describe/chaindescriber.go
-@@ -8,7 +8,7 @@ import (
- 	"github.com/golang/glog"
- 	"github.com/gonum/graph"
- 	"github.com/gonum/graph/encoding/dot"
--	"github.com/gonum/graph/internal"
-+	"github.com/gonum/graph/inteernal"
- 	"github.com/gonum/graph/path"
- 	kapi "k8s.io/kubernetes/pkg/api"
- 	utilerrors "k8s.io/kubernetes/pkg/util/errors"
 -- 
 1.9.3
 

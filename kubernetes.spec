@@ -21,7 +21,7 @@
 # https://github.com/openshift/origin
 %global provider_prefix	%{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     k8s.io/kubernetes
-%global commit		5f38cb0e98c9e854cafba9c7f98dafd51e955ad8
+%global commit		e9a6ef1cd4c29d45730289a497d18b19d7ba450d
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 %global openshift_ip    github.com/openshift/origin
@@ -58,7 +58,7 @@
 
 Name:		kubernetes
 Version:	1.1.0
-Release:	0.40.alpha1.git%{shortcommit}%{?dist}
+Release:	0.41.alpha1.git%{shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -440,7 +440,7 @@ Kubernetes client tools like kubectl
 %setup -q -n %{repo}-%{commit}
 
 # copy contrib folder to origin
-cp -r ../%{k8s_repo}-%{k8s_commit}/contrib contrib
+cp -r ../%{k8s_repo}-%{k8s_commit}/contrib/completions/bash/kubectl contrib/completions/bash/.
 # copy contrib folder to origin
 cp -r ../%{con_repo}-%{con_commit}/init contrib/.
 # copy docs/admin and docs/man to origin
@@ -682,6 +682,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Wed Oct 14 2015 jchaloup <jchaloup@redhat.com> - 1.1.0-0.41.alpha1.gite9a6ef1
+- Bump to origin upstream e9a6ef1cd4c29d45730289a497d18b19d7ba450d
+  related: #1211266
+
 * Fri Oct 09 2015 jchaloup <jchaloup@redhat.com> - 1.1.0-0.40.alpha1.git5f38cb0
 - Add missing short option for --server of kubectl
 - Update unit-test-subpackage (only test-cmd.sh atm)

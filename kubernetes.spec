@@ -31,7 +31,7 @@
 
 Name:		kubernetes
 Version:	1.1.0
-Release:	0.16.git%{shortcommit}%{?dist}
+Release:	0.17.git%{shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -45,6 +45,8 @@ Patch3:         build-with-debug-info.patch
 %endif
 Patch4:         change-internal-to-inteernal.patch
 Patch5:         Update-github.com-elazarl-go-bindata-assetfs-to-at-l.patch
+# backport refactoring of TLS connection, upstream issue #15224
+Patch6:         backport-refactoring-of-TLS-connection.patch
 
 # It obsoletes cadvisor but needs its source code (literally integrated)
 Obsoletes:      cadvisor
@@ -389,6 +391,9 @@ Kubernetes client tools like kubectl
 %patch4 -p1
 %patch5 -p1
 
+# backport refactoring of TLS connection
+%patch6 -p1
+
 %build
 export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
@@ -564,6 +569,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Thu Oct 29 2015 jchaloup <jchaloup@redhat.com> - 1.1.0-0.17.git388061f
+- backport refactoring of TLS connection, upstream issue #15224
+  resolves: #1274854
+
 * Mon Sep 14 2015 jchaloup <jchaloup@redhat.com> - 1.1.0-0.16.git388061f
 - Rebase to 1.0.6 (keep 1.1.0 version and avoid Epoch)
   related: #1211266

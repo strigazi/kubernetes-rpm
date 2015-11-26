@@ -1,0 +1,38 @@
+From c42439278f1709fc3d5eec16a30ff1c1db11f78f Mon Sep 17 00:00:00 2001
+From: Jan Chaloupka <jchaloup@redhat.com>
+Date: Tue, 24 Nov 2015 15:52:03 +0100
+Subject: [PATCH] reenable /ui, origin e9a12151d67cedb4d3816a791ff02cfc61f024c9
+
+---
+ Godeps/_workspace/src/k8s.io/kubernetes/pkg/master/master.go | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/Godeps/_workspace/src/k8s.io/kubernetes/pkg/master/master.go b/Godeps/_workspace/src/k8s.io/kubernetes/pkg/master/master.go
+index 22e2d6e..c602abd 100644
+--- a/Godeps/_workspace/src/k8s.io/kubernetes/pkg/master/master.go
++++ b/Godeps/_workspace/src/k8s.io/kubernetes/pkg/master/master.go
+@@ -78,7 +78,7 @@ import (
+ 	"k8s.io/kubernetes/pkg/storage"
+ 	etcdstorage "k8s.io/kubernetes/pkg/storage/etcd"
+ 	"k8s.io/kubernetes/pkg/tools"
+-	//"k8s.io/kubernetes/pkg/ui"
++	"k8s.io/kubernetes/pkg/ui"
+ 	"k8s.io/kubernetes/pkg/util"
+ 	"k8s.io/kubernetes/pkg/util/sets"
+ 
+@@ -688,9 +688,9 @@ func (m *Master) init(c *Config) {
+ 	if c.EnableLogsSupport {
+ 		apiserver.InstallLogsSupport(m.muxHelper)
+ 	}
+-	/*if c.EnableUISupport {
+-		ui.InstallSupport(m.mux)
+-	}*/
++	if c.EnableUISupport {
++		ui.InstallSupport(m.mux, m.enableSwaggerSupport)
++	}
+ 
+ 	if c.EnableProfiling {
+ 		m.mux.HandleFunc("/debug/pprof/", pprof.Index)
+-- 
+1.9.3
+

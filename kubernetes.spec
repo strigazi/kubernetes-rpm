@@ -21,7 +21,7 @@
 # https://github.com/openshift/origin
 %global provider_prefix	%{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     k8s.io/kubernetes
-%global commit		403de3874fba420fd096f2329b45fe2f5ae97e46
+%global commit		a41c9ff38d52fd508481c3c2bac13d52871fde02
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 %global openshift_ip    github.com/openshift/origin
@@ -58,7 +58,7 @@
 
 Name:		kubernetes
 Version:	1.2.0
-Release:	0.1.alpha1.git%{k8s_shortcommit}%{?dist}
+Release:	0.2.alpha1.git%{k8s_shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -76,13 +76,12 @@ Patch3:         build-with-debug-info.patch
 Patch4:         internal-to-inteernal.patch
 Patch5:         0001-internal-inteernal.patch
 
-# k8s uses default cluster if not specified, o4n does not
-Patch7:         do-not-unset-default-cluster.patch
-
-Patch8:         add-missing-short-option-for-server.patch
-Patch9:         hack-test-cmd-for-os-origin.patch
+Patch9:         hack-test-cmd.sh.patch
 # Due to k8s 5d08dcf8377e76f2ce303dc79404f511ebef82e3
 Patch10:        keep-solid-port-for-kube-proxy.patch
+
+# ui is enable in pure kubernetes
+Patch12:        reenable-ui.patch
 
 # It obsoletes cadvisor but needs its source code (literally integrated)
 Obsoletes:      cadvisor
@@ -505,56 +504,52 @@ Kubernetes client tools like kubectl
 %setup -q -n %{con_repo}-%{con_commit} -T -b 2
 %setup -q -n %{repo}-%{commit}
 
-# copy contrib folder to origin
-cp -r ../%{k8s_repo}-%{k8s_commit}/contrib/completions/bash/kubectl contrib/completions/bash/.
-# copy contrib folder to origin
-cp -r ../%{con_repo}-%{con_commit}/init contrib/.
-# copy docs/admin and docs/man to origin
-cp -r ../%{k8s_repo}-%{k8s_commit}/docs/admin docs/admin
-cp -r ../%{k8s_repo}-%{k8s_commit}/docs/man docs/man
-# copy cmd/kube-version change to origin
-cp -r ../%{k8s_repo}-%{k8s_commit}/cmd/kube-version-change cmd/.
-rm -rf cmd/kube-version-change/import_known_versions.go
-
-%patch2 -p1
+# clean the directory up to Godeps
+dirs=$(ls | grep -v "^Godeps")
+rm -rf $dirs
 
 # internal -> inteernal
 %patch4 -p1
 %patch5 -p1
-# do not unset default cluster
-%patch7 -p1
 
-# add missing -s for --server
-%patch8 -p1
+# reenable /ui
+%patch12 -p1
+
+# move k8s code from Godeps
+mv Godeps/_workspace/src/k8s.io/kubernetes/* .
+# copy missing source code
+cp ../%{k8s_repo}-%{k8s_commit}/cmd/kube-apiserver/apiserver.go cmd/kube-apiserver/.
+cp ../%{k8s_repo}-%{k8s_commit}/cmd/kube-controller-manager/controller-manager.go cmd/kube-controller-manager/.
+cp ../%{k8s_repo}-%{k8s_commit}/cmd/kubelet/kubelet.go cmd/kubelet/.
+cp ../%{k8s_repo}-%{k8s_commit}/cmd/kube-proxy/proxy.go cmd/kube-proxy/.
+cp ../%{k8s_repo}-%{k8s_commit}/plugin/cmd/kube-scheduler/scheduler.go plugin/cmd/kube-scheduler/.
+cp -r ../%{k8s_repo}-%{k8s_commit}/cmd/kubectl cmd/.
+# copy hack directory
+cp -r ../%{k8s_repo}-%{k8s_commit}/hack .
+# copy contrib directory
+cp -r ../%{k8s_repo}-%{k8s_commit}/contrib .
+# copy contrib folder
+cp -r ../%{con_repo}-%{con_commit}/init contrib/.
+# copy docs
+cp -r ../%{k8s_repo}-%{k8s_commit}/docs/admin docs/.
+cp -r ../%{k8s_repo}-%{k8s_commit}/docs/man docs/.
+# copy cmd/kube-version change
+cp -r ../%{k8s_repo}-%{k8s_commit}/cmd/kube-version-change cmd/.
+rm -rf cmd/kube-version-change/import_known_versions.go
+# copy LICENSE and *.md
+cp ../%{k8s_repo}-%{k8s_commit}/LICENSE .
+cp ../%{k8s_repo}-%{k8s_commit}/*.md .
+
+%patch2 -p1
 
 %build
-# Don't judge me for this ... it's so bad.
-mkdir _build
+export KUBE_GIT_TREE_STATE="clean"
+export KUBE_GIT_COMMIT=%{commit}
+export KUBE_GIT_VERSION=v1.0.6
 
-# Horrid hack because golang loves to just bundle everything
-pushd _build
-    mkdir -p src/github.com/openshift
-    ln -s $(dirs +1 -l) src/%{openshift_ip}
-popd
-
-# Gaming the GOPATH to include the third party bundled libs at build
-# time. This is bad and I feel bad.
-mkdir _thirdpartyhacks
-pushd _thirdpartyhacks
-    ln -s \
-        $(dirs +1 -l)/Godeps/_workspace/src/ \
-            src
-popd
-export GOPATH=$(pwd)/_build:$(pwd)/_thirdpartyhacks:%{buildroot}%{gopath}:%{gopath}
-
-%{!?ldflags:
-%global ldflags -X github.com/openshift/origin/pkg/version.majorFromGit %{O4N_GIT_MAJOR_VERSION} -X github.com/openshift/origin/pkg/version.minorFromGit %{O4N_GIT_MINOR_VERSION} -X github.com/openshift/origin/pkg/version.versionFromGit %{O4N_GIT_VERSION} -X github.com/openshift/origin/pkg/version.commitFromGit %{shortcommit} -X k8s.io/kubernetes/pkg/version.gitCommit %{k8s_shortcommit} -X k8s.io/kubernetes/pkg/version.gitVersion %{K8S_GIT_VERSION}
-}
-
-go install -ldflags "%{ldflags}" %{openshift_ip}/cmd/openshift
-
-export GOPATH=$(pwd)/Godeps/_workspace:$(pwd)/_build:%{buildroot}%{gopath}:%{gopath}
-go install -ldflags "%{ldflags}" %{openshift_ip}/cmd/kube-version-change
+# remove import_known_versions.go
+rm -rf cmd/kube-version-change/import_known_versions.go
+hack/build-go.sh --use_go_build cmd/kube-apiserver cmd/kube-controller-manager plugin/cmd/kube-scheduler cmd/kubelet cmd/kube-proxy cmd/kube-version-change cmd/kubectl
 
 # convert md to man
 pushd docs
@@ -566,29 +561,21 @@ bash genmanpages.sh
 popd
 
 %install
+. hack/lib/init.sh
+kube::golang::setup_env
 
-install -d %{buildroot}%{_bindir}
+output_path="${KUBE_OUTPUT_BINPATH}/$(kube::golang::current_platform)"
 
-echo "+++ INSTALLING ${bin}"
-install -p -m 755 _build/bin/openshift %{buildroot}%{_bindir}/openshift
-# kube-apiserver can not be symlink when %%attr is used
-install -p -m 755 _build/bin/openshift %{buildroot}%{_bindir}/kube-apiserver
-
-for cmd in kubectl kubelet kube-proxy kube-controller-manager kube-scheduler; do
-    ln -s %{_bindir}/openshift %{buildroot}%{_bindir}/$cmd
+binaries=(kube-apiserver kube-controller-manager kube-scheduler kube-proxy kubelet kubectl kube-version-change)
+install -m 755 -d %{buildroot}%{_bindir}
+for bin in "${binaries[@]}"; do
+  echo "+++ INSTALLING ${bin}"
+  install -p -m 755 -t %{buildroot}%{_bindir} ${output_path}/${bin}
 done
-
-# TODO: kube-version-change missing
-install -p -m 755 _build/bin/kube-version-change %{buildroot}%{_bindir}/kube-version-change
-
-
-# k8s has its own contrib as well (for kubectl completion)
 
 # install the bash completion
 install -d -m 0755 %{buildroot}%{_datadir}/bash-completion/completions/
 install -t %{buildroot}%{_datadir}/bash-completion/completions/ contrib/completions/bash/kubectl
-
-# !!!!Adding contrib directory to tarball
 
 # install config files
 install -d -m 0755 %{buildroot}%{_sysconfdir}/%{name}
@@ -615,12 +602,11 @@ install -p -m 0644 -t %{buildroot}/%{_tmpfilesdir} contrib/init/systemd/tmpfiles
 install -d -p %{buildroot}/%{gopath}/src/%{import_path}/
 echo "%%dir %%{gopath}/src/%%{import_path}/." >> devel.file-list
 # find all *.go but no *_test.go files and generate devel.file-list
-for file in $(find ./%{k8s_src_dir} -iname "*.go" \! -iname "*_test.go") ; do
-    ifile=$(echo $file | sed "s/%{k8s_src_dir_sed}//g")
-    echo "%%dir %%{gopath}/src/%%{import_path}/$(dirname $ifile)" >> devel.file-list
-    install -d -p %{buildroot}/%{gopath}/src/%{import_path}/$(dirname $ifile)
-    cp -pav $file %{buildroot}/%{gopath}/src/%{import_path}/$ifile
-    echo "%%{gopath}/src/%%{import_path}/$ifile" >> devel.file-list
+for file in $(find . -iname "*.go" \! -iname "*_test.go") ; do
+    echo "%%dir %%{gopath}/src/%%{import_path}/$(dirname $file)" >> devel.file-list
+    install -d -p %{buildroot}/%{gopath}/src/%{import_path}/$(dirname $file)
+    cp -pav $file %{buildroot}/%{gopath}/src/%{import_path}/$file
+    echo "%%{gopath}/src/%%{import_path}/$file" >> devel.file-list
 done
 %endif
 
@@ -666,7 +652,6 @@ fi
 %{_mandir}/man1/kube-apiserver.1*
 %{_mandir}/man1/kube-controller-manager.1*
 %{_mandir}/man1/kube-scheduler.1*
-%{_bindir}/openshift
 %attr(754, -, kube) %caps(cap_net_bind_service=ep) %{_bindir}/kube-apiserver
 %{_bindir}/kube-controller-manager
 %{_bindir}/kube-scheduler
@@ -686,7 +671,6 @@ fi
 %doc *.md
 %{_mandir}/man1/kubelet.1*
 %{_mandir}/man1/kube-proxy.1*
-%{_bindir}/openshift
 %{_bindir}/kubelet
 %{_bindir}/kube-proxy
 %{_bindir}/kube-version-change
@@ -704,7 +688,6 @@ fi
 %doc *.md
 %{_mandir}/man1/kubectl.1*
 %{_mandir}/man1/kubectl-*
-%{_bindir}/openshift
 %{_bindir}/kubectl
 %{_datadir}/bash-completion/completions/kubectl
 
@@ -747,6 +730,11 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Thu Nov 26 2015 jchaloup <jchaloup@redhat.com> - 1.2.0-0.2.alpha1.git4c8e6f4
+- Bump to origin upstream a41c9ff38d52fd508481c3c2bac13d52871fde02
+- Build kubernetes from origin's Godeps using hack/build-go.sh
+  origin's Godeps = kubernetes upstream + additional patches
+
 * Tue Oct 20 2015 jchaloup <jchaloup@redhat.com> - 1.2.0-0.1.alpha1.git4c8e6f4
 - Bump to upstream 403de3874fba420fd096f2329b45fe2f5ae97e46
   related: #1211266

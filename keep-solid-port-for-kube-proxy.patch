@@ -1,14 +1,14 @@
-From afe79dfc2c0f9417da623c1907e60667b27375ea Mon Sep 17 00:00:00 2001
+From 805d0b60b4e97561f201ea5e457e8c71b067f25b Mon Sep 17 00:00:00 2001
 From: Jan Chaloupka <jchaloup@redhat.com>
-Date: Tue, 20 Oct 2015 14:53:39 +0200
+Date: Thu, 26 Nov 2015 13:00:29 +0100
 Subject: [PATCH] keep solid port for kube-proxy
 
 ---
- hack/test-cmd.sh | 17 ++++-------------
- 1 file changed, 4 insertions(+), 13 deletions(-)
+ hack/test-cmd.sh | 19 ++++++-------------
+ 1 file changed, 6 insertions(+), 13 deletions(-)
 
 diff --git a/hack/test-cmd.sh b/hack/test-cmd.sh
-index c20fac7..fa760b5 100755
+index fb440ac..9daac99 100755
 --- a/hack/test-cmd.sh
 +++ b/hack/test-cmd.sh
 @@ -30,7 +30,6 @@ function stop-proxy()
@@ -19,7 +19,7 @@ index c20fac7..fa760b5 100755
  }
  
  # Starts "kubect proxy" to test the client proxy. $1: api_prefix
-@@ -40,18 +39,9 @@ function start-proxy()
+@@ -40,18 +39,11 @@ function start-proxy()
  
    kube::log::status "Starting kubectl proxy"
  
@@ -35,13 +35,15 @@ index c20fac7..fa760b5 100755
 -    fi
 -    sleep 1;
 -  done
-+  # the --www and --www-prefix are just to make something definitely show up for
-+  # wait_for_url to see.
-+  kubectl proxy -p ${PROXY_PORT} --www=. --www-prefix=/healthz "$@" 1>&2 &
++  if [ $# -eq 0 ]; then
++    kubectl proxy -p ${PROXY_PORT} --www=. 1>&2 &
++  else
++    kubectl proxy -p ${PROXY_PORT} --www=. --api-prefix="$1" 1>&2 &
++  fi
  
    PROXY_PID=$!
    if [ $# -eq 0 ]; then
-@@ -119,6 +109,7 @@ API_HOST=${API_HOST:-127.0.0.1}
+@@ -119,6 +111,7 @@ API_HOST=${API_HOST:-127.0.0.1}
  KUBELET_PORT=${KUBELET_PORT:-10250}
  KUBELET_HEALTHZ_PORT=${KUBELET_HEALTHZ_PORT:-10248}
  CTLRMGR_PORT=${CTLRMGR_PORT:-10252}

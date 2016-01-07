@@ -50,6 +50,8 @@
 %global O4N_GIT_MINOR_VERSION 1+
 %global O4N_GIT_VERSION       v1.1.0.1
 %global K8S_GIT_VERSION       v1.2.0-alpha.1-1107-g4c8e6f47ec23f
+%global kube_version          1.2.0
+%global kube_git_version      v%{kube_version}
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
 # does not work
@@ -57,8 +59,8 @@
 %global _checkshell	/bin/bash
 
 Name:		kubernetes
-Version:	1.2.0
-Release:	0.3.alpha1.git%{k8s_shortcommit}%{?dist}
+Version:	%{kube_version}
+Release:	0.4.alpha1.git%{k8s_shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -547,7 +549,7 @@ cp ../%{k8s_repo}-%{k8s_commit}/*.md .
 %build
 export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
-export KUBE_GIT_VERSION=v1.0.6
+export KUBE_GIT_VERSION=%{kube_git_version}
 
 # remove import_known_versions.go
 rm -rf cmd/kube-version-change/import_known_versions.go
@@ -732,6 +734,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Thu Jan 07 2016 jchaloup <jchaloup@redhat.com> - 1.2.0-0.4.alpha1.git4c8e6f4
+- Move definition of all version, git and commit macros at one place
+  resolves: #1291860
+
 * Fri Jan 01 2016 jchaloup <jchaloup@redhat.com> - 1.2.0-0.3.alpha1.git4c8e6f4
 - Bump to upstream bf56e235826baded1772fb340266b8419c3e8f30
   Rebase to origin's "v1.1.0.1 - Security Update to v1.1" release

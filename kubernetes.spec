@@ -1,7 +1,7 @@
 %if 0%{?fedora}
 %global with_devel 1
 %global with_bundled 1
-%global with_debug 0
+%global with_debug 1
 %else
 %global with_devel 0
 %global with_bundled 1
@@ -69,9 +69,7 @@ Source2:        https://%{con_provider_prefix}/archive/%{con_commit}/%{con_repo}
 
 Source33:        genmanpages.sh
 Patch2:         Change-etcd-server-port.patch
-%if 0%{?with_debug}
 Patch3:         build-with-debug-info.patch
-%endif
 
 Patch4:         internal-to-inteernal.patch
 Patch5:         0001-internal-inteernal.patch
@@ -497,6 +495,9 @@ Kubernetes client tools like kubectl
 
 %prep
 %setup -q -n %{k8s_repo}-%{k8s_commit} -T -b 1
+%if 0%{?with_debug}
+%patch3 -p1
+%endif
 # Hack test-cmd.sh to be run with os binaries
 %patch9 -p1
 # Keep solid port for kube-proxy

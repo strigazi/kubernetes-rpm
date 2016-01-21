@@ -21,7 +21,7 @@
 # https://github.com/openshift/origin
 %global provider_prefix	%{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     k8s.io/kubernetes
-%global commit		bf56e235826baded1772fb340266b8419c3e8f30
+%global commit		e1d9873c1d5711b83fd3dd7eefe83a88ceb92c08
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 %global openshift_ip    github.com/openshift/origin
@@ -60,7 +60,7 @@
 
 Name:		kubernetes
 Version:	%{kube_version}
-Release:	0.4.alpha1.git%{k8s_shortcommit}%{?dist}
+Release:	0.5.alpha1.git%{k8s_shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -734,6 +734,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Thu Jan 21 2016 jchaloup <jchaloup@redhat.com> - 1.2.0-0.5.alpha1.git4c8e6f4
+- Bump to upstream e1d9873c1d5711b83fd3dd7eefe83a88ceb92c08
+  related: #1291860
+
 * Thu Jan 07 2016 jchaloup <jchaloup@redhat.com> - 1.2.0-0.4.alpha1.git4c8e6f4
 - Move definition of all version, git and commit macros at one place
   resolves: #1291860

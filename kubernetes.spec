@@ -60,7 +60,7 @@
 
 Name:		kubernetes
 Version:	%{kube_version}
-Release:	0.5.alpha1.git%{k8s_shortcommit}%{?dist}
+Release:	0.6.alpha1.git%{k8s_shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -734,6 +734,9 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Thu Feb 04 2016 Fedora Release Engineering <releng@fedoraproject.org> - 1.2.0-0.6.alpha1.git4c8e6f4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
+
 * Thu Jan 21 2016 jchaloup <jchaloup@redhat.com> - 1.2.0-0.5.alpha1.git4c8e6f4
 - Bump to upstream e1d9873c1d5711b83fd3dd7eefe83a88ceb92c08
   related: #1291860

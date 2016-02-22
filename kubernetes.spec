@@ -61,7 +61,7 @@
 
 Name:		kubernetes
 Version:	%{kube_version}
-Release:	0.7.alpha6.git%{k8s_shortcommit}%{?dist}
+Release:	0.8.alpha6.git%{k8s_shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -795,6 +795,9 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Mon Feb 22 2016 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.2.0-0.8.alpha6.gitf0cd09a
+- https://fedoraproject.org/wiki/Changes/golang1.6
+
 * Mon Feb 22 2016 jchaloup <jchaloup@redhat.com> - 1.2.0-0.7.alpha6.git4c8e6f4
 - Bump to origin 1.1.3
   kube-version-change command replaced with kubectl convert (check out docs/admin/cluster-management.md)

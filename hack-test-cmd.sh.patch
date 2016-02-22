@@ -1,36 +1,25 @@
-From a739fe820689504f34137a9d7c6783524a6ba217 Mon Sep 17 00:00:00 2001
+From 711edb06c665fa9a14e98ed7b0f1d943b26fd5ac Mon Sep 17 00:00:00 2001
 From: Jan Chaloupka <jchaloup@redhat.com>
-Date: Thu, 26 Nov 2015 10:30:37 +0100
+Date: Mon, 22 Feb 2016 10:11:46 +0100
 Subject: [PATCH] hack hack/test-cmd.sh
 
 ---
  hack/lib/init.sh | 2 +-
- hack/test-cmd.sh | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/hack/lib/init.sh b/hack/lib/init.sh
-index 8a2c428..75ee958 100644
+index 9fa47ca..1a18946 100644
 --- a/hack/lib/init.sh
 +++ b/hack/lib/init.sh
-@@ -39,4 +39,4 @@ source "${KUBE_ROOT}/hack/lib/version.sh"
+@@ -40,7 +40,7 @@ source "${KUBE_ROOT}/hack/lib/version.sh"
  source "${KUBE_ROOT}/hack/lib/golang.sh"
  source "${KUBE_ROOT}/hack/lib/etcd.sh"
  
 -KUBE_OUTPUT_HOSTBIN="${KUBE_OUTPUT_BINPATH}/$(kube::util::host_platform)"
 +KUBE_OUTPUT_HOSTBIN="/usr/bin"
-diff --git a/hack/test-cmd.sh b/hack/test-cmd.sh
-index fb440ac..0fbc5f4 100755
---- a/hack/test-cmd.sh
-+++ b/hack/test-cmd.sh
-@@ -724,7 +724,7 @@ __EOF__
-   kubectl create -f examples/guestbook/redis-master-controller.yaml "${kube_flags[@]}"
-   kubectl create -f examples/guestbook/redis-slave-controller.yaml "${kube_flags[@]}"
-   # Command
--  kubectl scale rc/redis-master rc/redis-slave --replicas=4
-+  kubectl scale rc/redis-master rc/redis-slave --replicas=4 "${kube_flags[@]}"
-   # Post-condition: 4 replicas each
-   kube::test::get_object_assert 'rc redis-master' "{{$rc_replicas_field}}" '4'
-   kube::test::get_object_assert 'rc redis-slave' "{{$rc_replicas_field}}" '4'
+ 
+ # emulates "readlink -f" which is not available on BSD (OS X).
+ function readlinkdashf {
 -- 
 1.9.3
 

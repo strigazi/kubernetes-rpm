@@ -1,6 +1,6 @@
-From 805d0b60b4e97561f201ea5e457e8c71b067f25b Mon Sep 17 00:00:00 2001
+From 83b7ad086d9dfe263dbad703545f6d21fe2cef18 Mon Sep 17 00:00:00 2001
 From: Jan Chaloupka <jchaloup@redhat.com>
-Date: Thu, 26 Nov 2015 13:00:29 +0100
+Date: Mon, 22 Feb 2016 10:16:14 +0100
 Subject: [PATCH] keep solid port for kube-proxy
 
 ---
@@ -8,7 +8,7 @@ Subject: [PATCH] keep solid port for kube-proxy
  1 file changed, 6 insertions(+), 13 deletions(-)
 
 diff --git a/hack/test-cmd.sh b/hack/test-cmd.sh
-index fb440ac..9daac99 100755
+index 2a72860..6db75b7 100755
 --- a/hack/test-cmd.sh
 +++ b/hack/test-cmd.sh
 @@ -30,7 +30,6 @@ function stop-proxy()
@@ -42,8 +42,8 @@ index fb440ac..9daac99 100755
 +  fi
  
    PROXY_PID=$!
-   if [ $# -eq 0 ]; then
-@@ -119,6 +111,7 @@ API_HOST=${API_HOST:-127.0.0.1}
+   # We try checking kubectl proxy 30 times with 1s delays to avoid occasional
+@@ -121,6 +113,7 @@ API_HOST=${API_HOST:-127.0.0.1}
  KUBELET_PORT=${KUBELET_PORT:-10250}
  KUBELET_HEALTHZ_PORT=${KUBELET_HEALTHZ_PORT:-10248}
  CTLRMGR_PORT=${CTLRMGR_PORT:-10252}

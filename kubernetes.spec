@@ -61,7 +61,7 @@
 
 Name:		kubernetes
 Version:	%{kube_version}
-Release:	0.8.alpha6.git%{k8s_shortcommit}%{?dist}
+Release:	0.9.alpha6.git%{k8s_shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -80,6 +80,9 @@ Patch5:         0001-internal-inteernal.patch
 Patch9:         hack-test-cmd.sh.patch
 # Due to k8s 5d08dcf8377e76f2ce303dc79404f511ebef82e3
 Patch10:        keep-solid-port-for-kube-proxy.patch
+
+# fix Content-Type of docker client response
+Patch11:        github.com-fsouza-go-dockerclient-fix-docker-client.patch
 
 # It obsoletes cadvisor but needs its source code (literally integrated)
 Obsoletes:      cadvisor
@@ -611,6 +614,8 @@ cp ../%{k8s_repo}-%{k8s_commit}/*.md .
 
 %patch2 -p1
 
+%patch11 -p1
+
 %build
 export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
@@ -795,6 +800,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Thu Feb 25 2016 jchaloup <jchaloup@redhat.com> - 1.2.0-0.9.alpha6.gitf0cd09a
+- Fix Content-Type of docker client response
+  resolves: #1311861
+
 * Mon Feb 22 2016 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.2.0-0.8.alpha6.gitf0cd09a
 - https://fedoraproject.org/wiki/Changes/golang1.6
 

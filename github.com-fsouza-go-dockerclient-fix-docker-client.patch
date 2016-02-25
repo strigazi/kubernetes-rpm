@@ -1,0 +1,26 @@
+From 91bea44ea7d274c714a1b4f7c6667c979d0acbb7 Mon Sep 17 00:00:00 2001
+From: Jan Chaloupka <jchaloup@redhat.com>
+Date: Thu, 25 Feb 2016 13:16:51 +0100
+Subject: [PATCH] github.com/fsouza/go-dockerclient fix docker client response
+ Content-Type
+
+---
+ Godeps/_workspace/src/github.com/fsouza/go-dockerclient/client.go | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Godeps/_workspace/src/github.com/fsouza/go-dockerclient/client.go b/Godeps/_workspace/src/github.com/fsouza/go-dockerclient/client.go
+index 3a7d755..d25bc42 100644
+--- a/Godeps/_workspace/src/github.com/fsouza/go-dockerclient/client.go
++++ b/Godeps/_workspace/src/github.com/fsouza/go-dockerclient/client.go
+@@ -586,7 +586,7 @@ func (c *Client) hijack(method, path string, hijackOptions hijackOptions) (Close
+ 	if err != nil {
+ 		return nil, err
+ 	}
+-	req.Header.Set("Content-Type", "plain/text")
++	req.Header.Set("Content-Type", "application/json")
+ 	req.Header.Set("Connection", "Upgrade")
+ 	req.Header.Set("Upgrade", "tcp")
+ 	protocol := c.endpointURL.Scheme
+-- 
+1.9.3
+

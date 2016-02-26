@@ -61,7 +61,7 @@
 
 Name:		kubernetes
 Version:	%{kube_version}
-Release:	0.9.alpha6.git%{k8s_shortcommit}%{?dist}
+Release:	0.10.alpha6.git%{k8s_shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -83,6 +83,9 @@ Patch10:        keep-solid-port-for-kube-proxy.patch
 
 # fix Content-Type of docker client response
 Patch11:        github.com-fsouza-go-dockerclient-fix-docker-client.patch
+
+# Drop apiserver command from hyperkube as apiserver has different permisions and capabilities
+Patch12:        un-hyperkube-apiserver.patch
 
 # It obsoletes cadvisor but needs its source code (literally integrated)
 Obsoletes:      cadvisor
@@ -611,17 +614,21 @@ cp -r ../%{k8s_repo}-%{k8s_commit}/docs/man docs/.
 # copy LICENSE and *.md
 cp ../%{k8s_repo}-%{k8s_commit}/LICENSE .
 cp ../%{k8s_repo}-%{k8s_commit}/*.md .
+# copy hyperkube
+cp -r ../%{k8s_repo}-%{k8s_commit}/cmd/hyperkube cmd/.
 
 %patch2 -p1
 
 %patch11 -p1
+# Drop apiserver from hyperkube
+%patch12 -p1
 
 %build
 export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
 export KUBE_GIT_VERSION=%{kube_git_version}
 
-hack/build-go.sh --use_go_build cmd/kube-apiserver cmd/kube-controller-manager plugin/cmd/kube-scheduler cmd/kubelet cmd/kube-proxy cmd/kubectl
+hack/build-go.sh --use_go_build cmd/hyperkube cmd/kube-apiserver
 
 # convert md to man
 pushd docs
@@ -638,11 +645,18 @@ kube::golang::setup_env
 
 output_path="${KUBE_OUTPUT_BINPATH}/$(kube::golang::current_platform)"
 
-binaries=(kube-apiserver kube-controller-manager kube-scheduler kube-proxy kubelet kubectl)
 install -m 755 -d %{buildroot}%{_bindir}
+
+echo "+++ INSTALLING hyperkube"
+install -p -m 755 -t %{buildroot}%{_bindir} ${output_path}/hyperkube
+
+echo "+++ INSTALLING kube-apiserver"
+install -p -m 754 -t %{buildroot}%{_bindir} ${output_path}/kube-apiserver
+
+binaries=(kube-controller-manager kube-scheduler kube-proxy kubelet kubectl)
 for bin in "${binaries[@]}"; do
-  echo "+++ INSTALLING ${bin}"
-  install -p -m 755 -t %{buildroot}%{_bindir} ${output_path}/${bin}
+  echo "+++ HARDLINKING ${bin} to hyperkube"
+  ln %{buildroot}%{_bindir}/hyperkube %{buildroot}%{_bindir}/${bin}
 done
 
 # install the bash completion
@@ -727,6 +741,7 @@ fi
 %attr(754, -, kube) %caps(cap_net_bind_service=ep) %{_bindir}/kube-apiserver
 %{_bindir}/kube-controller-manager
 %{_bindir}/kube-scheduler
+%{_bindir}/hyperkube
 %{_unitdir}/kube-apiserver.service
 %{_unitdir}/kube-controller-manager.service
 %{_unitdir}/kube-scheduler.service
@@ -744,6 +759,7 @@ fi
 %{_mandir}/man1/kube-proxy.1*
 %{_bindir}/kubelet
 %{_bindir}/kube-proxy
+%{_bindir}/hyperkube
 %{_unitdir}/kube-proxy.service
 %{_unitdir}/kubelet.service
 %dir %{_sharedstatedir}/kubelet
@@ -759,6 +775,7 @@ fi
 %{_mandir}/man1/kubectl.1*
 %{_mandir}/man1/kubectl-*
 %{_bindir}/kubectl
+%{_bindir}/hyperkube
 %{_datadir}/bash-completion/completions/kubectl
 
 %files unit-test
@@ -800,6 +817,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Fri Feb 26 2016 jchaloup <jchaloup@redhat.com> - 1.2.0-0.10.alpha6.gitf0cd09a
+- Hardlink kube-controller-manager, kuber-scheduler, kubectl, kubelet and kube-proxy into hyperkube
+- Keep kube-apiserver binary as it is (it has different permission and capabilities)
+
 * Thu Feb 25 2016 jchaloup <jchaloup@redhat.com> - 1.2.0-0.9.alpha6.gitf0cd09a
 - Fix Content-Type of docker client response
   resolves: #1311861

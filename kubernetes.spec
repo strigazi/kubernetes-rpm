@@ -61,7 +61,7 @@
 
 Name:		kubernetes
 Version:	%{kube_version}
-Release:	0.10.alpha6.git%{k8s_shortcommit}%{?dist}
+Release:	0.11.alpha6.git%{k8s_shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -85,7 +85,8 @@ Patch10:        keep-solid-port-for-kube-proxy.patch
 Patch11:        github.com-fsouza-go-dockerclient-fix-docker-client.patch
 
 # Drop apiserver command from hyperkube as apiserver has different permisions and capabilities
-Patch12:        un-hyperkube-apiserver.patch
+# Add kube-prefix for controller-manager, proxy and scheduler
+Patch12:        remove-apiserver-add-kube-prefix-for-hyperkube.patch
 
 # It obsoletes cadvisor but needs its source code (literally integrated)
 Obsoletes:      cadvisor
@@ -817,6 +818,9 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Fri Feb 26 2016 jchaloup <jchaloup@redhat.com> - 1.2.0-0.11.alpha6.gitf0cd09a
+- add kube- prefix to controller-manager, proxy and scheduler
+
 * Fri Feb 26 2016 jchaloup <jchaloup@redhat.com> - 1.2.0-0.10.alpha6.gitf0cd09a
 - Hardlink kube-controller-manager, kuber-scheduler, kubectl, kubelet and kube-proxy into hyperkube
 - Keep kube-apiserver binary as it is (it has different permission and capabilities)

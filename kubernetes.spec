@@ -61,7 +61,7 @@
 
 Name:		kubernetes
 Version:	%{kube_version}
-Release:	0.11.alpha6.git%{k8s_shortcommit}%{?dist}
+Release:	0.12.alpha6.git%{k8s_shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -87,6 +87,8 @@ Patch11:        github.com-fsouza-go-dockerclient-fix-docker-client.patch
 # Drop apiserver command from hyperkube as apiserver has different permisions and capabilities
 # Add kube-prefix for controller-manager, proxy and scheduler
 Patch12:        remove-apiserver-add-kube-prefix-for-hyperkube.patch
+
+Patch13:        disable-v1beta3.patch
 
 # It obsoletes cadvisor but needs its source code (literally integrated)
 Obsoletes:      cadvisor
@@ -624,6 +626,8 @@ cp -r ../%{k8s_repo}-%{k8s_commit}/cmd/hyperkube cmd/.
 # Drop apiserver from hyperkube
 %patch12 -p1
 
+%patch13 -p1
+
 %build
 export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
@@ -818,6 +822,9 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Mon Feb 29 2016 jchaloup <jchaloup@redhat.com> - 1.2.0-0.12.alpha6.gitf0cd09a
+- Disable v1beta3
+
 * Fri Feb 26 2016 jchaloup <jchaloup@redhat.com> - 1.2.0-0.11.alpha6.gitf0cd09a
 - add kube- prefix to controller-manager, proxy and scheduler
 

@@ -61,7 +61,7 @@
 
 Name:		kubernetes
 Version:	%{kube_version}
-Release:	0.12.alpha6.git%{k8s_shortcommit}%{?dist}
+Release:	0.13.alpha6.git%{k8s_shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -90,6 +90,7 @@ Patch12:        remove-apiserver-add-kube-prefix-for-hyperkube.patch
 
 Patch13:        disable-v1beta3.patch
 Patch14:        hyperkube-kubectl-dont-shift-os.Args.patch
+Patch15:        s.Flags-does-not-carry-all-flags-of-individual-optio.patch
 
 # It obsoletes cadvisor but needs its source code (literally integrated)
 Obsoletes:      cadvisor
@@ -629,6 +630,7 @@ cp -r ../%{k8s_repo}-%{k8s_commit}/cmd/hyperkube cmd/.
 
 %patch13 -p1
 %patch14 -p1
+%patch15 -p1
 
 %build
 export KUBE_GIT_TREE_STATE="clean"
@@ -824,6 +826,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Tue Mar 01 2016 jchaloup <jchaloup@redhat.com> - 1.2.0-0.13.alpha6.gitf0cd09a
+- Hyperkube checks flags of individual commands/servers even if it does not define their flags.
+  Thus resulting in 'uknown shorthand flag' error
+
 * Mon Feb 29 2016 jchaloup <jchaloup@redhat.com> - 1.2.0-0.12.alpha6.gitf0cd09a
 - Disable v1beta3
 - hyperkube-kubectl-dont shift os.Args

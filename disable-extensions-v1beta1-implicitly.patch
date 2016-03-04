@@ -1,0 +1,25 @@
+From a7be0ef7004dfbabd59a63223ff9e0d7bf24bfd6 Mon Sep 17 00:00:00 2001
+From: Jan Chaloupka <jchaloup@redhat.com>
+Date: Fri, 4 Mar 2016 13:56:08 +0100
+Subject: [PATCH] disable extensions/v1beta1 implicitly
+
+---
+ cmd/kube-apiserver/app/server.go | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/cmd/kube-apiserver/app/server.go b/cmd/kube-apiserver/app/server.go
+index 71cdf66..14c1ae0 100644
+--- a/cmd/kube-apiserver/app/server.go
++++ b/cmd/kube-apiserver/app/server.go
+@@ -443,7 +443,7 @@ func parseRuntimeConfig(s *options.APIServer) (map[string]genericapiserver.APIGr
+ 	disableExtensions := disableAllAPIs
+ 	extensionsGroupVersion := "extensions/v1beta1"
+ 	// TODO: Make this a loop over all group/versions when there are more of them.
+-	disableExtensions = !getRuntimeConfigValue(s, extensionsGroupVersion, !disableExtensions)
++	disableExtensions = !getRuntimeConfigValue(s, extensionsGroupVersion, disableExtensions)
+ 	if disableExtensions {
+ 		apiGroupVersionOverrides[extensionsGroupVersion] = genericapiserver.APIGroupVersionOverride{
+ 			Disable: true,
+-- 
+1.9.3
+

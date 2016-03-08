@@ -61,7 +61,7 @@
 
 Name:		kubernetes
 Version:	%{kube_version}
-Release:	0.14.alpha6.git%{k8s_shortcommit}%{?dist}
+Release:	0.15.alpha6.git%{k8s_shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -90,7 +90,7 @@ Patch12:        remove-apiserver-add-kube-prefix-for-hyperkube.patch
 
 Patch13:        disable-v1beta3.patch
 Patch14:        hyperkube-kubectl-dont-shift-os.Args.patch
-Patch15:        s.Flags-does-not-carry-all-flags-of-individual-optio.patch
+Patch15:        hyperkube.server-don-t-parse-args-for-any-command.patch
 Patch16:        disable-extensions-v1beta1-implicitly.patch
 
 # It obsoletes cadvisor but needs its source code (literally integrated)
@@ -830,6 +830,9 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Tue Mar 08 2016 jchaloup <jchaloup@redhat.com> - 1.2.0-0.15.alpha6.gitf0cd09a
+- hyperkube.server: don't parse args for any command
+
 * Fri Mar 04 2016 jchaloup <jchaloup@redhat.com> - 1.2.0-0.14.alpha6.gitf0cd09a
 - Disable extensions/v1beta1 implicitly
 

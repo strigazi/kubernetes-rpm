@@ -21,7 +21,7 @@
 # https://github.com/openshift/origin
 %global provider_prefix	%{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     k8s.io/kubernetes
-%global commit		cffae0523cfa80ddf917aba69f08508b91f603d5
+%global commit		847f33723fe799c202a6bb6c24dc60b89294f80d
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 %global openshift_ip    github.com/openshift/origin
@@ -33,7 +33,7 @@
 # https://github.com/kubernetes/kubernetes
 %global k8s_provider_prefix %{k8s_provider}.%{k8s_provider_tld}/%{k8s_project}/%{k8s_repo}
 # commit picked from openshift/kubernetes although it is available on kubernetes/kubernetes as well
-%global k8s_commit      f0cd09aabeeeab1780911c8023203993fd421946
+%global k8s_commit      4a3f9c5b19c7ff804cbc1bf37a15c044ca5d2353
 %global k8s_shortcommit %(c=%{k8s_commit}; echo ${c:0:7})
 %global k8s_src_dir     Godeps/_workspace/src/k8s.io/kubernetes/
 %global k8s_src_dir_sed Godeps\\/_workspace\\/src\\/k8s\\.io\\/kubernetes\\/
@@ -44,13 +44,13 @@
 %global con_repo            contrib
 # https://github.com/kubernetes/contrib
 %global con_provider_prefix %{con_provider}.%{con_provider_tld}/%{con_project}/%{con_repo}
-%global con_commit      125f050150ef45b31e6b671d269bb69dc93541e5
+%global con_commit      18bb93d3509bd13a15639969c8b0ebe39a7f9b50
 %global con_shortcommit %(c=%{con_commit}; echo ${c:0:7})
 
 %global O4N_GIT_MAJOR_VERSION 1
 %global O4N_GIT_MINOR_VERSION 1+
-%global O4N_GIT_VERSION       v1.1.3
-%global K8S_GIT_VERSION       v1.2.0-alpha.6-714-gf0cd09aabeeeab
+%global O4N_GIT_VERSION       v1.1.5
+%global K8S_GIT_VERSION       v1.2.0-36-g4a3f9c5b19c7ff
 %global kube_version          1.2.0
 %global kube_git_version      v%{kube_version}
 
@@ -61,11 +61,11 @@
 
 Name:		kubernetes
 Version:	%{kube_version}
-Release:	0.15.alpha6.git%{k8s_shortcommit}%{?dist}
+Release:	0.16.alpha6.git%{k8s_shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
-ExclusiveArch:  x86_64
+ExclusiveArch:  x86_64 ppc64le
 Source0:        https://%{provider_prefix}/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
 Source1:        https://%{k8s_provider_prefix}/archive/%{k8s_commit}/%{k8s_repo}-%{k8s_shortcommit}.tar.gz
 Source2:        https://%{con_provider_prefix}/archive/%{con_commit}/%{con_repo}-%{con_shortcommit}.tar.gz
@@ -78,11 +78,6 @@ Patch4:         internal-to-inteernal.patch
 Patch5:         0001-internal-inteernal.patch
 
 Patch9:         hack-test-cmd.sh.patch
-# Due to k8s 5d08dcf8377e76f2ce303dc79404f511ebef82e3
-Patch10:        keep-solid-port-for-kube-proxy.patch
-
-# fix Content-Type of docker client response
-Patch11:        github.com-fsouza-go-dockerclient-fix-docker-client.patch
 
 # Drop apiserver command from hyperkube as apiserver has different permisions and capabilities
 # Add kube-prefix for controller-manager, proxy and scheduler
@@ -584,8 +579,6 @@ Kubernetes client tools like kubectl
 %endif
 # Hack test-cmd.sh to be run with os binaries
 %patch9 -p1
-# Keep solid port for kube-proxy
-%patch10 -p1
 
 %setup -q -n %{con_repo}-%{con_commit} -T -b 2
 %setup -q -n %{repo}-%{commit}
@@ -625,7 +618,6 @@ cp -r ../%{k8s_repo}-%{k8s_commit}/cmd/hyperkube cmd/.
 
 %patch2 -p1
 
-%patch11 -p1
 # Drop apiserver from hyperkube
 %patch12 -p1
 
@@ -830,6 +822,11 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Wed Mar 30 2016 jchaloup <jchaloup@redhat.com> - 1.2.0-0.16.alpha6.git4a3f9c5
+  Update to origin's v1.1.5
+  Build on ppc64le as well
+  resolves: #1306214
+
 * Tue Mar 08 2016 jchaloup <jchaloup@redhat.com> - 1.2.0-0.15.alpha6.gitf0cd09a
 - hyperkube.server: don't parse args for any command
 

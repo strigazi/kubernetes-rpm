@@ -61,7 +61,7 @@
 
 Name:		kubernetes
 Version:	%{kube_version}
-Release:	0.16.alpha6.git%{k8s_shortcommit}%{?dist}
+Release:	0.17.alpha6.git%{k8s_shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -86,7 +86,6 @@ Patch12:        remove-apiserver-add-kube-prefix-for-hyperkube.patch
 Patch13:        disable-v1beta3.patch
 Patch14:        hyperkube-kubectl-dont-shift-os.Args.patch
 Patch15:        hyperkube.server-don-t-parse-args-for-any-command.patch
-Patch16:        disable-extensions-v1beta1-implicitly.patch
 
 # It obsoletes cadvisor but needs its source code (literally integrated)
 Obsoletes:      cadvisor
@@ -625,8 +624,7 @@ cp -r ../%{k8s_repo}-%{k8s_commit}/cmd/hyperkube cmd/.
 %patch14 -p1
 %patch15 -p1
 
-# disable extensions/v1beta1 implicitly
-%patch16 -p1
+pwd
 
 %build
 export KUBE_GIT_TREE_STATE="clean"
@@ -822,6 +820,9 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Mon Apr 11 2016 jchaloup <jchaloup@redhat.com> - 1.2.0-0.17.alpha6.git4a3f9c5
+- Don't disable extensions/v1beta1 by default to conform with upstream documentation
+
 * Wed Mar 30 2016 jchaloup <jchaloup@redhat.com> - 1.2.0-0.16.alpha6.git4a3f9c5
   Update to origin's v1.1.5
   Build on ppc64le as well

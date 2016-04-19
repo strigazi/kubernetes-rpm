@@ -21,7 +21,7 @@
 # https://github.com/openshift/origin
 %global provider_prefix	%{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     k8s.io/kubernetes
-%global commit		847f33723fe799c202a6bb6c24dc60b89294f80d
+%global commit		ef1caba064de975387860175c3138aad432cf356
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 %global openshift_ip    github.com/openshift/origin
@@ -49,7 +49,7 @@
 
 %global O4N_GIT_MAJOR_VERSION 1
 %global O4N_GIT_MINOR_VERSION 1+
-%global O4N_GIT_VERSION       v1.1.5
+%global O4N_GIT_VERSION       v1.1.6
 %global K8S_GIT_VERSION       v1.2.0-36-g4a3f9c5b19c7ff
 %global kube_version          1.2.0
 %global kube_git_version      v%{kube_version}
@@ -61,7 +61,7 @@
 
 Name:		kubernetes
 Version:	%{kube_version}
-Release:	0.17.alpha6.git%{k8s_shortcommit}%{?dist}
+Release:	0.18.git%{k8s_shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -820,6 +820,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Tue Apr 19 2016 jchaloup <jchaloup@redhat.com> - 1.2.0-0.18.git4a3f9c5
+- Bump to origin v1.1.6
+  resolves: #1328357
+
 * Mon Apr 11 2016 jchaloup <jchaloup@redhat.com> - 1.2.0-0.17.alpha6.git4a3f9c5
 - Don't disable extensions/v1beta1 by default to conform with upstream documentation
 

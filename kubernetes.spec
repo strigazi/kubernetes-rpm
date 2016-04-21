@@ -61,7 +61,7 @@
 
 Name:		kubernetes
 Version:	%{kube_version}
-Release:	0.18.git%{k8s_shortcommit}%{?dist}
+Release:	0.19.git%{k8s_shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -86,6 +86,9 @@ Patch12:        remove-apiserver-add-kube-prefix-for-hyperkube.patch
 Patch13:        disable-v1beta3.patch
 Patch14:        hyperkube-kubectl-dont-shift-os.Args.patch
 Patch15:        hyperkube.server-don-t-parse-args-for-any-command.patch
+
+# ppc64le
+Patch16:        fix-support-for-ppc64le.patch
 
 # It obsoletes cadvisor but needs its source code (literally integrated)
 Obsoletes:      cadvisor
@@ -624,6 +627,10 @@ cp -r ../%{k8s_repo}-%{k8s_commit}/cmd/hyperkube cmd/.
 %patch14 -p1
 %patch15 -p1
 
+%ifarch ppc64le
+%patch16 -p1
+%endif
+
 pwd
 
 %build
@@ -646,7 +653,11 @@ popd
 . hack/lib/init.sh
 kube::golang::setup_env
 
+%ifarch ppc64le
+output_path="${KUBE_OUTPUT_BINPATH}"
+%else
 output_path="${KUBE_OUTPUT_BINPATH}/$(kube::golang::current_platform)"
+%endif
 
 install -m 755 -d %{buildroot}%{_bindir}
 
@@ -820,6 +831,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Thu Apr 21 2016 jchaloup <jchaloup@redhat.com> - 1.2.0-0.19.git4a3f9c5
+- Fix support for ppc64le
+  related: #1306214
+
 * Tue Apr 19 2016 jchaloup <jchaloup@redhat.com> - 1.2.0-0.18.git4a3f9c5
 - Bump to origin v1.1.6
   resolves: #1328357

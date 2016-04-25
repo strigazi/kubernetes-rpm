@@ -61,7 +61,7 @@
 
 Name:		kubernetes
 Version:	%{kube_version}
-Release:	0.19.git%{k8s_shortcommit}%{?dist}
+Release:	0.20.git%{k8s_shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -831,6 +831,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Mon Apr 25 2016 jchaloup <jchaloup@redhat.com> - 1.2.0-0.20.git4a3f9c5
+- Update support for ppc64le to use go compiler
+  related: #1306214
+
 * Thu Apr 21 2016 jchaloup <jchaloup@redhat.com> - 1.2.0-0.19.git4a3f9c5
 - Fix support for ppc64le
   related: #1306214

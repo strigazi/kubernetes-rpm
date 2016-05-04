@@ -61,7 +61,7 @@
 
 Name:		kubernetes
 Version:	%{kube_version}
-Release:	0.20.git%{k8s_shortcommit}%{?dist}
+Release:	0.21.git%{k8s_shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -717,10 +717,14 @@ sort -u -o devel.file-list devel.file-list
 # place files for unit-test rpm
 install -d -m 0755 %{buildroot}%{_sharedstatedir}/kubernetes-unit-test/
 pushd ../%{k8s_repo}-%{k8s_commit}
-# only files for hack/test-cmd.sh atm
-for d in docs examples hack cluster; do
+# basically, everything from the root directory is needed
+# unit-tests needs source code
+# integration tests needs docs and other files
+# test-cmd.sh atm needs cluster, examples and other
+for d in $(ls -d */); do
   cp -a $d %{buildroot}%{_sharedstatedir}/kubernetes-unit-test/
 done
+cp -a *.md %{buildroot}%{_sharedstatedir}/kubernetes-unit-test/
 popd
 
 %check
@@ -831,6 +835,9 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Wed May 04 2016 jchaloup <jchaloup@redhat.com> - 1.2.0-0.21.git4a3f9c5
+- Extend uni-test subpackage to run other tests
+
 * Mon Apr 25 2016 jchaloup <jchaloup@redhat.com> - 1.2.0-0.20.git4a3f9c5
 - Update support for ppc64le to use go compiler
   related: #1306214

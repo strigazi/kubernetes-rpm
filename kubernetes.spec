@@ -21,7 +21,7 @@
 # https://github.com/openshift/origin
 %global provider_prefix	%{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     k8s.io/kubernetes
-%global commit		ef1caba064de975387860175c3138aad432cf356
+%global commit		2e62fabf9639c792410e98a9a1414937d4b786c9
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 %global openshift_ip    github.com/openshift/origin
@@ -48,8 +48,8 @@
 %global con_shortcommit %(c=%{con_commit}; echo ${c:0:7})
 
 %global O4N_GIT_MAJOR_VERSION 1
-%global O4N_GIT_MINOR_VERSION 1+
-%global O4N_GIT_VERSION       v1.1.6
+%global O4N_GIT_MINOR_VERSION 2
+%global O4N_GIT_VERSION       v1.2.0
 %global K8S_GIT_VERSION       v1.2.0-36-g4a3f9c5b19c7ff
 %global kube_version          1.2.0
 %global kube_git_version      v%{kube_version}
@@ -61,7 +61,7 @@
 
 Name:		kubernetes
 Version:	%{kube_version}
-Release:	0.21.git%{k8s_shortcommit}%{?dist}
+Release:	0.22.git%{k8s_shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -835,6 +835,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Sat May 28 2016 jchaloup <jchaloup@redhat.com> - 1.2.0-0.22.git4a3f9c5
+- Bump to origin v1.2.0
+  resolves: #1340643
+
 * Wed May 04 2016 jchaloup <jchaloup@redhat.com> - 1.2.0-0.21.git4a3f9c5
 - Extend uni-test subpackage to run other tests
 

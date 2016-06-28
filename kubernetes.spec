@@ -61,7 +61,7 @@
 
 Name:		kubernetes
 Version:	%{kube_version}
-Release:	0.22.git%{k8s_shortcommit}%{?dist}
+Release:	0.23.git%{k8s_shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -696,6 +696,8 @@ install -d %{buildroot}%{_sharedstatedir}/kubelet
 # place contrib/init/systemd/tmpfiles.d/kubernetes.conf to /usr/lib/tmpfiles.d/kubernetes.conf
 install -d -m 0755 %{buildroot}%{_tmpfilesdir}
 install -p -m 0644 -t %{buildroot}/%{_tmpfilesdir} contrib/init/systemd/tmpfiles.d/kubernetes.conf
+mkdir -p %{buildroot}/run
+install -d -m 0755 %{buildroot}/run/%{name}/
 
 # source codes for building projects
 %if 0%{?with_devel}
@@ -769,6 +771,7 @@ fi
 %config(noreplace) %{_sysconfdir}/%{name}/config
 %config(noreplace) %{_sysconfdir}/%{name}/controller-manager
 %{_tmpfilesdir}/kubernetes.conf
+%verify(not size mtime md5) %attr(755, kube,kube) %dir /run/%{name}
 
 %files node
 %license LICENSE
@@ -786,6 +789,7 @@ fi
 %config(noreplace) %{_sysconfdir}/%{name}/kubelet
 %config(noreplace) %{_sysconfdir}/%{name}/proxy
 %{_tmpfilesdir}/kubernetes.conf
+%verify(not size mtime md5) %attr(755, kube,kube) %dir /run/%{name}
 
 %files client
 %license LICENSE
@@ -835,6 +839,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Tue Jun 28 2016 jchaloup <jchaloup@redhat.com> - 1.2.0-0.23.git4a3f9c5
+- Own /run/kubernetes directory
+  resolves: #1264699
+
 * Sat May 28 2016 jchaloup <jchaloup@redhat.com> - 1.2.0-0.22.git4a3f9c5
 - Bump to origin v1.2.0
   resolves: #1340643

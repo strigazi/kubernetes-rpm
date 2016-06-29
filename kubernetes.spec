@@ -61,7 +61,7 @@
 
 Name:		kubernetes
 Version:	%{kube_version}
-Release:	0.23.git%{k8s_shortcommit}%{?dist}
+Release:	0.24.git%{k8s_shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -504,7 +504,9 @@ Provides: golang(%{import_path}/plugin/pkg/scheduler/metrics) = %{version}-%{rel
 Provides: golang(%{import_path}/test/e2e) = %{version}-%{release}
 
 %description devel
-%{summary}
+Libraries for building packages importing k8s.io/kubernetes.
+Currently, the devel is not suitable for development.
+It is meant only as a buildtime dependency for other projects.
 
 This package contains library source intended for
 building other packages which use %{project}/%{repo}.
@@ -839,6 +841,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Wed Jun 29 2016 jchaloup <jchaloup@redhat.com> - 1.2.0-0.24.git4a3f9c5
+- Be more verbose about devel subpackage
+  resolves: #1269449
+
 * Tue Jun 28 2016 jchaloup <jchaloup@redhat.com> - 1.2.0-0.23.git4a3f9c5
 - Own /run/kubernetes directory
   resolves: #1264699

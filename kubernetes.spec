@@ -61,7 +61,7 @@
 
 Name:		kubernetes
 Version:	%{kube_version}
-Release:	0.24.git%{k8s_shortcommit}%{?dist}
+Release:	0.25.git%{k8s_shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -69,6 +69,7 @@ ExclusiveArch:  x86_64 ppc64le
 Source0:        https://%{provider_prefix}/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
 Source1:        https://%{k8s_provider_prefix}/archive/%{k8s_commit}/%{k8s_repo}-%{k8s_shortcommit}.tar.gz
 Source2:        https://%{con_provider_prefix}/archive/%{con_commit}/%{con_repo}-%{con_shortcommit}.tar.gz
+Source3:        kubernetes-accounting.conf
 
 Source33:       genmanpages.sh
 Patch2:         Change-etcd-server-port.patch
@@ -701,6 +702,10 @@ install -p -m 0644 -t %{buildroot}/%{_tmpfilesdir} contrib/init/systemd/tmpfiles
 mkdir -p %{buildroot}/run
 install -d -m 0755 %{buildroot}/run/%{name}/
 
+# enable CPU and Memory accounting
+install -d -m 0755 %{buildroot}/%{_sysconfdir}/systemd/system.conf.d
+install -p -m 0644 -t %{buildroot}/%{_sysconfdir}/systemd/system.conf.d %{SOURCE3}
+
 # source codes for building projects
 %if 0%{?with_devel}
 install -d -p %{buildroot}/%{gopath}/src/%{import_path}/
@@ -790,6 +795,7 @@ fi
 %config(noreplace) %{_sysconfdir}/%{name}/config
 %config(noreplace) %{_sysconfdir}/%{name}/kubelet
 %config(noreplace) %{_sysconfdir}/%{name}/proxy
+%config(noreplace) %{_sysconfdir}/systemd/system.conf.d/kubernetes-accounting.conf
 %{_tmpfilesdir}/kubernetes.conf
 %verify(not size mtime md5) %attr(755, kube,kube) %dir /run/%{name}
 
@@ -833,6 +839,10 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 
 %post node
 %systemd_post kubelet kube-proxy
+# If accounting is not currently enabled systemd reexec
+if [[ `systemctl show docker kubelet | grep -q -e CPUAccounting=no -e MemoryAccounting=no; echo $?` -eq 0 ]]; then
+  systemctl daemon-reexec
+fi
 
 %preun node
 %systemd_preun kubelet kube-proxy
@@ -841,6 +851,9 @@ getent passwd kube >/dev/null || useradd -r -g kube -d / -s /sbin/nologin \
 %systemd_postun
 
 %changelog
+* Wed Jul 13 2016 jchaloup <jchaloup@redhat.com> - 1.2.0-0.25.git4a3f9c5
+- Enable CPU and Memory accounting on a node
+
 * Wed Jun 29 2016 jchaloup <jchaloup@redhat.com> - 1.2.0-0.24.git4a3f9c5
 - Be more verbose about devel subpackage
   resolves: #1269449

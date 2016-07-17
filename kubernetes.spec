@@ -21,7 +21,7 @@
 # https://github.com/openshift/origin
 %global provider_prefix	%{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     k8s.io/kubernetes
-%global commit		2e62fabf9639c792410e98a9a1414937d4b786c9
+%global commit		5e723f67f1e36d387a8a7faa6aa8a7f40cc9ca46
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 %global openshift_ip    github.com/openshift/origin
@@ -49,7 +49,7 @@
 
 %global O4N_GIT_MAJOR_VERSION 1
 %global O4N_GIT_MINOR_VERSION 2
-%global O4N_GIT_VERSION       v1.2.0
+%global O4N_GIT_VERSION       v1.2.1
 %global K8S_GIT_VERSION       v1.2.0-36-g4a3f9c5b19c7ff
 %global kube_version          1.2.0
 %global kube_git_version      v%{kube_version}
@@ -61,7 +61,7 @@
 
 Name:		kubernetes
 Version:	%{kube_version}
-Release:	0.25.git%{k8s_shortcommit}%{?dist}
+Release:	0.26.git%{k8s_shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -851,6 +851,10 @@ fi
 %systemd_postun
 
 %changelog
+* Sun Jul 17 2016 jchaloup <jchaloup@redhat.com> - 1.2.0-0.26.git4a3f9c5
+- Update to origin v1.2.1
+  resolves: #1357261
+
 * Wed Jul 13 2016 jchaloup <jchaloup@redhat.com> - 1.2.0-0.25.git4a3f9c5
 - Enable CPU and Memory accounting on a node
 

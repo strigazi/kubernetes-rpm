@@ -61,7 +61,7 @@
 
 Name:		kubernetes
 Version:	%{kube_version}
-Release:	0.26.git%{k8s_shortcommit}%{?dist}
+Release:	0.27.git%{k8s_shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -851,6 +851,9 @@ fi
 %systemd_postun
 
 %changelog
+* Thu Jul 21 2016 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.2.0-0.27.git4a3f9c5
+- https://fedoraproject.org/wiki/Changes/golang1.7
+
 * Sun Jul 17 2016 jchaloup <jchaloup@redhat.com> - 1.2.0-0.26.git4a3f9c5
 - Update to origin v1.2.1
   resolves: #1357261

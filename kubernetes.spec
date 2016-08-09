@@ -21,7 +21,7 @@
 # https://github.com/openshift/origin
 %global provider_prefix	%{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     k8s.io/kubernetes
-%global commit		5e723f67f1e36d387a8a7faa6aa8a7f40cc9ca46
+%global commit		7998ae49782d89d17c78104d07a98d2aea704ae3
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 %global openshift_ip    github.com/openshift/origin
@@ -33,7 +33,7 @@
 # https://github.com/kubernetes/kubernetes
 %global k8s_provider_prefix %{k8s_provider}.%{k8s_provider_tld}/%{k8s_project}/%{k8s_repo}
 # commit picked from openshift/kubernetes although it is available on kubernetes/kubernetes as well
-%global k8s_commit      4a3f9c5b19c7ff804cbc1bf37a15c044ca5d2353
+%global k8s_commit      507d3a7b242634b131710cfdfd55e3a1531ffb1b
 %global k8s_shortcommit %(c=%{k8s_commit}; echo ${c:0:7})
 %global k8s_src_dir     Godeps/_workspace/src/k8s.io/kubernetes/
 %global k8s_src_dir_sed Godeps\\/_workspace\\/src\\/k8s\\.io\\/kubernetes\\/
@@ -44,14 +44,14 @@
 %global con_repo            contrib
 # https://github.com/kubernetes/contrib
 %global con_provider_prefix %{con_provider}.%{con_provider_tld}/%{con_project}/%{con_repo}
-%global con_commit      18bb93d3509bd13a15639969c8b0ebe39a7f9b50
+%global con_commit      17c9a8df1be43378b0026dc22f6000a3e9952a18
 %global con_shortcommit %(c=%{con_commit}; echo ${c:0:7})
 
 %global O4N_GIT_MAJOR_VERSION 1
-%global O4N_GIT_MINOR_VERSION 2
-%global O4N_GIT_VERSION       v1.2.1
-%global K8S_GIT_VERSION       v1.2.0-36-g4a3f9c5b19c7ff
-%global kube_version          1.2.0
+%global O4N_GIT_MINOR_VERSION 3
+%global O4N_GIT_VERSION       v1.3.0-alpha.3
+%global K8S_GIT_VERSION       v1.3.0-114-g507d3a7
+%global kube_version          1.3.0
 %global kube_git_version      v%{kube_version}
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
@@ -61,7 +61,7 @@
 
 Name:		kubernetes
 Version:	%{kube_version}
-Release:	0.27.git%{k8s_shortcommit}%{?dist}
+Release:	0.1.git%{k8s_shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -75,18 +75,13 @@ Source33:       genmanpages.sh
 Patch2:         Change-etcd-server-port.patch
 Patch3:         build-with-debug-info.patch
 
-Patch4:         internal-to-inteernal.patch
-Patch5:         0001-internal-inteernal.patch
-
 Patch9:         hack-test-cmd.sh.patch
 
 # Drop apiserver command from hyperkube as apiserver has different permisions and capabilities
 # Add kube-prefix for controller-manager, proxy and scheduler
 Patch12:        remove-apiserver-add-kube-prefix-for-hyperkube.patch
 
-Patch13:        disable-v1beta3.patch
-Patch14:        hyperkube-kubectl-dont-shift-os.Args.patch
-Patch15:        hyperkube.server-don-t-parse-args-for-any-command.patch
+Patch17:        Hyperkube-remove-federation-cmds.patch
 
 # ppc64le
 Patch16:        fix-support-for-ppc64le.patch
@@ -589,16 +584,14 @@ Kubernetes client tools like kubectl
 %setup -q -n %{repo}-%{commit}
 
 # clean the directory up to Godeps
+mkdir -p Godeps/_workspace/src
+mv vendor/* Godeps/_workspace/src/.
 dirs=$(ls | grep -v "^Godeps")
 rm -rf $dirs
 
-# internal -> inteernal
-%patch4 -p1
-%patch5 -p1
-
-# move k8s code from Godeps
+## move k8s code from Godeps
 mv Godeps/_workspace/src/k8s.io/kubernetes/* .
-# copy missing source code
+## copy missing source code
 cp ../%{k8s_repo}-%{k8s_commit}/cmd/kube-apiserver/apiserver.go cmd/kube-apiserver/.
 cp ../%{k8s_repo}-%{k8s_commit}/cmd/kube-controller-manager/controller-manager.go cmd/kube-controller-manager/.
 cp ../%{k8s_repo}-%{k8s_commit}/cmd/kubelet/kubelet.go cmd/kubelet/.
@@ -626,20 +619,22 @@ cp -r ../%{k8s_repo}-%{k8s_commit}/cmd/hyperkube cmd/.
 # Drop apiserver from hyperkube
 %patch12 -p1
 
-%patch13 -p1
-%patch14 -p1
-%patch15 -p1
-
 %ifarch ppc64le
 %patch16 -p1
 %endif
 
-pwd
+# Move all the code under src/k8s.io/kubernetes directory
+mkdir -p src/k8s.io/kubernetes
+mv $(ls | grep -v "^src$") src/k8s.io/kubernetes/.
+
+%patch17 -p1
 
 %build
+pushd src/k8s.io/kubernetes/
 export KUBE_GIT_TREE_STATE="clean"
 export KUBE_GIT_COMMIT=%{commit}
 export KUBE_GIT_VERSION=%{kube_git_version}
+export KUBE_EXTRA_GOPATH=$(pwd)/Godeps/_workspace
 
 hack/build-go.sh --use_go_build cmd/hyperkube cmd/kube-apiserver
 
@@ -651,8 +646,10 @@ popd
 cp %{SOURCE33} genmanpages.sh
 bash genmanpages.sh
 popd
+popd
 
 %install
+pushd src/k8s.io/kubernetes/
 . hack/lib/init.sh
 kube::golang::setup_env
 
@@ -678,7 +675,7 @@ done
 
 # install the bash completion
 install -d -m 0755 %{buildroot}%{_datadir}/bash-completion/completions/
-install -t %{buildroot}%{_datadir}/bash-completion/completions/ contrib/completions/bash/kubectl
+%{buildroot}%{_bindir}/kubectl completion bash > %{buildroot}%{_datadir}/bash-completion/completions/kubectl
 
 # install config files
 install -d -m 0755 %{buildroot}%{_sysconfdir}/%{name}
@@ -723,8 +720,15 @@ done
 sort -u -o devel.file-list devel.file-list
 %endif
 
+popd
+mv src/k8s.io/kubernetes/devel.file-list .
+mv src/k8s.io/kubernetes/*.md .
+mv src/k8s.io/kubernetes/LICENSE .
+
+
 # place files for unit-test rpm
 install -d -m 0755 %{buildroot}%{_sharedstatedir}/kubernetes-unit-test/
+# TODO(jchaloup): Take source from origin and fill the remaining from kube to be correct
 pushd ../%{k8s_repo}-%{k8s_commit}
 # basically, everything from the root directory is needed
 # unit-tests needs source code
@@ -851,6 +855,10 @@ fi
 %systemd_postun
 
 %changelog
+* Tue Aug 09 2016 jchaloup <jchaloup@redhat.com> - 1.3.0-0.1.git4a3f9c5
+- Update to origin v1.3.0-alpha.3
+  resolves: #1365601
+
 * Thu Jul 21 2016 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.2.0-0.27.git4a3f9c5
 - https://fedoraproject.org/wiki/Changes/golang1.7
 

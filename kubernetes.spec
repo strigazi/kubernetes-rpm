@@ -61,11 +61,11 @@
 
 Name:		kubernetes
 Version:	%{kube_version}
-Release:	0.1.git%{k8s_shortcommit}%{?dist}
+Release:	0.2.git%{k8s_shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
-ExclusiveArch:  x86_64 ppc64le
+ExclusiveArch:  x86_64 ppc64le %{arm} aarch64
 Source0:        https://%{provider_prefix}/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
 Source1:        https://%{k8s_provider_prefix}/archive/%{k8s_commit}/%{k8s_repo}-%{k8s_shortcommit}.tar.gz
 Source2:        https://%{con_provider_prefix}/archive/%{con_commit}/%{con_repo}-%{con_shortcommit}.tar.gz
@@ -855,6 +855,9 @@ fi
 %systemd_postun
 
 %changelog
+* Thu Aug 11 2016 Dennis Gilmore <dennis@ausil.us> -1.3.0-0.2.git4a3f9c5
+- enable armv7hl and aarch64
+
 * Tue Aug 09 2016 jchaloup <jchaloup@redhat.com> - 1.3.0-0.1.git4a3f9c5
 - Update to origin v1.3.0-alpha.3
   resolves: #1365601

@@ -33,7 +33,7 @@
 # https://github.com/kubernetes/kubernetes
 %global k8s_provider_prefix %{k8s_provider}.%{k8s_provider_tld}/%{k8s_project}/%{k8s_repo}
 # commit picked from openshift/kubernetes although it is available on kubernetes/kubernetes as well
-%global k8s_commit      507d3a7b242634b131710cfdfd55e3a1531ffb1b
+%global k8s_commit      52492b4bff99ef3b8ca617d385a3ff0612f9402d
 %global k8s_shortcommit %(c=%{k8s_commit}; echo ${c:0:7})
 %global k8s_src_dir     Godeps/_workspace/src/k8s.io/kubernetes/
 %global k8s_src_dir_sed Godeps\\/_workspace\\/src\\/k8s\\.io\\/kubernetes\\/

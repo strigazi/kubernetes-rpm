@@ -21,7 +21,7 @@
 # https://github.com/openshift/origin
 %global provider_prefix	%{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     k8s.io/kubernetes
-%global commit		884520c98e75d0f96e679959b28caf17f0e7fa29
+%global commit		274842360258d4f6ea1d3ec19559ecd395fd4d4f
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 %global openshift_ip    github.com/openshift/origin
@@ -49,7 +49,7 @@
 
 %global O4N_GIT_MAJOR_VERSION 1
 %global O4N_GIT_MINOR_VERSION 3
-%global O4N_GIT_VERSION       v1.3.0-rc1
+%global O4N_GIT_VERSION       v1.3.1
 %global K8S_GIT_VERSION       v1.3.0-178-g52492b4
 %global kube_version          1.3.0
 %global kube_git_version      v%{kube_version}
@@ -61,7 +61,7 @@
 
 Name:		kubernetes
 Version:	%{kube_version}
-Release:	0.3.rc1.git%{k8s_shortcommit}%{?dist}
+Release:	0.4.git%{k8s_shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -1076,6 +1076,10 @@ fi
 %systemd_postun
 
 %changelog
+* Mon Oct 24 2016 jchaloup <jchaloup@redhat.com> - 1.3.0-0.4.git52492b4
+- Update to origin v1.3.1
+  resolves: #1388092
+
 * Thu Sep 08 2016 jchaloup <jchaloup@redhat.com> - 1.3.0-0.3.rc1.git507d3a7
 - Update to origin v1.3.0-rc1
   resolves: #1374361

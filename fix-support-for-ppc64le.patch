@@ -1,18 +1,32 @@
-From 6411e1eadd49426cf0379cea6c3d8c517508b2af Mon Sep 17 00:00:00 2001
+From 4c48494437165bd59081c621e66af462355ee9a1 Mon Sep 17 00:00:00 2001
 From: Jan Chaloupka <jchaloup@redhat.com>
-Date: Thu, 11 Aug 2016 10:28:21 +0200
-Subject: [PATCH] fix-support-for-ppc64le
+Date: Mon, 31 Oct 2016 13:39:52 +0100
+Subject: [PATCH] fix support for ppc64le
 
 ---
- hack/lib/golang.sh | 3 ---
- hack/lib/init.sh   | 2 +-
- 2 files changed, 1 insertion(+), 4 deletions(-)
+ src/k8s.io/kubernetes/Makefile           | 2 +-
+ src/k8s.io/kubernetes/hack/lib/golang.sh | 3 ---
+ src/k8s.io/kubernetes/hack/lib/init.sh   | 2 +-
+ 3 files changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/hack/lib/golang.sh b/hack/lib/golang.sh
-index 00325a4..10f13fc 100755
---- a/hack/lib/golang.sh
-+++ b/hack/lib/golang.sh
-@@ -237,9 +237,6 @@ kube::golang::set_platform_envs() {
+diff --git a/src/k8s.io/kubernetes/Makefile b/src/k8s.io/kubernetes/Makefile
+index 25318fb..8a4466c 100644
+--- a/src/k8s.io/kubernetes/Makefile
++++ b/src/k8s.io/kubernetes/Makefile
+@@ -39,7 +39,7 @@ MAKEFLAGS += --no-builtin-rules
+ # Constants used throughout.
+ .EXPORT_ALL_VARIABLES:
+ OUT_DIR ?= _output
+-BIN_DIR := $(OUT_DIR)/bin
++BIN_DIR := $(OUT_DIR)/local/go/bin
+ PRJ_SRC_PATH := k8s.io/kubernetes
+ GENERATED_FILE_PREFIX := zz_generated.
+ 
+diff --git a/src/k8s.io/kubernetes/hack/lib/golang.sh b/src/k8s.io/kubernetes/hack/lib/golang.sh
+index c29bf85..385cf6a 100755
+--- a/src/k8s.io/kubernetes/hack/lib/golang.sh
++++ b/src/k8s.io/kubernetes/hack/lib/golang.sh
+@@ -243,9 +243,6 @@ kube::golang::set_platform_envs() {
      elif [[ ${platform} == "linux/arm64" ]]; then
        export CGO_ENABLED=1
        export CC=aarch64-linux-gnu-gcc
@@ -22,11 +36,11 @@ index 00325a4..10f13fc 100755
      fi
    fi
  }
-diff --git a/hack/lib/init.sh b/hack/lib/init.sh
-index c6446ac..843fba7 100644
---- a/hack/lib/init.sh
-+++ b/hack/lib/init.sh
-@@ -23,7 +23,7 @@ KUBE_ROOT=$(cd $(dirname "${BASH_SOURCE}")/../.. && pwd -P)
+diff --git a/src/k8s.io/kubernetes/hack/lib/init.sh b/src/k8s.io/kubernetes/hack/lib/init.sh
+index e0934fb..b5883cf 100644
+--- a/src/k8s.io/kubernetes/hack/lib/init.sh
++++ b/src/k8s.io/kubernetes/hack/lib/init.sh
+@@ -23,7 +23,7 @@ KUBE_ROOT="$(cd "$(dirname "${BASH_SOURCE}")/../.." && pwd -P)"
  
  KUBE_OUTPUT_SUBPATH="${KUBE_OUTPUT_SUBPATH:-_output/local}"
  KUBE_OUTPUT="${KUBE_ROOT}/${KUBE_OUTPUT_SUBPATH}"

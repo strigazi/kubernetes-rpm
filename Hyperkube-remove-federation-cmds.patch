@@ -1,12 +1,13 @@
-From 903b2d011823b603a7f39b29ed309967ed8ea42a Mon Sep 17 00:00:00 2001
+From eae0054ace62d8cabc02c1cd233b77c224dccc59 Mon Sep 17 00:00:00 2001
 From: Jan Chaloupka <jchaloup@redhat.com>
-Date: Mon, 31 Oct 2016 09:17:21 +0100
+Date: Mon, 31 Oct 2016 12:16:40 +0100
 Subject: [PATCH] remove federation cmds
 
 ---
  .../cmd/hyperkube/federation-apiserver.go          | 38 ----------------------
  .../cmd/hyperkube/federation-controller-manager.go | 38 ----------------------
- 2 files changed, 76 deletions(-)
+ src/k8s.io/kubernetes/cmd/hyperkube/main.go        |  4 ---
+ 3 files changed, 80 deletions(-)
  delete mode 100644 src/k8s.io/kubernetes/cmd/hyperkube/federation-apiserver.go
  delete mode 100644 src/k8s.io/kubernetes/cmd/hyperkube/federation-controller-manager.go
 
@@ -98,6 +99,20 @@ index e445f87..0000000
 -	s.AddFlags(hks.Flags())
 -	return &hks
 -}
+diff --git a/src/k8s.io/kubernetes/cmd/hyperkube/main.go b/src/k8s.io/kubernetes/cmd/hyperkube/main.go
+index 48dea32..24316df 100644
+--- a/src/k8s.io/kubernetes/cmd/hyperkube/main.go
++++ b/src/k8s.io/kubernetes/cmd/hyperkube/main.go
+@@ -40,9 +40,5 @@ func main() {
+ 	hk.AddServer(NewKubelet())
+ 	hk.AddServer(NewKubeProxy())
+ 
+-	//Federation servers
+-	hk.AddServer(NewFederationAPIServer())
+-	hk.AddServer(NewFederationCMServer())
+-
+ 	hk.RunToExit(os.Args)
+ }
 -- 
 1.9.3
 

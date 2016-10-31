@@ -65,7 +65,7 @@ Release:	0.1.beta3.git%{k8s_shortcommit}%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
-ExclusiveArch:  x86_64 ppc64le %{arm} aarch64
+ExclusiveArch:  x86_64 aarch64
 Source0:        https://%{provider_prefix}/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
 Source1:        https://%{k8s_provider_prefix}/archive/%{k8s_commit}/%{k8s_repo}-%{k8s_shortcommit}.tar.gz
 Source2:        https://%{con_provider_prefix}/archive/%{con_commit}/%{con_repo}-%{con_shortcommit}.tar.gz
@@ -865,14 +865,12 @@ Kubernetes client tools like kubectl
 %setup -q -n %{con_repo}-%{con_commit} -T -b 2
 %setup -q -n %{repo}-%{commit}
 
-# clean the directory up to Godeps
-mkdir -p Godeps/_workspace/src
-mv vendor/* Godeps/_workspace/src/.
-dirs=$(ls | grep -v "^Godeps")
+# clean the directory up to vendor
+dirs=$(ls | grep -v "^vendor")
 rm -rf $dirs
 
 ## move k8s code from Godeps
-mv Godeps/_workspace/src/k8s.io/kubernetes/* .
+mv vendor/k8s.io/kubernetes/* .
 ## copy missing source code
 cp ../%{k8s_repo}-%{k8s_commit}/cmd/kube-apiserver/apiserver.go cmd/kube-apiserver/.
 cp ../%{k8s_repo}-%{k8s_commit}/cmd/kube-controller-manager/controller-manager.go cmd/kube-controller-manager/.
@@ -906,13 +904,13 @@ cp -r ../%{k8s_repo}-%{k8s_commit}/test .
 # Drop apiserver from hyperkube
 %patch12 -p1
 
-%ifarch ppc64le
-%patch16 -p1
-%endif
-
 # Move all the code under src/k8s.io/kubernetes directory
 mkdir -p src/k8s.io/kubernetes
 mv $(ls | grep -v "^src$") src/k8s.io/kubernetes/.
+
+%ifarch ppc64le
+%patch16 -p1
+%endif
 
 %patch17 -p1
 
@@ -923,7 +921,7 @@ export KUBE_GIT_COMMIT=%{commit}
 export KUBE_GIT_VERSION=%{kube_git_version}
 export KUBE_EXTRA_GOPATH=$(pwd)/Godeps/_workspace
 
-hack/build-go.sh --use_go_build cmd/hyperkube cmd/kube-apiserver
+make WHAT="--use_go_build cmd/hyperkube cmd/kube-apiserver"
 
 # convert md to man
 pushd docs
@@ -1143,7 +1141,7 @@ fi
 
 %changelog
 * Mon Oct 31 2016 jchaloup <jchaloup@redhat.com> - 1.4.0-0.1.beta3.git52492b4
-- Update to origin v1.4.0-alpha.0
+- Update to origin v1.4.0-alpha.0 (ppc64le and arm unbuildable with the current golang version)
   resolves: #1390074
 
 * Mon Oct 24 2016 jchaloup <jchaloup@redhat.com> - 1.3.0-0.4.git52492b4

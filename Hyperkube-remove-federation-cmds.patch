@@ -1,24 +1,23 @@
-From e4c178a4046e92cb9d5a57319345355f51b0b7f3 Mon Sep 17 00:00:00 2001
+From 903b2d011823b603a7f39b29ed309967ed8ea42a Mon Sep 17 00:00:00 2001
 From: Jan Chaloupka <jchaloup@redhat.com>
-Date: Wed, 10 Aug 2016 09:50:03 +0200
-Subject: [PATCH] Hyperkube: remove federation cmds
+Date: Mon, 31 Oct 2016 09:17:21 +0100
+Subject: [PATCH] remove federation cmds
 
 ---
  .../cmd/hyperkube/federation-apiserver.go          | 38 ----------------------
  .../cmd/hyperkube/federation-controller-manager.go | 38 ----------------------
- src/k8s.io/kubernetes/cmd/hyperkube/main.go        |  4 ---
- 3 files changed, 80 deletions(-)
+ 2 files changed, 76 deletions(-)
  delete mode 100644 src/k8s.io/kubernetes/cmd/hyperkube/federation-apiserver.go
  delete mode 100644 src/k8s.io/kubernetes/cmd/hyperkube/federation-controller-manager.go
 
 diff --git a/src/k8s.io/kubernetes/cmd/hyperkube/federation-apiserver.go b/src/k8s.io/kubernetes/cmd/hyperkube/federation-apiserver.go
 deleted file mode 100644
-index 6093dc5..0000000
+index 25c0f20..0000000
 --- a/src/k8s.io/kubernetes/cmd/hyperkube/federation-apiserver.go
 +++ /dev/null
 @@ -1,38 +0,0 @@
 -/*
--Copyright 2016 The Kubernetes Authors All rights reserved.
+-Copyright 2016 The Kubernetes Authors.
 -
 -Licensed under the Apache License, Version 2.0 (the "License");
 -you may not use this file except in compliance with the License.
@@ -37,13 +36,13 @@ index 6093dc5..0000000
 -
 -import (
 -	"k8s.io/kubernetes/federation/cmd/federation-apiserver/app"
--	genericoptions "k8s.io/kubernetes/pkg/genericapiserver/options"
+-	"k8s.io/kubernetes/federation/cmd/federation-apiserver/app/options"
 -)
 -
 -// NewFederationAPIServer creates a new hyperkube Server object that includes the
 -// description and flags.
 -func NewFederationAPIServer() *Server {
--	s := genericoptions.NewServerRunOptions()
+-	s := options.NewServerRunOptions()
 -
 -	hks := Server{
 -		SimpleUsage: "federation-apiserver",
@@ -57,12 +56,12 @@ index 6093dc5..0000000
 -}
 diff --git a/src/k8s.io/kubernetes/cmd/hyperkube/federation-controller-manager.go b/src/k8s.io/kubernetes/cmd/hyperkube/federation-controller-manager.go
 deleted file mode 100644
-index d7a2af1..0000000
+index e445f87..0000000
 --- a/src/k8s.io/kubernetes/cmd/hyperkube/federation-controller-manager.go
 +++ /dev/null
 @@ -1,38 +0,0 @@
 -/*
--Copyright 2016 The Kubernetes Authors All rights reserved.
+-Copyright 2016 The Kubernetes Authors.
 -
 -Licensed under the Apache License, Version 2.0 (the "License");
 -you may not use this file except in compliance with the License.
@@ -99,20 +98,6 @@ index d7a2af1..0000000
 -	s.AddFlags(hks.Flags())
 -	return &hks
 -}
-diff --git a/src/k8s.io/kubernetes/cmd/hyperkube/main.go b/src/k8s.io/kubernetes/cmd/hyperkube/main.go
-index f0d8a2c..8b060ba 100644
---- a/src/k8s.io/kubernetes/cmd/hyperkube/main.go
-+++ b/src/k8s.io/kubernetes/cmd/hyperkube/main.go
-@@ -37,9 +37,5 @@ func main() {
- 	hk.AddServer(NewKubelet())
- 	hk.AddServer(NewKubeProxy())
- 
--	//Federation servers
--	hk.AddServer(NewFederationAPIServer())
--	hk.AddServer(NewFederationCMServer())
--
- 	hk.RunToExit(os.Args)
- }
 -- 
 1.9.3
 

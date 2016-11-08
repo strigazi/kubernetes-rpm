@@ -16,27 +16,13 @@
 %endif
 %global provider        github
 %global provider_tld    com
-%global project	        openshift
-%global repo            origin
-# https://github.com/openshift/origin
+%global project	        kubernetes
+%global repo            kubernetes
+# https://github.com/kubernetes/kubernetes
 %global provider_prefix	%{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     k8s.io/kubernetes
-%global commit		67479ffd447d68d20e556746d56eb80458b9294c
+%global commit		5a0a696437ad35c133c0c8493f7e9d22b0f9b81b
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
-
-%global openshift_ip    github.com/openshift/origin
-
-%global k8s_provider        github
-%global k8s_provider_tld    com
-%global k8s_project         kubernetes
-%global k8s_repo            kubernetes
-# https://github.com/kubernetes/kubernetes
-%global k8s_provider_prefix %{k8s_provider}.%{k8s_provider_tld}/%{k8s_project}/%{k8s_repo}
-# commit picked from openshift/kubernetes although it is available on kubernetes/kubernetes as well
-%global k8s_commit      d19513fe86f3e0769dd5c4674c093a88a5adb8b4
-%global k8s_shortcommit %(c=%{k8s_commit}; echo ${c:0:7})
-%global k8s_src_dir     Godeps/_workspace/src/k8s.io/kubernetes/
-%global k8s_src_dir_sed Godeps\\/_workspace\\/src\\/k8s\\.io\\/kubernetes\\/
 
 %global con_provider        github
 %global con_provider_tld    com
@@ -47,11 +33,7 @@
 %global con_commit      17c9a8df1be43378b0026dc22f6000a3e9952a18
 %global con_shortcommit %(c=%{con_commit}; echo ${c:0:7})
 
-%global O4N_GIT_MAJOR_VERSION 1
-%global O4N_GIT_MINOR_VERSION 3
-%global O4N_GIT_VERSION       v1.3.1
-%global K8S_GIT_VERSION       v1.4.0-beta.3-45-gd19513f
-%global kube_version          1.4.0
+%global kube_version          1.4.5
 %global kube_git_version      v%{kube_version}
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
@@ -61,14 +43,13 @@
 
 Name:		kubernetes
 Version:	%{kube_version}
-Release:	0.1.beta3.git%{k8s_shortcommit}%{?dist}
+Release:	1%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
 ExclusiveArch:  x86_64 aarch64
 Source0:        https://%{provider_prefix}/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
-Source1:        https://%{k8s_provider_prefix}/archive/%{k8s_commit}/%{k8s_repo}-%{k8s_shortcommit}.tar.gz
-Source2:        https://%{con_provider_prefix}/archive/%{con_commit}/%{con_repo}-%{con_shortcommit}.tar.gz
+Source1:        https://%{con_provider_prefix}/archive/%{con_commit}/%{con_repo}-%{con_shortcommit}.tar.gz
 Source3:        kubernetes-accounting.conf
 
 Source33:       genmanpages.sh
@@ -822,11 +803,7 @@ Kubernetes services for master host
 %package node
 Summary: Kubernetes services for node host
 
-%if 0%{?fedora} >= 21 || 0%{?rhel}
 Requires: docker
-%else
-Requires: docker-io
-%endif
 
 BuildRequires: golang >= 1.2-7
 BuildRequires: systemd
@@ -855,62 +832,41 @@ BuildRequires: go-bindata
 Kubernetes client tools like kubectl
 
 %prep
-%setup -q -n %{k8s_repo}-%{k8s_commit} -T -b 1
+%setup -q -n %{con_repo}-%{con_commit} -T -b 1
+%setup -q -n %{repo}-%{commit}
+
 %if 0%{?with_debug}
 %patch3 -p1
 %endif
 # Hack test-cmd.sh to be run with os binaries
 %patch9 -p1
 
-%setup -q -n %{con_repo}-%{con_commit} -T -b 2
-%setup -q -n %{repo}-%{commit}
-
-# clean the directory up to vendor
-dirs=$(ls | grep -v "^vendor")
-rm -rf $dirs
-
-## move k8s code from Godeps
-mv vendor/k8s.io/kubernetes/* .
-## copy missing source code
-cp ../%{k8s_repo}-%{k8s_commit}/cmd/kube-apiserver/apiserver.go cmd/kube-apiserver/.
-cp ../%{k8s_repo}-%{k8s_commit}/cmd/kube-controller-manager/controller-manager.go cmd/kube-controller-manager/.
-cp ../%{k8s_repo}-%{k8s_commit}/cmd/kubelet/kubelet.go cmd/kubelet/.
-cp ../%{k8s_repo}-%{k8s_commit}/cmd/kube-proxy/proxy.go cmd/kube-proxy/.
-cp ../%{k8s_repo}-%{k8s_commit}/plugin/cmd/kube-scheduler/scheduler.go plugin/cmd/kube-scheduler/.
-cp -r ../%{k8s_repo}-%{k8s_commit}/cmd/kubectl cmd/.
-# copy hack directory
-cp -r ../%{k8s_repo}-%{k8s_commit}/hack .
-cp -r ../%{k8s_repo}-%{k8s_commit}/cluster .
-# copy contrib directory
-cp -r ../%{k8s_repo}-%{k8s_commit}/contrib .
 # copy contrib folder
 cp -r ../%{con_repo}-%{con_commit}/init contrib/.
-# copy docs
-cp -r ../%{k8s_repo}-%{k8s_commit}/docs/admin docs/.
-cp -r ../%{k8s_repo}-%{k8s_commit}/docs/man docs/.
-# copy LICENSE and *.md
-cp ../%{k8s_repo}-%{k8s_commit}/LICENSE .
-cp ../%{k8s_repo}-%{k8s_commit}/*.md .
-# copy hyperkube
-cp -r ../%{k8s_repo}-%{k8s_commit}/cmd/hyperkube cmd/.
-# copy Makefile
-cp ../%{k8s_repo}-%{k8s_commit}/Makefile .
-cp ../%{k8s_repo}-%{k8s_commit}/Makefile.generated_files .
-cp -r ../%{k8s_repo}-%{k8s_commit}/test .
-
 
 %patch2 -p1
 
 # Drop apiserver from hyperkube
 %patch12 -p1
 
-# Move all the code under src/k8s.io/kubernetes directory
-mkdir -p src/k8s.io/kubernetes
-mv $(ls | grep -v "^src$") src/k8s.io/kubernetes/.
+#src/k8s.io/kubernetes/pkg/util/certificates
+# Patch the code to remove eliptic.P224 support
+for dir in vendor/github.com/google/certificate-transparency/go/x509 pkg/util/certificates; do
+	if [ -d "${dir}" ]; then
+		pushd ${dir}
+		sed -i "/^[^=]*$/ s/oidNamedCurveP224/oidNamedCurveP256/g" *.go
+		sed -i "/^[^=]*$/ s/elliptic\.P224/elliptic.P256/g" *.go
+		popd
+	fi
+done
 
 %ifarch ppc64le
 %patch16 -p1
 %endif
+
+# Move all the code under src/k8s.io/kubernetes directory
+mkdir -p src/k8s.io/kubernetes
+mv $(ls | grep -v "^src$") src/k8s.io/kubernetes/.
 
 %patch17 -p1
 
@@ -1013,17 +969,13 @@ mv src/k8s.io/kubernetes/LICENSE .
 
 # place files for unit-test rpm
 install -d -m 0755 %{buildroot}%{_sharedstatedir}/kubernetes-unit-test/
-# TODO(jchaloup): Take source from origin and fill the remaining from kube to be correct
-pushd ../%{k8s_repo}-%{k8s_commit}
 # basically, everything from the root directory is needed
 # unit-tests needs source code
 # integration tests needs docs and other files
 # test-cmd.sh atm needs cluster, examples and other
-for d in $(ls -d */); do
-  cp -a $d %{buildroot}%{_sharedstatedir}/kubernetes-unit-test/
-done
+cp -a src %{buildroot}%{_sharedstatedir}/kubernetes-unit-test/
+rm -rf %{buildroot}%{_sharedstatedir}/kubernetes-unit-test/src/k8s.io/kubernetes/_output
 cp -a *.md %{buildroot}%{_sharedstatedir}/kubernetes-unit-test/
-popd
 
 %check
 # Fedora, RHEL7 and CentOS are tested via unit-test subpackage
@@ -1140,6 +1092,10 @@ fi
 %systemd_postun
 
 %changelog
+* Tue Nov 08 2016 jchaloup <jchaloup@redhat.com> - 1.4.5-1
+- Bump to upstream v1.4.5 (flip back to upstream based Kubernetes)
+  related: #1390074
+
 * Mon Oct 31 2016 jchaloup <jchaloup@redhat.com> - 1.4.0-0.1.beta3.git52492b4
 - Update to origin v1.4.0-alpha.0 (ppc64le and arm unbuildable with the current golang version)
   resolves: #1390074

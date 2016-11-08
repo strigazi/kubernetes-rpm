@@ -1,18 +1,17 @@
-From 4c48494437165bd59081c621e66af462355ee9a1 Mon Sep 17 00:00:00 2001
+From 8e2484a6565ba7237156539ff679909fc1c9c44b Mon Sep 17 00:00:00 2001
 From: Jan Chaloupka <jchaloup@redhat.com>
-Date: Mon, 31 Oct 2016 13:39:52 +0100
+Date: Tue, 8 Nov 2016 14:12:48 +0100
 Subject: [PATCH] fix support for ppc64le
 
 ---
- src/k8s.io/kubernetes/Makefile           | 2 +-
- src/k8s.io/kubernetes/hack/lib/golang.sh | 3 ---
- src/k8s.io/kubernetes/hack/lib/init.sh   | 2 +-
- 3 files changed, 2 insertions(+), 5 deletions(-)
+ Makefile         | 2 +-
+ hack/lib/init.sh | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/src/k8s.io/kubernetes/Makefile b/src/k8s.io/kubernetes/Makefile
-index 25318fb..8a4466c 100644
---- a/src/k8s.io/kubernetes/Makefile
-+++ b/src/k8s.io/kubernetes/Makefile
+diff --git a/Makefile b/Makefile
+index ac10e76..93ca680 100644
+--- a/Makefile
++++ b/Makefile
 @@ -39,7 +39,7 @@ MAKEFLAGS += --no-builtin-rules
  # Constants used throughout.
  .EXPORT_ALL_VARIABLES:
@@ -22,24 +21,10 @@ index 25318fb..8a4466c 100644
  PRJ_SRC_PATH := k8s.io/kubernetes
  GENERATED_FILE_PREFIX := zz_generated.
  
-diff --git a/src/k8s.io/kubernetes/hack/lib/golang.sh b/src/k8s.io/kubernetes/hack/lib/golang.sh
-index c29bf85..385cf6a 100755
---- a/src/k8s.io/kubernetes/hack/lib/golang.sh
-+++ b/src/k8s.io/kubernetes/hack/lib/golang.sh
-@@ -243,9 +243,6 @@ kube::golang::set_platform_envs() {
-     elif [[ ${platform} == "linux/arm64" ]]; then
-       export CGO_ENABLED=1
-       export CC=aarch64-linux-gnu-gcc
--    elif [[ ${platform} == "linux/ppc64le" ]]; then
--      export CGO_ENABLED=1
--      export CC=powerpc64le-linux-gnu-gcc
-     fi
-   fi
- }
-diff --git a/src/k8s.io/kubernetes/hack/lib/init.sh b/src/k8s.io/kubernetes/hack/lib/init.sh
-index e0934fb..b5883cf 100644
---- a/src/k8s.io/kubernetes/hack/lib/init.sh
-+++ b/src/k8s.io/kubernetes/hack/lib/init.sh
+diff --git a/hack/lib/init.sh b/hack/lib/init.sh
+index d2b50d4..dfb4727 100644
+--- a/hack/lib/init.sh
++++ b/hack/lib/init.sh
 @@ -23,7 +23,7 @@ KUBE_ROOT="$(cd "$(dirname "${BASH_SOURCE}")/../.." && pwd -P)"
  
  KUBE_OUTPUT_SUBPATH="${KUBE_OUTPUT_SUBPATH:-_output/local}"

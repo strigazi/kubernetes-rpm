@@ -1,6 +1,6 @@
-From 5136936a3fe1d613818f1e0d42712b33366b6e45 Mon Sep 17 00:00:00 2001
+From 3b905983c09c3ba58d1f81320c03e539cec5ce95 Mon Sep 17 00:00:00 2001
 From: Jan Chaloupka <jchaloup@redhat.com>
-Date: Mon, 31 Oct 2016 09:09:15 +0100
+Date: Tue, 8 Nov 2016 11:58:50 +0100
 Subject: [PATCH] hack hack/test-cmd.sh
 
 ---
@@ -8,7 +8,7 @@ Subject: [PATCH] hack hack/test-cmd.sh
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/hack/lib/init.sh b/hack/lib/init.sh
-index 4aafe51..e0934fb 100644
+index aa01fc1..d2b50d4 100644
 --- a/hack/lib/init.sh
 +++ b/hack/lib/init.sh
 @@ -42,7 +42,7 @@ source "${KUBE_ROOT}/hack/lib/version.sh"
@@ -18,8 +18,8 @@ index 4aafe51..e0934fb 100644
 -KUBE_OUTPUT_HOSTBIN="${KUBE_OUTPUT_BINPATH}/$(kube::util::host_platform)"
 +KUBE_OUTPUT_HOSTBIN="/usr/bin"
  
- # This emulates "readlink -f" which is not available on MacOS X.
- # Test:
+ # list of all available group versions.  This should be used when generated code
+ # or when starting an API server that you want to have everything.
 -- 
 1.9.3
 

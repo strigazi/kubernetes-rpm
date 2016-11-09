@@ -43,7 +43,7 @@
 
 Name:		kubernetes
 Version:	%{kube_version}
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -962,7 +962,11 @@ sort -u -o devel.file-list devel.file-list
 %endif
 
 popd
+
+%if 0%{?with_devel}
 mv src/k8s.io/kubernetes/devel.file-list .
+%endif
+
 mv src/k8s.io/kubernetes/*.md .
 mv src/k8s.io/kubernetes/LICENSE .
 
@@ -1092,6 +1096,10 @@ fi
 %systemd_postun
 
 %changelog
+* Wed Nov 09 2016 jchaloup <jchaloup@redhat.com> - 1.4.5-2
+- Add missing if devel around generated devel.file-list
+  related: #1390074
+
 * Tue Nov 08 2016 jchaloup <jchaloup@redhat.com> - 1.4.5-1
 - Bump to upstream v1.4.5 (flip back to upstream based Kubernetes)
   related: #1390074

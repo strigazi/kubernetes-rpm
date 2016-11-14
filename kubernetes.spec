@@ -43,7 +43,7 @@
 
 Name:		kubernetes
 Version:	%{kube_version}
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -56,7 +56,8 @@ Source33:       genmanpages.sh
 Patch2:         Change-etcd-server-port.patch
 Patch3:         build-with-debug-info.patch
 
-Patch9:         hack-test-cmd.sh.patch
+Patch4:         make-test-cmd-run-over-hyperkube-based-kubectl.patch
+Patch5:         make-e2e_node-run-over-distro-bins.patch
 
 # Drop apiserver command from hyperkube as apiserver has different permisions and capabilities
 # Add kube-prefix for controller-manager, proxy and scheduler
@@ -838,8 +839,6 @@ Kubernetes client tools like kubectl
 %if 0%{?with_debug}
 %patch3 -p1
 %endif
-# Hack test-cmd.sh to be run with os binaries
-%patch9 -p1
 
 # copy contrib folder
 cp -r ../%{con_repo}-%{con_commit}/init contrib/.
@@ -869,6 +868,10 @@ mkdir -p src/k8s.io/kubernetes
 mv $(ls | grep -v "^src$") src/k8s.io/kubernetes/.
 
 %patch17 -p1
+
+# Patch tests to be run over distro bins
+%patch4 -p1
+%patch5 -p1
 
 %build
 pushd src/k8s.io/kubernetes/
@@ -979,7 +982,7 @@ install -d -m 0755 %{buildroot}%{_sharedstatedir}/kubernetes-unit-test/
 # test-cmd.sh atm needs cluster, examples and other
 cp -a src %{buildroot}%{_sharedstatedir}/kubernetes-unit-test/
 rm -rf %{buildroot}%{_sharedstatedir}/kubernetes-unit-test/src/k8s.io/kubernetes/_output
-cp -a *.md %{buildroot}%{_sharedstatedir}/kubernetes-unit-test/
+cp -a *.md %{buildroot}%{_sharedstatedir}/kubernetes-unit-test/src/k8s.io/kubernetes/
 
 %check
 # Fedora, RHEL7 and CentOS are tested via unit-test subpackage
@@ -1096,6 +1099,9 @@ fi
 %systemd_postun
 
 %changelog
+* Mon Nov 14 2016 jchaloup <jchaloup@redhat.com> - 1.4.5-3
+- Patch unit-test subpackage to run tests over k8s distro binaries
+
 * Wed Nov 09 2016 jchaloup <jchaloup@redhat.com> - 1.4.5-2
 - Add missing if devel around generated devel.file-list
   related: #1390074

@@ -47,7 +47,7 @@ Release:	1%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
-ExclusiveArch:  x86_64 aarch64
+ExclusiveArch:  x86_64 aarch64 ppc64le
 Source0:        https://%{provider_prefix}/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
 Source1:        https://%{con_provider_prefix}/archive/%{con_commit}/%{con_repo}-%{con_shortcommit}.tar.gz
 Source3:        kubernetes-accounting.conf
@@ -881,6 +881,10 @@ export KUBE_GIT_COMMIT=%{commit}
 export KUBE_GIT_VERSION=%{kube_git_version}
 export KUBE_EXTRA_GOPATH=$(pwd)/Godeps/_workspace
 
+# https://bugzilla.redhat.com/show_bug.cgi?id=1392922#c1
+%ifarch ppc64le
+export GOLDFLAGS='-linkmode=external'
+%endif
 make WHAT="--use_go_build cmd/hyperkube cmd/kube-apiserver"
 
 # convert md to man
@@ -1104,6 +1108,8 @@ fi
 - Bump to upstream v1.4.7
   resolves: #1403823
   New conntrack-tools dependency of kube-proxy
+  Build kubernetes on ppc64le with linkmode=external
+  resolves: #1392922
 
 * Mon Nov 14 2016 jchaloup <jchaloup@redhat.com> - 1.4.5-3
 - Patch unit-test subpackage to run tests over k8s distro binaries

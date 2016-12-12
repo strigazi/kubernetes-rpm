@@ -21,7 +21,7 @@
 # https://github.com/kubernetes/kubernetes
 %global provider_prefix	%{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     k8s.io/kubernetes
-%global commit		5a0a696437ad35c133c0c8493f7e9d22b0f9b81b
+%global commit		92b4f971662de9d8770f8dcd2ee01ec226a6f6c0
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 %global con_provider        github
@@ -33,7 +33,7 @@
 %global con_commit      17c9a8df1be43378b0026dc22f6000a3e9952a18
 %global con_shortcommit %(c=%{con_commit}; echo ${c:0:7})
 
-%global kube_version          1.4.5
+%global kube_version          1.4.7
 %global kube_git_version      v%{kube_version}
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
@@ -43,7 +43,7 @@
 
 Name:		kubernetes
 Version:	%{kube_version}
-Release:	3%{?dist}
+Release:	1%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -1099,6 +1099,10 @@ fi
 %systemd_postun
 
 %changelog
+* Mon Dec 12 2016 Jan Chaloupka <jchaloup@redhat.com> - 1.4.7-1
+- Bump to upstream v1.4.7
+  resolves: #1403823
+
 * Mon Nov 14 2016 jchaloup <jchaloup@redhat.com> - 1.4.5-3
 - Patch unit-test subpackage to run tests over k8s distro binaries
 

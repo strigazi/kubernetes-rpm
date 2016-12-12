@@ -805,6 +805,7 @@ Kubernetes services for master host
 Summary: Kubernetes services for node host
 
 Requires: docker
+Requires: conntrack-tools
 
 BuildRequires: golang >= 1.2-7
 BuildRequires: systemd
@@ -1102,6 +1103,7 @@ fi
 * Mon Dec 12 2016 Jan Chaloupka <jchaloup@redhat.com> - 1.4.7-1
 - Bump to upstream v1.4.7
   resolves: #1403823
+  New conntrack-tools dependency of kube-proxy
 
 * Mon Nov 14 2016 jchaloup <jchaloup@redhat.com> - 1.4.5-3
 - Patch unit-test subpackage to run tests over k8s distro binaries

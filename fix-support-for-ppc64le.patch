@@ -1,12 +1,13 @@
-From 8e2484a6565ba7237156539ff679909fc1c9c44b Mon Sep 17 00:00:00 2001
+From a6a2f155a96ba2c38ebd5caac78b37871a8db923 Mon Sep 17 00:00:00 2001
 From: Jan Chaloupka <jchaloup@redhat.com>
-Date: Tue, 8 Nov 2016 14:12:48 +0100
+Date: Wed, 4 Jan 2017 22:16:08 +0100
 Subject: [PATCH] fix support for ppc64le
 
 ---
  Makefile         | 2 +-
  hack/lib/init.sh | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ hack/lib/util.sh | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/Makefile b/Makefile
 index ac10e76..93ca680 100644
@@ -22,7 +23,7 @@ index ac10e76..93ca680 100644
  GENERATED_FILE_PREFIX := zz_generated.
  
 diff --git a/hack/lib/init.sh b/hack/lib/init.sh
-index d2b50d4..dfb4727 100644
+index aa01fc1..5dfc1f1 100644
 --- a/hack/lib/init.sh
 +++ b/hack/lib/init.sh
 @@ -23,7 +23,7 @@ KUBE_ROOT="$(cd "$(dirname "${BASH_SOURCE}")/../.." && pwd -P)"
@@ -34,6 +35,19 @@ index d2b50d4..dfb4727 100644
  
  # Set no_proxy for localhost if behind a proxy, otherwise, 
  # the connections to localhost in scripts will time out
+diff --git a/hack/lib/util.sh b/hack/lib/util.sh
+index 549f6f0..c18e6e7 100755
+--- a/hack/lib/util.sh
++++ b/hack/lib/util.sh
+@@ -168,7 +168,7 @@ kube::util::find-binary() {
+   local lookfor="${1}"
+   local host_platform="$(kube::util::host_platform)"
+   local locations=(
+-    "${KUBE_ROOT}/_output/bin/${lookfor}"
++    "${KUBE_ROOT}/_output/local/go/bin/${lookfor}"
+     "${KUBE_ROOT}/_output/dockerized/bin/${host_platform}/${lookfor}"
+     "${KUBE_ROOT}/_output/local/bin/${host_platform}/${lookfor}"
+     "${KUBE_ROOT}/platforms/${host_platform}/${lookfor}"
 -- 
-1.9.3
+2.7.4
 

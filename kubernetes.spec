@@ -43,7 +43,7 @@
 
 Name:		kubernetes
 Version:	%{kube_version}
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -68,8 +68,12 @@ Patch17:        Hyperkube-remove-federation-cmds.patch
 # ppc64le
 Patch16:        fix-support-for-ppc64le.patch
 
+Patch18:        get-rid-of-the-git-commands-in-mungedocs.patch
+
 # It obsoletes cadvisor but needs its source code (literally integrated)
 Obsoletes:      cadvisor
+
+BuildRequires:  tree
 
 # kubernetes is decomposed into master and node subpackages
 # require both of them for updates
@@ -874,6 +878,8 @@ mv $(ls | grep -v "^src$") src/k8s.io/kubernetes/.
 %patch4 -p1
 %patch5 -p1
 
+%patch18 -p1
+
 %build
 pushd src/k8s.io/kubernetes/
 export KUBE_GIT_TREE_STATE="clean"
@@ -888,6 +894,7 @@ export GOLDFLAGS='-linkmode=external'
 make WHAT="--use_go_build cmd/hyperkube cmd/kube-apiserver"
 
 # convert md to man
+./hack/generate-docs.sh
 pushd docs
 pushd admin
 cp kube-apiserver.md kube-controller-manager.md kube-proxy.md kube-scheduler.md kubelet.md ..
@@ -1104,6 +1111,10 @@ fi
 %systemd_postun
 
 %changelog
+* Wed Jan 04 2017 Jan Chaloupka <jchaloup@redhat.com> - 1.4.7-2
+- Generate the md files before they are converted to man pages
+  resolves: #1409943
+
 * Mon Dec 12 2016 Jan Chaloupka <jchaloup@redhat.com> - 1.4.7-1
 - Bump to upstream v1.4.7
   resolves: #1403823

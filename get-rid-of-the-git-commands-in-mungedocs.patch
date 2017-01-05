@@ -1,34 +1,14 @@
-From b9bbf8481ef5a2150093279ab8dde7174b58743c Mon Sep 17 00:00:00 2001
+From d1e796b3e56b6f3237913cc6b57b6d5918bcac63 Mon Sep 17 00:00:00 2001
 From: Jan Chaloupka <jchaloup@redhat.com>
-Date: Wed, 4 Jan 2017 17:15:52 +0100
+Date: Thu, 5 Jan 2017 10:06:38 +0100
 Subject: [PATCH] get rid of the git commands in mungedocs
 
 ---
- src/k8s.io/kubernetes/cmd/mungedocs/mungedocs.go | 7 +------
- src/k8s.io/kubernetes/hack/update-munge-docs.sh  | 2 +-
- 2 files changed, 2 insertions(+), 7 deletions(-)
+ src/k8s.io/kubernetes/hack/update-munge-docs.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/src/k8s.io/kubernetes/cmd/mungedocs/mungedocs.go b/src/k8s.io/kubernetes/cmd/mungedocs/mungedocs.go
-index 628ca55..83034b4 100644
---- a/src/k8s.io/kubernetes/cmd/mungedocs/mungedocs.go
-+++ b/src/k8s.io/kubernetes/cmd/mungedocs/mungedocs.go
-@@ -217,13 +217,8 @@ func main() {
- 		os.Exit(2)
- 	}
- 
--	absRootDir, err := filepath.Abs(*rootDir)
--	if err != nil {
--		fmt.Fprintf(os.Stderr, "ERROR: %v\n", err)
--		os.Exit(2)
--	}
- 	inJenkins = len(os.Getenv("JENKINS_HOME")) != 0
--	out, err := exec.Command("git", "ls-tree", "-r", "--name-only", fmt.Sprintf("%s/%s", *upstream, latestReleaseBranch), absRootDir).CombinedOutput()
-+	out, err := exec.Command("tree", "-f", "-i").CombinedOutput()
- 	if err != nil {
- 		if inJenkins {
- 			fmt.Fprintf(os.Stderr, "output: %s,\nERROR: %v\n", out, err)
 diff --git a/src/k8s.io/kubernetes/hack/update-munge-docs.sh b/src/k8s.io/kubernetes/hack/update-munge-docs.sh
-index 1bc71c6..493954a 100755
+index 4fa8d18..ec18685 100755
 --- a/src/k8s.io/kubernetes/hack/update-munge-docs.sh
 +++ b/src/k8s.io/kubernetes/hack/update-munge-docs.sh
 @@ -21,7 +21,7 @@ set -o pipefail

@@ -21,7 +21,7 @@
 # https://github.com/kubernetes/kubernetes
 %global provider_prefix	%{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     k8s.io/kubernetes
-%global commit		92b4f971662de9d8770f8dcd2ee01ec226a6f6c0
+%global commit		82450d03cb057bab0950214ef122b67c83fb11df
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 %global con_provider        github
@@ -33,7 +33,7 @@
 %global con_commit      17c9a8df1be43378b0026dc22f6000a3e9952a18
 %global con_shortcommit %(c=%{con_commit}; echo ${c:0:7})
 
-%global kube_version          1.4.7
+%global kube_version          1.5.1
 %global kube_git_version      v%{kube_version}
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
@@ -43,7 +43,7 @@
 
 Name:		kubernetes
 Version:	%{kube_version}
-Release:	2%{?dist}
+Release:	1%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -72,8 +72,6 @@ Patch18:        get-rid-of-the-git-commands-in-mungedocs.patch
 
 # It obsoletes cadvisor but needs its source code (literally integrated)
 Obsoletes:      cadvisor
-
-BuildRequires:  tree
 
 # kubernetes is decomposed into master and node subpackages
 # require both of them for updates
@@ -846,6 +844,7 @@ Kubernetes client tools like kubectl
 %endif
 
 # copy contrib folder
+mkdir contrib
 cp -r ../%{con_repo}-%{con_commit}/init contrib/.
 
 %patch2 -p1
@@ -864,10 +863,6 @@ for dir in vendor/github.com/google/certificate-transparency/go/x509 pkg/util/ce
 	fi
 done
 
-%ifarch ppc64le
-%patch16 -p1
-%endif
-
 # Move all the code under src/k8s.io/kubernetes directory
 mkdir -p src/k8s.io/kubernetes
 mv $(ls | grep -v "^src$") src/k8s.io/kubernetes/.
@@ -879,6 +874,10 @@ mv $(ls | grep -v "^src$") src/k8s.io/kubernetes/.
 %patch5 -p1
 
 %patch18 -p1
+
+%ifarch ppc64le
+%patch16 -p1
+%endif
 
 %build
 pushd src/k8s.io/kubernetes/
@@ -894,7 +893,7 @@ export GOLDFLAGS='-linkmode=external'
 make WHAT="--use_go_build cmd/hyperkube cmd/kube-apiserver"
 
 # convert md to man
-./hack/generate-docs.sh
+./hack/generate-docs.sh || true
 pushd docs
 pushd admin
 cp kube-apiserver.md kube-controller-manager.md kube-proxy.md kube-scheduler.md kubelet.md ..
@@ -910,7 +909,7 @@ pushd src/k8s.io/kubernetes/
 kube::golang::setup_env
 
 %ifarch ppc64le
-output_path="${KUBE_OUTPUT_BINPATH}"
+output_path="_output/local/go/bin"
 %else
 output_path="${KUBE_OUTPUT_BINPATH}/$(kube::golang::current_platform)"
 %endif
@@ -1111,6 +1110,10 @@ fi
 %systemd_postun
 
 %changelog
+* Thu Jan 05 2017 Jan Chaloupka <jchaloup@redhat.com> - 1.5.1-1
+- Bump to upstream 1.5.1
+  resolves: #1410186
+
 * Wed Jan 04 2017 Jan Chaloupka <jchaloup@redhat.com> - 1.4.7-2
 - Generate the md files before they are converted to man pages
   resolves: #1409943

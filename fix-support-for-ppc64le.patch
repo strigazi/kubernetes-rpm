@@ -1,18 +1,18 @@
-From a6a2f155a96ba2c38ebd5caac78b37871a8db923 Mon Sep 17 00:00:00 2001
+From 2bdaa87387d7d02afb52ccc0fee1f0f017ce5ecc Mon Sep 17 00:00:00 2001
 From: Jan Chaloupka <jchaloup@redhat.com>
-Date: Wed, 4 Jan 2017 22:16:08 +0100
+Date: Thu, 5 Jan 2017 12:21:39 +0100
 Subject: [PATCH] fix support for ppc64le
 
 ---
- Makefile         | 2 +-
- hack/lib/init.sh | 2 +-
- hack/lib/util.sh | 2 +-
+ src/k8s.io/kubernetes/Makefile         | 2 +-
+ src/k8s.io/kubernetes/hack/lib/init.sh | 2 +-
+ src/k8s.io/kubernetes/hack/lib/util.sh | 2 +-
  3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/Makefile b/Makefile
-index ac10e76..93ca680 100644
---- a/Makefile
-+++ b/Makefile
+diff --git a/src/k8s.io/kubernetes/Makefile b/src/k8s.io/kubernetes/Makefile
+index bce3533..e2f2bf9 100644
+--- a/src/k8s.io/kubernetes/Makefile
++++ b/src/k8s.io/kubernetes/Makefile
 @@ -39,7 +39,7 @@ MAKEFLAGS += --no-builtin-rules
  # Constants used throughout.
  .EXPORT_ALL_VARIABLES:
@@ -22,32 +22,32 @@ index ac10e76..93ca680 100644
  PRJ_SRC_PATH := k8s.io/kubernetes
  GENERATED_FILE_PREFIX := zz_generated.
  
-diff --git a/hack/lib/init.sh b/hack/lib/init.sh
-index aa01fc1..5dfc1f1 100644
---- a/hack/lib/init.sh
-+++ b/hack/lib/init.sh
-@@ -23,7 +23,7 @@ KUBE_ROOT="$(cd "$(dirname "${BASH_SOURCE}")/../.." && pwd -P)"
+diff --git a/src/k8s.io/kubernetes/hack/lib/init.sh b/src/k8s.io/kubernetes/hack/lib/init.sh
+index 0a601ac..68029e2 100644
+--- a/src/k8s.io/kubernetes/hack/lib/init.sh
++++ b/src/k8s.io/kubernetes/hack/lib/init.sh
+@@ -42,7 +42,7 @@ source "${KUBE_ROOT}/hack/lib/version.sh"
+ source "${KUBE_ROOT}/hack/lib/golang.sh"
+ source "${KUBE_ROOT}/hack/lib/etcd.sh"
  
- KUBE_OUTPUT_SUBPATH="${KUBE_OUTPUT_SUBPATH:-_output/local}"
- KUBE_OUTPUT="${KUBE_ROOT}/${KUBE_OUTPUT_SUBPATH}"
--KUBE_OUTPUT_BINPATH="${KUBE_OUTPUT}/bin"
-+KUBE_OUTPUT_BINPATH="${KUBE_OUTPUT}/go/bin"
+-KUBE_OUTPUT_HOSTBIN="/usr/bin"
++KUBE_OUTPUT_HOSTBIN="${KUBE_OUTPUT_BINPATH}/go/bin"
  
- # Set no_proxy for localhost if behind a proxy, otherwise, 
- # the connections to localhost in scripts will time out
-diff --git a/hack/lib/util.sh b/hack/lib/util.sh
-index 549f6f0..c18e6e7 100755
---- a/hack/lib/util.sh
-+++ b/hack/lib/util.sh
-@@ -168,7 +168,7 @@ kube::util::find-binary() {
-   local lookfor="${1}"
-   local host_platform="$(kube::util::host_platform)"
-   local locations=(
+ # list of all available group versions.  This should be used when generated code
+ # or when starting an API server that you want to have everything.
+diff --git a/src/k8s.io/kubernetes/hack/lib/util.sh b/src/k8s.io/kubernetes/hack/lib/util.sh
+index ada6e34..5911b65 100755
+--- a/src/k8s.io/kubernetes/hack/lib/util.sh
++++ b/src/k8s.io/kubernetes/hack/lib/util.sh
+@@ -168,7 +168,7 @@ kube::util::find-binary-for-platform() {
+   local -r lookfor="$1"
+   local -r platform="$2"
+   local -r locations=(
 -    "${KUBE_ROOT}/_output/bin/${lookfor}"
 +    "${KUBE_ROOT}/_output/local/go/bin/${lookfor}"
-     "${KUBE_ROOT}/_output/dockerized/bin/${host_platform}/${lookfor}"
-     "${KUBE_ROOT}/_output/local/bin/${host_platform}/${lookfor}"
-     "${KUBE_ROOT}/platforms/${host_platform}/${lookfor}"
+     "${KUBE_ROOT}/_output/dockerized/bin/${platform}/${lookfor}"
+     "${KUBE_ROOT}/_output/local/bin/${platform}/${lookfor}"
+     "${KUBE_ROOT}/platforms/${platform}/${lookfor}"
 -- 
 2.7.4
 

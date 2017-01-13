@@ -21,7 +21,7 @@
 # https://github.com/kubernetes/kubernetes
 %global provider_prefix	%{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     k8s.io/kubernetes
-%global commit		82450d03cb057bab0950214ef122b67c83fb11df
+%global commit		08e099554f3c31f6e6f07b448ab3ed78d0520507
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 %global con_provider        github
@@ -43,7 +43,7 @@
 
 Name:		kubernetes
 Version:	%{kube_version}
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -1110,6 +1110,10 @@ fi
 %systemd_postun
 
 %changelog
+* Fri Jan 13 2017 Jan Chaloupka <jchaloup@redhat.com> - 1.5.1-2
+- Bump to upstream 1.5.2
+  resolves: #1412996
+
 * Thu Jan 05 2017 Jan Chaloupka <jchaloup@redhat.com> - 1.5.1-1
 - Bump to upstream 1.5.1
   resolves: #1410186

@@ -33,7 +33,7 @@
 %global con_commit      17c9a8df1be43378b0026dc22f6000a3e9952a18
 %global con_shortcommit %(c=%{con_commit}; echo ${c:0:7})
 
-%global kube_version          1.5.1
+%global kube_version          1.5.2
 %global kube_git_version      v%{kube_version}
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
@@ -43,7 +43,7 @@
 
 Name:		kubernetes
 Version:	%{kube_version}
-Release:	2%{?dist}
+Release:	1%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -1110,6 +1110,10 @@ fi
 %systemd_postun
 
 %changelog
+* Fri Jan 13 2017 Jan Chaloupka <jchaloup@redhat.com> - 1.5.2-1
+- Bump version as well
+  related: #1412996
+
 * Fri Jan 13 2017 Jan Chaloupka <jchaloup@redhat.com> - 1.5.1-2
 - Bump to upstream 1.5.2
   resolves: #1412996

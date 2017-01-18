@@ -1,0 +1,28 @@
+From 0f3b86f1e6dc9fc9700702b140ad1304cacd63bb Mon Sep 17 00:00:00 2001
+From: Jan Chaloupka <jchaloup@redhat.com>
+Date: Wed, 18 Jan 2017 08:58:03 +0100
+Subject: [PATCH] fix rootScopeNaming generate selfLink issue #37686
+
+---
+ src/k8s.io/kubernetes/pkg/apiserver/api_installer.go | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/src/k8s.io/kubernetes/pkg/apiserver/api_installer.go b/src/k8s.io/kubernetes/pkg/apiserver/api_installer.go
+index eaf6e23..1cd91fc 100644
+--- a/src/k8s.io/kubernetes/pkg/apiserver/api_installer.go
++++ b/src/k8s.io/kubernetes/pkg/apiserver/api_installer.go
+@@ -799,7 +799,10 @@ func (n rootScopeNaming) GenerateLink(req *restful.Request, obj runtime.Object)
+ 			return "", err
+ 		}
+ 	}
+-	return n.pathPrefix + url.QueryEscape(name) + n.pathSuffix, nil
++	if len(n.pathSuffix) == 0 {
++		return n.pathPrefix + "/" + url.QueryEscape(name), nil
++	}
++	return n.pathPrefix + "/" + url.QueryEscape(name) + "/" + n.pathSuffix, nil
+ }
+ 
+ // GenerateListLink returns the appropriate path and query to locate a list by its canonical path.
+-- 
+2.7.4
+

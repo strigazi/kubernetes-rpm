@@ -43,7 +43,7 @@
 
 Name:		kubernetes
 Version:	%{kube_version}
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            %{import_path}
@@ -69,6 +69,9 @@ Patch17:        Hyperkube-remove-federation-cmds.patch
 Patch16:        fix-support-for-ppc64le.patch
 
 Patch18:        get-rid-of-the-git-commands-in-mungedocs.patch
+
+# resolves: bz1413997
+Patch19:        fix-rootScopeNaming-generate-selfLink-issue-37686.patch
 
 # It obsoletes cadvisor but needs its source code (literally integrated)
 Obsoletes:      cadvisor
@@ -879,6 +882,8 @@ mv $(ls | grep -v "^src$") src/k8s.io/kubernetes/.
 %patch16 -p1
 %endif
 
+%patch19 -p1
+
 %build
 pushd src/k8s.io/kubernetes/
 export KUBE_GIT_TREE_STATE="clean"
@@ -1110,6 +1115,10 @@ fi
 %systemd_postun
 
 %changelog
+* Wed Jan 18 2017 Jan Chaloupka <jchaloup@redhat.com> - 1.5.2-2
+- fix rootScopeNaming generate selfLink
+  resolves: #1413997
+
 * Fri Jan 13 2017 Jan Chaloupka <jchaloup@redhat.com> - 1.5.2-1
 - Bump version as well
   related: #1412996

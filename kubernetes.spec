@@ -21,7 +21,7 @@
 # https://github.com/kubernetes/kubernetes
 %global provider_prefix	%{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     k8s.io/kubernetes
-%global commit		029c3a408176b55c30846f0faedf56aae5992e9b
+%global commit		7243c69eb523aa4377bce883e7c0dd76b84709a1
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 %global con_provider        github
@@ -33,7 +33,7 @@
 %global con_commit      17c9a8df1be43378b0026dc22f6000a3e9952a18
 %global con_shortcommit %(c=%{con_commit}; echo ${c:0:7})
 
-%global kube_version          1.5.3
+%global kube_version          1.5.4
 %global kube_git_version      v%{kube_version}
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
@@ -43,7 +43,7 @@
 
 Name:		kubernetes
 Version:	%{kube_version}
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            https://%{import_path}
@@ -1119,6 +1119,10 @@ fi
 %systemd_postun
 
 %changelog
+* Thu Mar 09 2017 Jan Chaloupka <jchaloup@redhat.com> - 1.5.4-2
+- Bump to upstream 7243c69eb523aa4377bce883e7c0dd76b84709a1
+  related: #1422889
+
 * Thu Feb 16 2017 Jan Chaloupka <jchaloup@redhat.com> - 1.5.3-1
 - Update to upstream v1.5.3
   resolves: #1422889

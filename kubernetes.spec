@@ -46,7 +46,7 @@ Version:	%{kube_version}
 Release:	1%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
-URL:            %{import_path}
+URL:            https://%{import_path}
 ExclusiveArch:  x86_64 aarch64 ppc64le
 Source0:        https://%{provider_prefix}/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
 Source1:        https://%{con_provider_prefix}/archive/%{con_commit}/%{con_repo}-%{con_shortcommit}.tar.gz

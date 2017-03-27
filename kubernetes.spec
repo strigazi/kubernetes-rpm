@@ -43,7 +43,7 @@
 
 Name:		kubernetes
 Version:	%{kube_version}
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            https://%{import_path}
@@ -1119,6 +1119,10 @@ fi
 %systemd_postun
 
 %changelog
+* Mon Mar 27 2017 Jan Chaloupka <jchaloup@redhat.com> - 1.5.4-3
+- re-enable debug-info
+  related: #1422889
+
 * Thu Mar 09 2017 Jan Chaloupka <jchaloup@redhat.com> - 1.5.4-2
 - Bump to upstream 7243c69eb523aa4377bce883e7c0dd76b84709a1
   related: #1422889

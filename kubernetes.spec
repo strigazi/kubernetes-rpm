@@ -21,7 +21,7 @@
 # https://github.com/kubernetes/kubernetes
 %global provider_prefix	%{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     k8s.io/kubernetes
-%global commit		114f8911f9597be669a747ab72787e0bd74c9359
+%global commit		b0b7a323cc5a4a2019b2e9520c21c7830b7f708e
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 %global con_provider        github
@@ -33,7 +33,7 @@
 %global con_commit      17c9a8df1be43378b0026dc22f6000a3e9952a18
 %global con_shortcommit %(c=%{con_commit}; echo ${c:0:7})
 
-%global kube_version          1.5.6
+%global kube_version          1.6.1
 %global kube_git_version      v%{kube_version}
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
@@ -61,14 +61,10 @@ Patch5:         make-e2e_node-run-over-distro-bins.patch
 
 # Drop apiserver command from hyperkube as apiserver has different permisions and capabilities
 # Add kube-prefix for controller-manager, proxy and scheduler
-Patch12:        remove-apiserver-add-kube-prefix-for-hyperkube.patch
-
-Patch17:        Hyperkube-remove-federation-cmds.patch
+Patch12:        remove-apiserver-add-kube-prefix-for-hyperkube-remov.patch
 
 # ppc64le
 Patch16:        fix-support-for-ppc64le.patch
-
-Patch18:        get-rid-of-the-git-commands-in-mungedocs.patch
 
 # resolves: bz1413997
 Patch19:        fix-rootScopeNaming-generate-selfLink-issue-37686.patch
@@ -874,19 +870,17 @@ done
 mkdir -p src/k8s.io/kubernetes
 mv $(ls | grep -v "^src$") src/k8s.io/kubernetes/.
 
-%patch17 -p1
-
 # Patch tests to be run over distro bins
-%patch4 -p1
-%patch5 -p1
-
-%patch18 -p1
+#%patch4 -p1
+#%patch5 -p1
 
 %ifarch ppc64le
 %patch16 -p1
 %endif
 
 %patch19 -p1
+
+rm src/k8s.io/kubernetes/cluster/gce/gci/mounter/mounter
 
 %build
 pushd src/k8s.io/kubernetes/
@@ -1119,6 +1113,10 @@ fi
 %systemd_postun
 
 %changelog
+* Tue Apr 11 2017 Jan Chaloupka <jchaloup@redhat.com> - 1.6.1-1
+- Update to upstream v1.6.1
+  related: #1422889
+
 * Fri Mar 31 2017 Jan Chaloupka <jchaloup@redhat.com> - 1.5.6-1
 - Update to upstream v1.5.6
   related: #1422889

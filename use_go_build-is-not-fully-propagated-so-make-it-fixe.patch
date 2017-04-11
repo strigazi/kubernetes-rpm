@@ -1,6 +1,6 @@
-From 8ddfd50cbaa61ab04685c7caf4b02bdeeefb9852 Mon Sep 17 00:00:00 2001
+From 6c25e7295e1c57588964003c6bbc46e44a5e5a96 Mon Sep 17 00:00:00 2001
 From: Jan Chaloupka <jchaloup@redhat.com>
-Date: Mon, 20 Feb 2017 10:19:18 +0100
+Date: Tue, 11 Apr 2017 13:28:53 +0200
 Subject: [PATCH] use_go_build is not fully propagated so make it fixed for
  everyone
 
@@ -9,11 +9,11 @@ Subject: [PATCH] use_go_build is not fully propagated so make it fixed for
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/hack/lib/golang.sh b/hack/lib/golang.sh
-index fbbd5e9..daab249 100755
+index 9bf8243..2806cb7 100755
 --- a/hack/lib/golang.sh
 +++ b/hack/lib/golang.sh
-@@ -509,7 +509,7 @@ kube::golang::build_binaries_for_platform() {
-     gogcflags="${gogcflags} -largemodel"
+@@ -501,7 +501,7 @@ kube::golang::build_binaries_for_platform() {
+       kube::golang::fallback_if_stdlib_not_installable;
    fi
  
 -  if [[ -n ${use_go_build:-} ]]; then

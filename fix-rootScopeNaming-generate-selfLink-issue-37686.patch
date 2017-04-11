@@ -1,17 +1,17 @@
-From 827c5e021d37202dbf30b0358cc77a9517c31819 Mon Sep 17 00:00:00 2001
+From 73d74e6e9b886e4de2de24aa5edff248289771fe Mon Sep 17 00:00:00 2001
 From: Jan Chaloupka <jchaloup@redhat.com>
-Date: Wed, 18 Jan 2017 09:04:15 +0100
+Date: Thu, 13 Apr 2017 14:00:10 +0200
 Subject: [PATCH] fix rootScopeNaming generate selfLink issue #37686
 
 ---
- src/k8s.io/kubernetes/pkg/apiserver/api_installer.go | 5 ++++-
+ .../staging/src/k8s.io/apiserver/pkg/endpoints/installer.go          | 5 ++++-
  1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/src/k8s.io/kubernetes/pkg/apiserver/api_installer.go b/src/k8s.io/kubernetes/pkg/apiserver/api_installer.go
-index eaf6e23..c3144c4 100644
---- a/src/k8s.io/kubernetes/pkg/apiserver/api_installer.go
-+++ b/src/k8s.io/kubernetes/pkg/apiserver/api_installer.go
-@@ -799,7 +799,10 @@ func (n rootScopeNaming) GenerateLink(req *restful.Request, obj runtime.Object)
+diff --git a/src/k8s.io/kubernetes/staging/src/k8s.io/apiserver/pkg/endpoints/installer.go b/src/k8s.io/kubernetes/staging/src/k8s.io/apiserver/pkg/endpoints/installer.go
+index c4d26d4..6755720 100644
+--- a/src/k8s.io/kubernetes/staging/src/k8s.io/apiserver/pkg/endpoints/installer.go
++++ b/src/k8s.io/kubernetes/staging/src/k8s.io/apiserver/pkg/endpoints/installer.go
+@@ -850,7 +850,10 @@ func (n rootScopeNaming) GenerateLink(req *restful.Request, obj runtime.Object)
  			return "", err
  		}
  	}

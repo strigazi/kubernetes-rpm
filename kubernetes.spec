@@ -21,7 +21,7 @@
 # https://github.com/kubernetes/kubernetes
 %global provider_prefix	%{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     k8s.io/kubernetes
-%global commit		b0b7a323cc5a4a2019b2e9520c21c7830b7f708e
+%global commit		477efc3cbe6a7effca06bd1452fa356e2201e1ee
 %global shortcommit	%(c=%{commit}; echo ${c:0:7})
 
 %global con_provider        github
@@ -33,7 +33,7 @@
 %global con_commit      17c9a8df1be43378b0026dc22f6000a3e9952a18
 %global con_shortcommit %(c=%{con_commit}; echo ${c:0:7})
 
-%global kube_version          1.6.1
+%global kube_version          1.6.2
 %global kube_git_version      v%{kube_version}
 
 #I really need this, otherwise "version_ldflags=$(kube::version_ldflags)"
@@ -1113,6 +1113,10 @@ fi
 %systemd_postun
 
 %changelog
+* Tue May 02 2017 Jan Chaloupka <jchaloup@redhat.com> - 1.6.2-1
+- Update to upstream v1.6.2
+  resolves: #1447338
+
 * Tue Apr 11 2017 Jan Chaloupka <jchaloup@redhat.com> - 1.6.1-1
 - Update to upstream v1.6.1
   related: #1422889

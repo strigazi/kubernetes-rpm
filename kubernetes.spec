@@ -43,11 +43,11 @@
 
 Name:		kubernetes
 Version:	%{kube_version}
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            https://%{import_path}
-ExclusiveArch:  x86_64 aarch64 ppc64le
+ExclusiveArch:  x86_64 aarch64 ppc64le s390x
 Source0:        https://%{provider_prefix}/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
 Source1:        https://%{con_provider_prefix}/archive/%{con_commit}/%{con_repo}-%{con_shortcommit}.tar.gz
 Source3:        kubernetes-accounting.conf
@@ -1113,6 +1113,10 @@ fi
 %systemd_postun
 
 %changelog
+* Fri May 12 2017 Jan Chaloupka <jchaloup@redhat.com> - 1.6.2-2
+- Extend archs with s390x
+  resolves: #1400000
+
 * Tue May 02 2017 Jan Chaloupka <jchaloup@redhat.com> - 1.6.2-1
 - Update to upstream v1.6.2
   resolves: #1447338

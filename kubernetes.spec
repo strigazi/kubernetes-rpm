@@ -23,7 +23,7 @@
 
 %global provider_prefix         %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path             k8s.io/kubernetes
-%global commit                  d6f433224538d4f9ca2f7ae19b252e6fcb66a3ae
+%global commit                  095136c3078ccf887b9034b7ce598a0a1faff769
 %global shortcommit              %(c=%{commit}; echo ${c:0:7})
 
 %global con_provider            github
@@ -32,10 +32,10 @@
 %global con_repo                contrib
 # https://github.com/kubernetes/contrib
 %global con_provider_prefix     %{con_provider}.%{con_provider_tld}/%{con_project}/%{con_repo}
-%global con_commit              17c9a8df1be43378b0026dc22f6000a3e9952a18
+%global con_commit              0f5b210313371ff769da24d8264f5a7869c5a3f3
 %global con_shortcommit         %(c=%{con_commit}; echo ${c:0:7})
 
-%global kube_version            1.6.4
+%global kube_version            1.6.7
 %global kube_git_version        v%{kube_version}
 
 # Needed otherwise "version_ldflags=$(kube::version_ldflags)" doesn't work
@@ -57,7 +57,6 @@ Source4:        kubeadm.conf
 
 Source33:       genmanpages.sh
 
-Patch2:         Change-etcd-server-port.patch
 Patch3:         build-with-debug-info.patch
 #Patch4:         make-test-cmd-run-over-hyperkube-based-kubectl.patch
 #Patch5:         make-e2e_node-run-over-distro-bins.patch
@@ -868,8 +867,6 @@ Kubernetes client tools like kubectl
 mkdir contrib
 cp -r ../%{con_repo}-%{con_commit}/init contrib/.
 
-%patch2 -p1
-
 # Drop apiserver from hyperkube
 %patch12 -p1
 
@@ -1154,6 +1151,11 @@ fi
 
 ############################################
 %changelog
+* Sat Jul 08 2017 Jan Chaloupka <jchaloup@redhat.com> - 1.6.7-1
+- Update to upstream v1.6.7
+  resolves: #1468823
+  resolves: #1468752
+
 * Fri May 19 2017 Timothy St. Clair <tstclair@heptio.com> - 1.6.4-1
 - Add kubeadm subpackage to enable upstream deployments
 

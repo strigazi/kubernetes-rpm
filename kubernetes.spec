@@ -23,7 +23,7 @@
 
 %global provider_prefix         %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path             k8s.io/kubernetes
-%global commit                  095136c3078ccf887b9034b7ce598a0a1faff769
+%global commit                  1dc5c66f5dd61da08412a74221ecc79208c2165b
 %global shortcommit              %(c=%{commit}; echo ${c:0:7})
 
 %global con_provider            github
@@ -35,7 +35,7 @@
 %global con_commit              0f5b210313371ff769da24d8264f5a7869c5a3f3
 %global con_shortcommit         %(c=%{con_commit}; echo ${c:0:7})
 
-%global kube_version            1.6.7
+%global kube_version            1.7.1
 %global kube_git_version        v%{kube_version}
 
 # Needed otherwise "version_ldflags=$(kube::version_ldflags)" doesn't work
@@ -67,9 +67,6 @@ Patch12:        remove-apiserver-add-kube-prefix-for-hyperkube-remov.patch
 
 # ppc64le
 Patch16:        fix-support-for-ppc64le.patch
-
-# resolves: bz1413997
-Patch19:        fix-rootScopeNaming-generate-selfLink-issue-37686.patch
 
 Patch20:        use_go_build-is-not-fully-propagated-so-make-it-fixe.patch
 
@@ -893,8 +890,6 @@ mv $(ls | grep -v "^src$") src/k8s.io/kubernetes/.
 %patch16 -p1
 %endif
 
-%patch19 -p1
-
 rm src/k8s.io/kubernetes/cluster/gce/gci/mounter/mounter
 ###############
 
@@ -1151,6 +1146,10 @@ fi
 
 ############################################
 %changelog
+* Fri Jul 14 2017 Jan Chaloupka <jchaloup@redhat.com> - 1.7.1-1
+- Update to upstream v1.7.1
+  resolves: #1471767
+
 * Sat Jul 08 2017 Jan Chaloupka <jchaloup@redhat.com> - 1.6.7-1
 - Update to upstream v1.6.7
   resolves: #1468823

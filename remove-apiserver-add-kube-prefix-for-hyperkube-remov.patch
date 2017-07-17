@@ -1,6 +1,6 @@
-From ca225ec53548708ababfacad9d8dc891e498b5ad Mon Sep 17 00:00:00 2001
+From fb27b92a0293384acc00f61beed4055c6346f6a0 Mon Sep 17 00:00:00 2001
 From: Jan Chaloupka <jchaloup@redhat.com>
-Date: Tue, 11 Apr 2017 13:43:38 +0200
+Date: Mon, 17 Jul 2017 08:54:54 +0200
 Subject: [PATCH] remove apiserver, add kube-prefix for hyperkube, remove
  federation cmds
 
@@ -118,18 +118,18 @@ index 35061e9..e6ba736 100644
  		SimpleUsage:     "controller-manager",
  		Long:            "A server that runs a set of active components. This includes replication controllers, service endpoints and nodes.",
 diff --git a/cmd/hyperkube/kube-proxy.go b/cmd/hyperkube/kube-proxy.go
-index 46083e4..3c88c64 100644
+index 76bc2dc..a3fa3fe 100644
 --- a/cmd/hyperkube/kube-proxy.go
 +++ b/cmd/hyperkube/kube-proxy.go
-@@ -32,7 +32,7 @@ func NewKubeProxy() *Server {
- 	config := options.NewProxyConfig()
+@@ -31,7 +31,7 @@ func NewKubeProxy() *Server {
+ 	command := app.NewProxyCommand()
  
  	hks := Server{
 -		name:            "proxy",
 +		name:            "kube-proxy",
  		AlternativeName: "kube-proxy",
  		SimpleUsage:     "proxy",
- 		Long: `The Kubernetes proxy server is responsible for taking traffic directed at
+ 		Long:            command.Long,
 diff --git a/cmd/hyperkube/kube-scheduler.go b/cmd/hyperkube/kube-scheduler.go
 index fd00103..33a918d 100644
 --- a/cmd/hyperkube/kube-scheduler.go
@@ -165,5 +165,5 @@ index e1e07b7..f44ae68 100644
  	hk.RunToExit(os.Args)
  }
 -- 
-2.7.4
+2.7.5
 

@@ -1,18 +1,18 @@
-From 4cb08c846e43440ce3c7acce14fc328b59f5650b Mon Sep 17 00:00:00 2001
+From 8585e6e6245a7e42e1ef767ea34d0bb08ca56e47 Mon Sep 17 00:00:00 2001
 From: Jan Chaloupka <jchaloup@redhat.com>
-Date: Thu, 13 Apr 2017 14:04:43 +0200
+Date: Mon, 17 Jul 2017 14:22:29 +0200
 Subject: [PATCH] fix support for ppc64le
 
 ---
- src/k8s.io/kubernetes/Makefile         | 2 +-
- src/k8s.io/kubernetes/hack/lib/init.sh | 2 +-
- src/k8s.io/kubernetes/hack/lib/util.sh | 2 +-
+ src/k8s.io/kubernetes/build/root/Makefile | 2 +-
+ src/k8s.io/kubernetes/hack/lib/init.sh    | 2 +-
+ src/k8s.io/kubernetes/hack/lib/util.sh    | 2 +-
  3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/src/k8s.io/kubernetes/Makefile b/src/k8s.io/kubernetes/Makefile
-index a6b2fbe..41e2d59 100644
---- a/src/k8s.io/kubernetes/Makefile
-+++ b/src/k8s.io/kubernetes/Makefile
+diff --git a/src/k8s.io/kubernetes/build/root/Makefile b/src/k8s.io/kubernetes/build/root/Makefile
+index ea5eec8..5a88385 100644
+--- a/src/k8s.io/kubernetes/build/root/Makefile
++++ b/src/k8s.io/kubernetes/build/root/Makefile
 @@ -39,7 +39,7 @@ MAKEFLAGS += --no-builtin-rules
  # Constants used throughout.
  .EXPORT_ALL_VARIABLES:
@@ -23,10 +23,10 @@ index a6b2fbe..41e2d59 100644
  GENERATED_FILE_PREFIX := zz_generated.
  
 diff --git a/src/k8s.io/kubernetes/hack/lib/init.sh b/src/k8s.io/kubernetes/hack/lib/init.sh
-index a07f6f2..b21f907 100644
+index 02aba9e..a53f326 100755
 --- a/src/k8s.io/kubernetes/hack/lib/init.sh
 +++ b/src/k8s.io/kubernetes/hack/lib/init.sh
-@@ -46,7 +46,7 @@ source "${KUBE_ROOT}/hack/lib/version.sh"
+@@ -45,7 +45,7 @@ source "${KUBE_ROOT}/hack/lib/version.sh"
  source "${KUBE_ROOT}/hack/lib/golang.sh"
  source "${KUBE_ROOT}/hack/lib/etcd.sh"
  
@@ -36,7 +36,7 @@ index a07f6f2..b21f907 100644
  # list of all available group versions.  This should be used when generated code
  # or when starting an API server that you want to have everything.
 diff --git a/src/k8s.io/kubernetes/hack/lib/util.sh b/src/k8s.io/kubernetes/hack/lib/util.sh
-index 6a0386a..e8d126d 100755
+index 50f6b55..c8a8b5e 100755
 --- a/src/k8s.io/kubernetes/hack/lib/util.sh
 +++ b/src/k8s.io/kubernetes/hack/lib/util.sh
 @@ -168,7 +168,7 @@ kube::util::find-binary-for-platform() {
@@ -49,5 +49,5 @@ index 6a0386a..e8d126d 100755
      "${KUBE_ROOT}/_output/local/bin/${platform}/${lookfor}"
      "${KUBE_ROOT}/platforms/${platform}/${lookfor}"
 -- 
-2.7.4
+2.7.5
 

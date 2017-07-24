@@ -45,7 +45,7 @@
 ##############################################
 Name:           kubernetes
 Version:        %{kube_version}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            https://%{import_path}
@@ -1146,6 +1146,9 @@ fi
 
 ############################################
 %changelog
+* Mon Jul 24 2017 Jan Chaloupka <jchaloup@redhat.com> - 1.7.1-2
+- Sync kubeadm.conf with upstream service configuration (set Restart,StartLimitInterval,RestartSec)
+
 * Fri Jul 14 2017 Jan Chaloupka <jchaloup@redhat.com> - 1.7.1-1
 - Update to upstream v1.7.1
   resolves: #1471767

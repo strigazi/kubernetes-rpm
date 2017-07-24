@@ -23,7 +23,7 @@
 
 %global provider_prefix         %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path             k8s.io/kubernetes
-%global commit                  1dc5c66f5dd61da08412a74221ecc79208c2165b
+%global commit                  922a86cfcd65915a9b2f69f3f193b8907d741d9c
 %global shortcommit              %(c=%{commit}; echo ${c:0:7})
 
 %global con_provider            github
@@ -35,7 +35,7 @@
 %global con_commit              0f5b210313371ff769da24d8264f5a7869c5a3f3
 %global con_shortcommit         %(c=%{con_commit}; echo ${c:0:7})
 
-%global kube_version            1.7.1
+%global kube_version            1.7.2
 %global kube_git_version        v%{kube_version}
 
 # Needed otherwise "version_ldflags=$(kube::version_ldflags)" doesn't work
@@ -45,7 +45,7 @@
 ##############################################
 Name:           kubernetes
 Version:        %{kube_version}
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            https://%{import_path}
@@ -1146,6 +1146,9 @@ fi
 
 ############################################
 %changelog
+* Mon Jul 24 2017 Jan Chaloupka <jchaloup@redhat.com> - 1.7.2-1
+- Update to upstream v1.7.2
+
 * Mon Jul 24 2017 Jan Chaloupka <jchaloup@redhat.com> - 1.7.1-2
 - Sync kubeadm.conf with upstream service configuration (set Restart,StartLimitInterval,RestartSec)
 

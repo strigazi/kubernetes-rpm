@@ -45,7 +45,7 @@
 ##############################################
 Name:           kubernetes
 Version:        %{kube_version}
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            https://%{import_path}
@@ -1146,6 +1146,9 @@ fi
 
 ############################################
 %changelog
+* Sun Jul 30 2017 Florian Weimer <fweimer@redhat.com> - 1.7.2-3
+- Rebuild with binutils fix for ppc64le (#1475636)
+
 * Wed Jul 26 2017 Fedora Release Engineering <releng@fedoraproject.org> - 1.7.2-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Mass_Rebuild
 

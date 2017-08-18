@@ -23,7 +23,7 @@
 
 %global provider_prefix         %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path             k8s.io/kubernetes
-%global commit                  2c2fe6e8278a5db2d15a013987b53968c743f2a1
+%global commit                  793658f2d7ca7f064d2bdf606519f9fe1229c381
 %global shortcommit              %(c=%{commit}; echo ${c:0:7})
 
 %global con_provider            github
@@ -45,7 +45,7 @@
 ##############################################
 Name:           kubernetes
 Version:        %{kube_version}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            https://%{import_path}
@@ -1146,6 +1146,10 @@ fi
 
 ############################################
 %changelog
+* Fri Aug 18 2017 Jan Chaloupka <jchaloup@redhat.com> - 1.7.3-2
+- Update to upstream v1.7.4
+  resolves: #1482874
+
 * Tue Aug 08 2017 Jan Chaloupka <jchaloup@redhat.com> - 1.7.3-1
 - Update to upstream v1.7.3
   resolves: #1479685

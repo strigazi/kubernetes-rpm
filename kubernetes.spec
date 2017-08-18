@@ -35,7 +35,7 @@
 %global con_commit              0f5b210313371ff769da24d8264f5a7869c5a3f3
 %global con_shortcommit         %(c=%{con_commit}; echo ${c:0:7})
 
-%global kube_version            1.7.3
+%global kube_version            1.7.4
 %global kube_git_version        v%{kube_version}
 
 # Needed otherwise "version_ldflags=$(kube::version_ldflags)" doesn't work
@@ -45,7 +45,7 @@
 ##############################################
 Name:           kubernetes
 Version:        %{kube_version}
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            https://%{import_path}
@@ -1146,6 +1146,10 @@ fi
 
 ############################################
 %changelog
+* Fri Aug 18 2017 Jan Chaloupka <jchaloup@redhat.com> - 1.7.4-1
+- Fix the version
+  related: #1482874
+
 * Fri Aug 18 2017 Jan Chaloupka <jchaloup@redhat.com> - 1.7.3-2
 - Update to upstream v1.7.4
   resolves: #1482874

@@ -1,6 +1,6 @@
-From 97cd17f776ebe5063be7ae1aa7362366361be4a1 Mon Sep 17 00:00:00 2001
+From 2f2a5c866d6b2bbe720972d8b11fa8055c1aba0c Mon Sep 17 00:00:00 2001
 From: Jan Chaloupka <jchaloup@redhat.com>
-Date: Fri, 18 Aug 2017 11:07:19 +0200
+Date: Mon, 2 Oct 2017 14:20:15 +0200
 Subject: [PATCH] remove apiserver, add kube-prefix for hyperkube, remove
  federation cmds
 
@@ -14,7 +14,7 @@ Subject: [PATCH] remove apiserver, add kube-prefix for hyperkube, remove
 
 diff --git a/cmd/hyperkube/federation-apiserver.go b/cmd/hyperkube/federation-apiserver.go
 deleted file mode 100644
-index 48064d1..0000000
+index 97dff04..0000000
 --- a/cmd/hyperkube/federation-apiserver.go
 +++ /dev/null
 @@ -1,39 +0,0 @@
@@ -37,7 +37,6 @@ index 48064d1..0000000
 -package main
 -
 -import (
--	"k8s.io/apimachinery/pkg/util/wait"
 -	"k8s.io/kubernetes/federation/cmd/federation-apiserver/app"
 -	"k8s.io/kubernetes/federation/cmd/federation-apiserver/app/options"
 -)
@@ -50,16 +49,17 @@ index 48064d1..0000000
 -	hks := Server{
 -		SimpleUsage: "federation-apiserver",
 -		Long:        "The API entrypoint for the federation control plane",
--		Run: func(_ *Server, args []string) error {
--			return app.Run(s, wait.NeverStop)
+-		Run: func(_ *Server, args []string, stopCh <-chan struct{}) error {
+-			return app.Run(s, stopCh)
 -		},
+-		RespectsStopCh: true,
 -	}
 -	s.AddFlags(hks.Flags())
 -	return &hks
 -}
 diff --git a/cmd/hyperkube/federation-controller-manager.go b/cmd/hyperkube/federation-controller-manager.go
 deleted file mode 100644
-index e445f87..0000000
+index b702a1e..0000000
 --- a/cmd/hyperkube/federation-controller-manager.go
 +++ /dev/null
 @@ -1,38 +0,0 @@
@@ -94,7 +94,7 @@ index e445f87..0000000
 -	hks := Server{
 -		SimpleUsage: "federation-controller-manager",
 -		Long:        "Controller manager for federation control plane. Manages federation service endpoints and controllers",
--		Run: func(_ *Server, args []string) error {
+-		Run: func(_ *Server, args []string, stopCh <-chan struct{}) error {
 -			return app.Run(s)
 -		},
 -	}
@@ -102,10 +102,10 @@ index e445f87..0000000
 -	return &hks
 -}
 diff --git a/cmd/hyperkube/main.go b/cmd/hyperkube/main.go
-index e1e07b7..cdd5a13 100644
+index ef49d06..de5b58f 100644
 --- a/cmd/hyperkube/main.go
 +++ b/cmd/hyperkube/main.go
-@@ -40,9 +40,5 @@ func main() {
+@@ -46,9 +46,5 @@ func main() {
  	hk.AddServer(NewKubeProxy())
  	hk.AddServer(NewKubeAggregator())
  

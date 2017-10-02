@@ -23,7 +23,7 @@
 
 %global provider_prefix         %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path             k8s.io/kubernetes
-%global commit                  8e1552342355496b62754e61ad5f802a0f3f1fa7
+%global commit                  0b9efaeb34a2fc51ff8e4d34ad9bc6375459c4a4
 %global shortcommit              %(c=%{commit}; echo ${c:0:7})
 
 %global con_provider            github
@@ -32,10 +32,10 @@
 %global con_repo                contrib
 # https://github.com/kubernetes/contrib
 %global con_provider_prefix     %{con_provider}.%{con_provider_tld}/%{con_project}/%{con_repo}
-%global con_commit              0f5b210313371ff769da24d8264f5a7869c5a3f3
+%global con_commit              23bbd3e7042e136e5cf59033e6dc2eb2914a0f02
 %global con_shortcommit         %(c=%{con_commit}; echo ${c:0:7})
 
-%global kube_version            1.7.7
+%global kube_version            1.8.0
 %global kube_git_version        v%{kube_version}
 
 # Needed otherwise "version_ldflags=$(kube::version_ldflags)" doesn't work
@@ -962,6 +962,7 @@ install -m 0644 -t %{buildroot}%{_unitdir} contrib/init/systemd/*.service
 # install manpages
 install -d %{buildroot}%{_mandir}/man1
 install -p -m 644 docs/man/man1/* %{buildroot}%{_mandir}/man1
+rm %{buildroot}%{_mandir}/man1/cloud-controller-manager.*
 # from k8s tarball copied docs/man/man1/*.1
 
 # install the place the kubelet defaults to put volumes
@@ -1146,6 +1147,10 @@ fi
 
 ############################################
 %changelog
+* Mon Oct 02 2017 Jan Chaloupka <jchaloup@redhat.com> - 1.8.0-1
+- Update to upstream v1.8.0
+  related: #1497625
+
 * Mon Oct 02 2017 Jan Chaloupka <jchaloup@redhat.com> - 1.7.7-1
 - Update to upstream v1.7.7
   resolves: #1497625

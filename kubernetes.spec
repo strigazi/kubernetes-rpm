@@ -23,7 +23,7 @@
 
 %global provider_prefix         %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path             k8s.io/kubernetes
-%global commit                  0b9efaeb34a2fc51ff8e4d34ad9bc6375459c4a4
+%global commit                  f38e43b221d08850172a9a4ea785a86a3ffa3b3a
 %global shortcommit              %(c=%{commit}; echo ${c:0:7})
 
 %global con_provider            github
@@ -35,7 +35,7 @@
 %global con_commit              23bbd3e7042e136e5cf59033e6dc2eb2914a0f02
 %global con_shortcommit         %(c=%{con_commit}; echo ${c:0:7})
 
-%global kube_version            1.8.0
+%global kube_version            1.8.1
 %global kube_git_version        v%{kube_version}
 
 # Needed otherwise "version_ldflags=$(kube::version_ldflags)" doesn't work
@@ -1147,6 +1147,10 @@ fi
 
 ############################################
 %changelog
+* Tue Oct 24 2017 Jan Chaloupka <jchaloup@redhat.com> - 1.8.1-1
+- Update to upstream v1.8.1
+  resolves: #1497135
+
 * Mon Oct 02 2017 Jan Chaloupka <jchaloup@redhat.com> - 1.8.0-1
 - Update to upstream v1.8.0
   related: #1497625

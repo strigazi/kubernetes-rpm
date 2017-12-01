@@ -8,10 +8,10 @@ Subject: [PATCH] build with debug info
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/hack/lib/golang.sh b/hack/lib/golang.sh
-index a2d2635..c1f3662 100755
+index b9649ce6d0..75faeeb6e8 100755
 --- a/hack/lib/golang.sh
 +++ b/hack/lib/golang.sh
-@@ -505,7 +505,7 @@ kube::golang::build_binaries_for_platform() {
+@@ -502,7 +502,7 @@ kube::golang::build_binaries_for_platform() {
        CGO_ENABLED=0 go build -o "${outfile}" \
          "${goflags[@]:+${goflags[@]}}" \
          -gcflags "${gogcflags}" \
@@ -20,7 +20,7 @@ index a2d2635..c1f3662 100755
          "${binary}"
        kube::log::progress "*"
      done
-@@ -514,7 +514,7 @@ kube::golang::build_binaries_for_platform() {
+@@ -511,7 +511,7 @@ kube::golang::build_binaries_for_platform() {
        go build -o "${outfile}" \
          "${goflags[@]:+${goflags[@]}}" \
          -gcflags "${gogcflags}" \

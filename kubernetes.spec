@@ -23,7 +23,7 @@
 
 %global provider_prefix         %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path             k8s.io/kubernetes
-%global commit                  f38e43b221d08850172a9a4ea785a86a3ffa3b3a
+%global commit                  3a1c9449a956b6026f075fa3134ff92f7d55f812
 %global shortcommit              %(c=%{commit}; echo ${c:0:7})
 
 %global con_provider            github
@@ -35,7 +35,7 @@
 %global con_commit              23bbd3e7042e136e5cf59033e6dc2eb2914a0f02
 %global con_shortcommit         %(c=%{con_commit}; echo ${c:0:7})
 
-%global kube_version            1.8.1
+%global kube_version            1.9.1
 %global kube_git_version        v%{kube_version}
 
 # Needed otherwise "version_ldflags=$(kube::version_ldflags)" doesn't work
@@ -61,14 +61,12 @@ Patch3:         build-with-debug-info.patch
 #Patch4:         make-test-cmd-run-over-hyperkube-based-kubectl.patch
 #Patch5:         make-e2e_node-run-over-distro-bins.patch
 
-# Drop apiserver command from hyperkube as apiserver has different permisions and capabilities
-# Add kube-prefix for controller-manager, proxy and scheduler
-Patch12:        remove-apiserver-add-kube-prefix-for-hyperkube-remov.patch
-
 # ppc64le
 Patch16:        fix-support-for-ppc64le.patch
 
 Patch20:        use_go_build-is-not-fully-propagated-so-make-it-fixe.patch
+
+Patch21:        Use-sort-V-to-compare-golang-versions.patch
 
 # It obsoletes cadvisor but needs its source code (literally integrated)
 Obsoletes:      cadvisor
@@ -854,6 +852,8 @@ Kubernetes client tools like kubectl
 %setup -q -n %{con_repo}-%{con_commit} -T -b 1
 %setup -q -n %{repo}-%{commit}
 
+%patch21 -p1
+
 %if 0%{?with_debug}
 %patch3 -p1
 %endif
@@ -863,9 +863,6 @@ Kubernetes client tools like kubectl
 # copy contrib folder
 mkdir contrib
 cp -r ../%{con_repo}-%{con_commit}/init contrib/.
-
-# Drop apiserver from hyperkube
-%patch12 -p1
 
 #src/k8s.io/kubernetes/pkg/util/certificates
 # Patch the code to remove eliptic.P224 support
@@ -890,7 +887,6 @@ mv $(ls | grep -v "^src$") src/k8s.io/kubernetes/.
 %patch16 -p1
 %endif
 
-rm src/k8s.io/kubernetes/cluster/gce/gci/mounter/mounter
 ###############
 
 %build
@@ -925,7 +921,7 @@ kube::golang::setup_env
 %ifarch ppc64le
 output_path="_output/local/go/bin"
 %else
-output_path="${KUBE_OUTPUT_BINPATH}/$(kube::golang::current_platform)"
+output_path="${KUBE_OUTPUT_BINPATH}/$(kube::golang::host_platform)"
 %endif
 
 install -m 755 -d %{buildroot}%{_bindir}
@@ -1085,7 +1081,8 @@ fi
 %files kubeadm
 %license LICENSE
 %doc *.md
-# TODO: needs man page
+%{_mandir}/man1/kubeadm.1*
+%{_mandir}/man1/kubeadm-*
 %{_bindir}/kubeadm
 %dir %{_sysconfdir}/systemd/system/kubelet.service.d
 %config(noreplace) %{_sysconfdir}/systemd/system/kubelet.service.d/kubeadm.conf
@@ -1147,6 +1144,10 @@ fi
 
 ############################################
 %changelog
+* Fri Jan 12 2018 Spyros Trigazis <strigazi@gmail.com> - 1.9.1-1
+- Update to upstream v1.9.1
+  resolves #1533794
+
 * Tue Oct 24 2017 Jan Chaloupka <jchaloup@redhat.com> - 1.8.1-1
 - Update to upstream v1.8.1
   resolves: #1497135

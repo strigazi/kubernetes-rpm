@@ -9,10 +9,10 @@ Subject: [PATCH] use_go_build is not fully propagated so make it fixed for
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/hack/lib/golang.sh b/hack/lib/golang.sh
-index 9bf8243..2806cb7 100755
+index 75faeeb6e8..243b8f0030 100755
 --- a/hack/lib/golang.sh
 +++ b/hack/lib/golang.sh
-@@ -501,7 +501,7 @@ kube::golang::build_binaries_for_platform() {
+@@ -495,7 +495,7 @@ kube::golang::build_binaries_for_platform() {
        kube::golang::fallback_if_stdlib_not_installable;
    fi
  

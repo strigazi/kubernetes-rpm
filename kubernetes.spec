@@ -45,7 +45,7 @@
 ##############################################
 Name:           kubernetes
 Version:        %{kube_version}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            https://%{import_path}
@@ -807,7 +807,12 @@ Kubernetes services for master host
 %package node
 Summary: Kubernetes services for node host
 
+%if 0%{?fedora} >= 27
+Requires: (docker or docker-ce)
+Suggests: docker
+%else
 Requires: docker
+%endif
 Requires: conntrack-tools
 
 BuildRequires: golang >= 1.2-7
@@ -1144,6 +1149,10 @@ fi
 
 ############################################
 %changelog
+* Mon Jan 15 2018 Jan Chaloupka <jchaloup@redhat.com> - 1.9.1-2
+- If docker is not available, try docker-ce instead (use boolean dependencies)
+  resolves: #1534508
+
 * Fri Jan 12 2018 Spyros Trigazis <strigazi@gmail.com> - 1.9.1-1
 - Update to upstream v1.9.1
   resolves #1533794

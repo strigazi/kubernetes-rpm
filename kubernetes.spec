@@ -45,7 +45,7 @@
 ##############################################
 Name:           kubernetes
 Version:        %{kube_version}
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            https://%{import_path}
@@ -1149,6 +1149,9 @@ fi
 
 ############################################
 %changelog
+* Wed Feb 07 2018 Fedora Release Engineering <releng@fedoraproject.org> - 1.9.1-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
+
 * Mon Jan 15 2018 Jan Chaloupka <jchaloup@redhat.com> - 1.9.1-2
 - If docker is not available, try docker-ce instead (use boolean dependencies)
   resolves: #1534508

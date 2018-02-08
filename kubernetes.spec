@@ -45,7 +45,7 @@
 ##############################################
 Name:           kubernetes
 Version:        %{kube_version}
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            https://%{import_path}
@@ -1033,9 +1033,6 @@ hack/test-integration.sh --use_go_build
 %endif
 fi
 
-#define license tag if not already defined
-%{!?_licensedir:%global license %doc}
-
 ##############################################
 %files
 # empty as it depends on master and node
@@ -1149,6 +1146,9 @@ fi
 
 ############################################
 %changelog
+* Thu Feb 08 2018 Igor Gnatenko <ignatenkobrain@fedoraproject.org> - 1.9.1-4
+- Escape macro in %%changelog
+
 * Wed Feb 07 2018 Fedora Release Engineering <releng@fedoraproject.org> - 1.9.1-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
 
@@ -1779,7 +1779,7 @@ fi
 
 * Wed Jun 03 2015 jchaloup <jchaloup@redhat.com> - 0.18.0-0.3.gitb5a91bd
 - Bump to upstream b5a91bda103ed2459f933959241a2b57331747ba
-- Don't run %check section (kept only for local run). Tests are now handled via CI.
+- Don't run %%check section (kept only for local run). Tests are now handled via CI.
   related: #1211266
 
 * Tue Jun 02 2015 jchaloup <jchaloup@redhat.com> - 0.18.0-0.2.git5520386
@@ -1998,7 +1998,7 @@ fi
 - Bump to upstream 39dceb13a511a83963a766a439cb386d10764310
 
 * Thu Mar 12 2015 Eric Paris <eparis@redhat.com> - 0.12.0-0.7.gita3fd0a9
-- Move from /etc/tmpfiles.d to %{_tmpfilesdir}
+- Move from /etc/tmpfiles.d to %%{_tmpfilesdir}
   resolves: #1200969
 
 * Thu Mar 12 2015 jchaloup <jchaloup@redhat.com> - 0.12.0-0.6.gita3fd0a9
@@ -2146,7 +2146,7 @@ fi
 - Bump to upstream 808be2d13b7bf14a3cf6985bc7c9d02f48a3d1e0
 - Includes upstream change to remove --machines from the APIServer
 - Port to new build system
-- Start running %check tests again
+- Start running %%check tests again
 
 * Fri Oct 31 2014 Eric Paris <eparis@redhat.com - 0.4+-426.0.gita18cdac
 - Bump to upstream a18cdac616962a2c486feb22afa3538fc3cf3a3a
@@ -2253,7 +2253,7 @@ https://fedoraproject.org/wiki/Packaging:SourceURL#Github
 * Wed Aug 13 2014 Eric Paris <eparis@redhat.com>
 - update to upstream
 - redo build to use project scripts
-- use project scripts in %check
+- use project scripts in %%check
 - rework deletion of third_party packages to easily detect changes
 - run apiserver and controller-manager as non-root
 

@@ -32,7 +32,7 @@
 %global con_repo                contrib
 # https://github.com/kubernetes/contrib
 %global con_provider_prefix     %{con_provider}.%{con_provider_tld}/%{con_project}/%{con_repo}
-%global con_commit              23bbd3e7042e136e5cf59033e6dc2eb2914a0f02
+%global con_commit              5b445f1c53aa8d6457523526340077935f62e691
 %global con_shortcommit         %(c=%{con_commit}; echo ${c:0:7})
 
 %global kube_version            1.9.1
@@ -45,7 +45,7 @@
 ##############################################
 Name:           kubernetes
 Version:        %{kube_version}
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            https://%{import_path}
@@ -1146,6 +1146,10 @@ fi
 
 ############################################
 %changelog
+* Fri Feb 09 2018 Jan Chaloupka <jchaloup@redhat.com> - 1.9.1-5
+- Add --fail-swap-on=false flag to the /etc/kubernetes/kubelet
+  resolves: #1542476
+
 * Thu Feb 08 2018 Igor Gnatenko <ignatenkobrain@fedoraproject.org> - 1.9.1-4
 - Escape macro in %%changelog
 

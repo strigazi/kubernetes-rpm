@@ -23,7 +23,7 @@
 
 %global provider_prefix         %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path             k8s.io/kubernetes
-%global commit                  3a1c9449a956b6026f075fa3134ff92f7d55f812
+%global commit                  d2835416544f298c919e2ead3be3d0864b52323b
 %global shortcommit              %(c=%{commit}; echo ${c:0:7})
 
 %global con_provider            github
@@ -35,7 +35,7 @@
 %global con_commit              5b445f1c53aa8d6457523526340077935f62e691
 %global con_shortcommit         %(c=%{con_commit}; echo ${c:0:7})
 
-%global kube_version            1.9.1
+%global kube_version            1.9.3
 %global kube_git_version        v%{kube_version}
 
 # Needed otherwise "version_ldflags=$(kube::version_ldflags)" doesn't work
@@ -45,7 +45,7 @@
 ##############################################
 Name:           kubernetes
 Version:        %{kube_version}
-Release:        5%{?dist}
+Release:        1%{?dist}
 Summary:        Container cluster management
 License:        ASL 2.0
 URL:            https://%{import_path}
@@ -1146,6 +1146,9 @@ fi
 
 ############################################
 %changelog
+* Sun Feb 11 2018 Spyros Trigazis <strigazi@gmail.com> - 1.9.3-1
+- Bump to upstream v1.9.3
+
 * Fri Feb 09 2018 Jan Chaloupka <jchaloup@redhat.com> - 1.9.1-5
 - Add --fail-swap-on=false flag to the /etc/kubernetes/kubelet
   resolves: #1542476

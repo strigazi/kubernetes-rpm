@@ -23,7 +23,7 @@
 
 %global provider_prefix         %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path             k8s.io/kubernetes
-%global commit                  d2835416544f298c919e2ead3be3d0864b52323b
+%global commit                  f01a2bf98249a4db383560443a59bed0c13575df
 %global shortcommit              %(c=%{commit}; echo ${c:0:7})
 
 %global con_provider            github
@@ -35,7 +35,7 @@
 %global con_commit              5b445f1c53aa8d6457523526340077935f62e691
 %global con_shortcommit         %(c=%{con_commit}; echo ${c:0:7})
 
-%global kube_version            1.9.3
+%global kube_version            1.9.5
 %global kube_git_version        v%{kube_version}
 
 # Needed otherwise "version_ldflags=$(kube::version_ldflags)" doesn't work
@@ -65,8 +65,6 @@ Patch3:         build-with-debug-info.patch
 Patch16:        fix-support-for-ppc64le.patch
 
 Patch20:        use_go_build-is-not-fully-propagated-so-make-it-fixe.patch
-
-Patch21:        Use-sort-V-to-compare-golang-versions.patch
 
 # It obsoletes cadvisor but needs its source code (literally integrated)
 Obsoletes:      cadvisor
@@ -857,8 +855,6 @@ Kubernetes client tools like kubectl
 %setup -q -n %{con_repo}-%{con_commit} -T -b 1
 %setup -q -n %{repo}-%{commit}
 
-%patch21 -p1
-
 %if 0%{?with_debug}
 %patch3 -p1
 %endif
@@ -1146,6 +1142,10 @@ fi
 
 ############################################
 %changelog
+* Tue Mar 20 2018 Jan Chaloupka <jchaloup@redhat.com> - 1.9.5-1
+- Bump to upstream v1.9.5
+  resolves: #1554420
+
 * Sun Feb 11 2018 Spyros Trigazis <strigazi@gmail.com> - 1.9.3-1
 - Bump to upstream v1.9.3
 

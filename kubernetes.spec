@@ -23,7 +23,7 @@
 
 %global provider_prefix         %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path             k8s.io/kubernetes
-%global commit                  f01a2bf98249a4db383560443a59bed0c13575df
+%global commit                  9f8ebd171479bec0ada837d7ee641dec2f8c6dd1
 %global shortcommit              %(c=%{commit}; echo ${c:0:7})
 
 %global con_provider            github
@@ -35,7 +35,7 @@
 %global con_commit              5b445f1c53aa8d6457523526340077935f62e691
 %global con_shortcommit         %(c=%{con_commit}; echo ${c:0:7})
 
-%global kube_version            1.9.5
+%global kube_version            1.9.6
 %global kube_git_version        v%{kube_version}
 
 # Needed otherwise "version_ldflags=$(kube::version_ldflags)" doesn't work
@@ -1142,6 +1142,9 @@ fi
 
 ############################################
 %changelog
+* Thu Mar 22 2018 Spyros Trigazis <strigazi@gmail.com> - 1.9.6-1
+- Bump to upstream v1.9.6
+
 * Tue Mar 20 2018 Jan Chaloupka <jchaloup@redhat.com> - 1.9.5-1
 - Bump to upstream v1.9.5
   resolves: #1554420
